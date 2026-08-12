@@ -1015,9 +1015,45 @@ button.quick-action{font-family:inherit}
   min-height:44px;padding:9px 18px;border:1px solid rgba(255,255,255,.52);border-radius:999px;
   color:#fff;background:rgba(255,255,255,.12);font:700 .88rem/1.2 inherit;cursor:pointer
 }
+footer#contact{scroll-margin-top:60px}
+.contact-shell{max-width:1100px;margin:0 auto}
+.contact-intro{max-width:720px;margin:8px auto 26px;color:#c8d9e8;line-height:1.85}
+.contact-groups{display:grid;grid-template-columns:minmax(0,2fr) minmax(280px,1fr);gap:18px;text-align:left}
+.contact-channel{
+  padding:22px;border:1px solid rgba(171,218,243,.24);border-radius:26px;
+  background:linear-gradient(145deg,rgba(61,115,159,.26),rgba(102,87,151,.18));
+  box-shadow:0 18px 42px rgba(2,12,24,.22)
+}
+.contact-channel-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:17px}
+.contact-channel-icon{
+  flex:0 0 42px;width:42px;height:42px;border-radius:14px;display:grid;place-items:center;
+  color:#fff;background:linear-gradient(135deg,var(--anime-blue),var(--anime-violet));font-size:1.15rem;
+  box-shadow:0 8px 20px rgba(84,145,195,.25)
+}
+.contact-channel h3{color:#fff;font-size:1.08rem;line-height:1.35}
+.contact-channel-note{margin-top:3px;color:#b9cee0;font-size:.82rem;line-height:1.65}
+.contact-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.contact-channel-wechat .contact-cards{grid-template-columns:1fr}
+.contact-card{
+  display:flex;flex-direction:column;align-items:center;padding:16px 14px 15px;border:1px solid rgba(183,224,245,.3);
+  border-radius:21px;text-align:center;background:rgba(250,253,255,.08)
+}
+.contact-card .qr{
+  width:min(100%,210px);height:auto;aspect-ratio:auto;margin:0 auto 14px;padding:7px;object-fit:contain;
+  border:1px solid rgba(180,222,244,.78);border-radius:18px;background:#fff;box-shadow:0 12px 30px rgba(3,14,26,.27)
+}
+.contact-kind{color:#d7e9f7;font-size:.78rem;font-weight:700;letter-spacing:.08em}
+.contact-id{margin:3px 0 10px;color:#fff;font-size:1.08rem;font-weight:800;letter-spacing:.04em;overflow-wrap:anywhere}
+.contact-card .contact-copy{width:100%;margin-top:auto;border-color:rgba(190,225,245,.44);background:linear-gradient(100deg,#397fae,#7167aa)}
+.contact-card .contact-copy:hover{background:linear-gradient(100deg,#438fbe,#8275bc)}
+.contact-share-row{display:flex;justify-content:center;margin-top:20px}
+.contact-share-row .contact-copy{min-width:150px}
+body.contact-in-view .rem-side-companion,
+body.contact-in-view .quick-actions{opacity:0!important;pointer-events:none!important}
 .lb[aria-hidden="true"]{visibility:hidden}
 @media(max-width:900px){
   .rem-side-companion{bottom:132px}
+  .contact-groups{grid-template-columns:1fr}
 }
 @media(max-width:560px){
   body{padding-bottom:76px}
@@ -1027,6 +1063,9 @@ button.quick-action{font-family:inherit}
   .quick-action{min-width:0;min-height:46px;padding:9px 12px}
   .share-toast{left:16px;right:16px;bottom:calc(72px + env(safe-area-inset-bottom));max-width:none;text-align:center}
   .contact-tools{justify-content:center}
+  .contact-channel{padding:18px 14px;border-radius:22px}
+  .contact-cards{grid-template-columns:1fr}
+  .contact-card .qr{width:min(82vw,230px)}
   .rem-side-companion{bottom:82px}
 }
 </style>
@@ -1444,20 +1483,56 @@ button.quick-action{font-family:inherit}
 
 <!-- 页脚 -->
 <footer id="contact">
-  <p class="f-brand">❄ 慕言のCOS摄影</p>
-  <div class="contact-row">
-    <div class="contact-info">
-      <p>添加QQ时如出现风险提示，可点击查看详情并稍候；空间相册已开放，也可以先查看更多作品。</p>
-      <p class="qq-line">📱 QQ：<b>2745867337</b></p>
-      <p>扫一扫加我为好友</p>
-      <div class="contact-tools">
-        <button type="button" class="contact-copy" id="copyQQ">复制QQ号</button>
-        <button type="button" class="contact-copy" id="shareSiteFooter">分享网页</button>
+  <div class="contact-shell">
+    <h2 class="f-brand">❄ 慕言のCOS摄影 · 联系方式</h2>
+      <p class="contact-intro">常用QQ，加我时候请备注cn喵，微信联系方式也在下面，也可以添加喵。</p>
+    <div class="contact-groups">
+      <section class="contact-channel" aria-labelledby="qq-contact-title">
+        <div class="contact-channel-head">
+          <span class="contact-channel-icon" aria-hidden="true">QQ</span>
+          <div>
+            <h3 id="qq-contact-title">QQ 联系</h3>
+            <p class="contact-channel-note">大号与小号均可添加；如出现风险提示，可点击查看详情并稍候再试。</p>
+          </div>
+        </div>
+        <div class="contact-cards">
+          <article class="contact-card">
+            <img src="images/qq.png" width="934" height="892" alt="QQ大号 2745867337 的二维码" class="qr" loading="lazy" decoding="async">
+            <p class="contact-kind">QQ 大号</p>
+            <p class="contact-id">2745867337</p>
+            <button type="button" class="contact-copy copy-contact" data-copy-value="2745867337" data-copy-label="QQ大号">复制QQ大号</button>
+          </article>
+          <article class="contact-card">
+            <img src="images/qq-small.png" width="582" height="583" alt="QQ小号 2389375218 的二维码" class="qr" loading="lazy" decoding="async">
+            <p class="contact-kind">QQ 小号</p>
+            <p class="contact-id">2389375218</p>
+            <button type="button" class="contact-copy copy-contact" data-copy-value="2389375218" data-copy-label="QQ小号">复制QQ小号</button>
+          </article>
+        </div>
+      </section>
+      <section class="contact-channel contact-channel-wechat" aria-labelledby="wechat-contact-title">
+        <div class="contact-channel-head">
+          <span class="contact-channel-icon" aria-hidden="true">微</span>
+          <div>
+            <h3 id="wechat-contact-title">微信联系</h3>
+            <p class="contact-channel-note">可扫码添加，也可以复制微信号后在微信中搜索。</p>
+          </div>
+        </div>
+        <div class="contact-cards">
+          <article class="contact-card">
+            <img src="images/wechat.png" width="643" height="678" alt="微信号 mi20180709 的二维码" class="qr" loading="lazy" decoding="async">
+            <p class="contact-kind">微信号</p>
+            <p class="contact-id">mi20180709</p>
+            <button type="button" class="contact-copy copy-contact" data-copy-value="mi20180709" data-copy-label="微信号">复制微信号</button>
+          </article>
+        </div>
       </div>
     </div>
-    <img src="images/qq.png" alt="QQ二维码" class="qr">
+    <div class="contact-share-row">
+      <button type="button" class="contact-copy" id="shareSiteFooter">分享网页</button>
+    </div>
+    <p style="margin-top:20px">© 2026 慕言のCOS摄影 · 正片 / 场照 / 特效</p>
   </div>
-  <p style="margin-top:6px">© 2026 慕言のCOS摄影 · 正片 / 场照 / 特效</p>
 </footer>
 
 <!-- 随时可见的约拍与分享入口 -->
@@ -1496,7 +1571,7 @@ button.quick-action{font-family:inherit}
    5) <section id="notes">         注意事项区
       - .note-tab    须知选项卡：正片须知 / 场照须知
    6) .quote                       心里话
-   7) <footer id="contact">        联系方式 + QQ二维码
+   7) <footer id="contact">        QQ大号 / QQ小号 / 微信联系方式与二维码
 ------------------------------------------------------------
  ● 关键JS对象与函数：
    GALLERIES —— 全部照片数据（数组，每项：key 板块名、images 照片列表）
@@ -1513,7 +1588,9 @@ button.quick-action{font-family:inherit}
    images/正片/外景/01.jpg...  正片（外景/棚子分类）
    images/场照/亮灰/01.jpg...  场照（亮灰/暗调分类）
    images/特效/01.jpg...     特效
-   images/qq.png               页脚QQ二维码
+   images/qq.png               页脚QQ大号二维码
+   images/qq-small.png         页脚QQ小号二维码
+   images/wechat.png           页脚微信二维码
 ------------------------------------------------------------
  ● 修改提示：
    - 改文字：直接搜索对应中文关键词（如"定金""保底"）
@@ -1541,7 +1618,22 @@ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&links.class
 // ===== 联系方式复制与网页分享 =====
 const PUBLIC_SITE_URL='https://muyan2807-alt.github.io/muyan-photography/';
 const shareStatus=document.getElementById('shareStatus');
+const contactSection=document.getElementById('contact');
 let shareStatusTimer=0;
+function alignContactSection(){
+  if(location.hash!=='#contact')return;
+  const behavior=window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth';
+  contactSection.scrollIntoView({behavior,block:'start'});
+  setTimeout(()=>{if(location.hash==='#contact')contactSection.scrollIntoView({behavior:'auto',block:'start'})},700);
+}
+document.querySelectorAll('a[href="#contact"]').forEach(link=>link.addEventListener('click',()=>setTimeout(alignContactSection,0)));
+window.addEventListener('load',()=>{if(location.hash==='#contact')setTimeout(alignContactSection,0)},{once:true});
+if('IntersectionObserver' in window){
+  const contactObserver=new IntersectionObserver(entries=>{
+    document.body.classList.toggle('contact-in-view',entries[0].isIntersecting);
+  },{threshold:.08});
+  contactObserver.observe(contactSection);
+}
 function showShareStatus(message){
   clearTimeout(shareStatusTimer);shareStatus.textContent=message;shareStatus.hidden=false;
   shareStatusTimer=setTimeout(()=>{shareStatus.hidden=true},2600);
@@ -1563,10 +1655,11 @@ async function shareWebsite(){
 }
 document.getElementById('shareSite').addEventListener('click',shareWebsite);
 document.getElementById('shareSiteFooter').addEventListener('click',shareWebsite);
-document.getElementById('copyQQ').addEventListener('click',async()=>{
-  try{await copyPlainText('2745867337');showShareStatus('QQ号 2745867337 已复制')}
-  catch(error){showShareStatus('复制失败，请手动复制QQ号')}
-});
+document.querySelectorAll('.copy-contact').forEach(button=>button.addEventListener('click',async()=>{
+  const value=button.dataset.copyValue,label=button.dataset.copyLabel;
+  try{await copyPlainText(value);showShareStatus(`${label} ${value} 已复制`)}
+  catch(error){showShareStatus(`复制失败，请手动复制${label}`)}
+}));
 
 // ===== 图片画廊数据 =====
 const GALLERIES = [{"key":"zhengpian","cats":["外景","棚子"],"images":[{"s":"images/正片/外景/01.jpg","w":2400,"h":1355,"cats":["外景"],"c":"08623e4f831ec8a7f5e7b81d676d8b3c"},{"s":"images/正片/外景/02.jpg","w":2400,"h":1631,"cats":["外景"],"c":"2DBB1A5A7F33DDFFBE973B5453403BF4"},{"s":"images/正片/外景/03.jpg","w":2400,"h":1508,"cats":["外景"],"c":"3660D96A51F1A66E8951E8D5657D678B"},{"s":"images/正片/外景/04.jpg","w":2400,"h":1350,"cats":["外景"],"c":"3750D3FEB70F2B8D14B8386EDA7BF430"},{"s":"images/正片/外景/05.jpg","w":1500,"h":2000,"cats":["外景"],"c":"414D9DC3ECB03D55DF04EEC937BC9363"},{"s":"images/正片/外景/06.jpg","w":1600,"h":2400,"cats":["外景"],"c":"5A5FE0E27E1B85305F1E1667101C5E9F"},{"s":"images/正片/外景/07.jpg","w":1535,"h":2400,"cats":["外景"],"c":"791EF9B33D67BCBFD4553F204020045B"},{"s":"images/正片/外景/08.jpg","w":2400,"h":1600,"cats":["外景"],"c":"9596DE3C3FD1DA7915DCB46B497AD6D8_(2)"},{"s":"images/正片/外景/09.jpg","w":2400,"h":1600,"cats":["外景"],"c":"96CC0516DA8F051D5087CD375BA16A94"},{"s":"images/正片/外景/10.jpg","w":1079,"h":1620,"cats":["外景"],"c":"A3AA4FC4012F18D15E4A112095D776AF"},{"s":"images/正片/外景/11.jpg","w":2400,"h":1600,"cats":["外景","棚子"],"c":"AABC763D31FDE84B2F9271B9552E8B26"},{"s":"images/正片/外景/12.jpg","w":2400,"h":1600,"cats":["外景"],"c":"C7834BE0613E4B17C23527725CB4F28B_(2)"},{"s":"images/正片/外景/13.jpg","w":2400,"h":1600,"cats":["外景"],"c":"DSC09403_(2)"},{"s":"images/正片/外景/14.jpg","w":2400,"h":1350,"cats":["外景"],"c":"DSC09794"},{"s":"images/正片/外景/15.jpg","w":2400,"h":1350,"cats":["外景"],"c":"DSC09843"},{"s":"images/正片/外景/16.jpg","w":2400,"h":1029,"cats":["外景"],"c":"DSC09858"},{"s":"images/正片/外景/17.jpg","w":2400,"h":1600,"cats":["外景"],"c":"DSC09908"},{"s":"images/正片/外景/18.jpg","w":2400,"h":1574,"cats":["外景"],"c":"E1488F5E24AD2D944D22B635A865CDF0"},{"s":"images/正片/外景/19.jpg","w":2400,"h":1434,"cats":["外景"],"c":"FF5130B3C66A7C4AABA1C1DA7FEC9ADA"},{"s":"images/正片/外景/20.jpg","w":2400,"h":1600,"cats":["外景"],"c":"MGE09079"},{"s":"images/正片/外景/21.jpg","w":1600,"h":2400,"cats":["外景"],"c":"retouch_2026032018064055"},{"s":"images/正片/外景/22.jpg","w":2400,"h":1350,"cats":["外景"],"c":"_DSC4721"},{"s":"images/正片/外景/23.jpg","w":2400,"h":1350,"cats":["外景"],"c":"_DSC4929"},{"s":"images/正片/外景/24.jpg","w":2400,"h":1350,"cats":["外景"],"c":"_DSC5327"},{"s":"images/正片/外景/25.jpg","w":1600,"h":2400,"cats":["外景"],"c":"_DSC5369"},{"s":"images/正片/外景/26.jpg","w":2400,"h":1350,"cats":["外景"],"c":"_DSC5508"},{"s":"images/正片/外景/27.jpg","w":2400,"h":1350,"cats":["外景"],"c":"_DSC5639"},{"s":"images/正片/外景/28.jpg","w":2400,"h":1350,"cats":["外景"],"c":"_DSC5747"},{"s":"images/正片/外景/29.jpg","w":1600,"h":2400,"cats":["外景"],"c":"_DSC8200"},{"s":"images/正片/棚子/30.jpg","w":2400,"h":1352,"cats":["棚子"],"c":"2614CA5D3155F6773329FEF5780DFCAE"},{"s":"images/正片/棚子/31.jpg","w":2400,"h":1350,"cats":["棚子"],"c":"38A67DA7C8301BAE0A5BF20FA4C12EE9"},{"s":"images/正片/棚子/32.jpg","w":2400,"h":1600,"cats":["棚子"],"c":"5646BA226A20897B980AF7D47BCE5486"},{"s":"images/正片/棚子/33.jpg","w":2400,"h":1600,"cats":["棚子"],"c":"6BF72E2287F39D2C7A665764AE95FED3"},{"s":"images/正片/棚子/34.jpg","w":1540,"h":2400,"cats":["棚子"],"c":"7DDA6C6A1F0D04F770CB6058020D7DAF"},{"s":"images/正片/棚子/35.jpg","w":2400,"h":1600,"cats":["棚子"],"c":"A69F6772529CF8E8256D27BDE2E1DD3E"},{"s":"images/正片/棚子/36.jpg","w":2400,"h":1600,"cats":["棚子"],"c":"B7844D69A3003847B62A2F879F4011D1"},{"s":"images/正片/棚子/37.jpg","w":2400,"h":1600,"cats":["棚子"],"c":"D3B06849D9E2C8AF64E3D8E7BDF9B29F"},{"s":"images/正片/棚子/38.jpg","w":1600,"h":2400,"cats":["棚子"],"c":"DSC09643"},{"s":"images/正片/棚子/39.jpg","w":1601,"h":2400,"cats":["棚子"],"c":"DSC09659-恢复的"},{"s":"images/正片/棚子/40.jpg","w":1600,"h":2400,"cats":["棚子"],"c":"EC462A98893B4226B3E7D57D1FB49CA9"},{"s":"images/正片/棚子/41.jpg","w":2400,"h":1572,"cats":["棚子"],"c":"IMG_7100"},{"s":"images/正片/棚子/42.jpg","w":1600,"h":2400,"cats":["棚子"],"c":"_DSC3760"},{"s":"images/正片/棚子/43.jpg","w":2400,"h":1350,"cats":["棚子"],"c":"_DSC5824"},{"s":"images/正片/棚子/44.jpg","w":1600,"h":2400,"cats":["棚子"],"c":"_DSC8547"},{"s":"images/正片/棚子/45.jpg","w":1600,"h":2400,"cats":["棚子"],"c":"_DSC8693"}]},{"key":"changzhao","cats":["亮灰","暗调"],"images":[{"s":"images/场照/亮灰/01.jpg","w":2400,"h":1600,"cats":["亮灰"],"c":"134DD75A927E1777369B3C605C84BACD"},{"s":"images/场照/亮灰/02.jpg","w":1800,"h":2400,"cats":["亮灰"],"c":"164BFB5A7565B33B315674776987E651"},{"s":"images/场照/亮灰/03.jpg","w":2400,"h":1600,"cats":["亮灰"],"c":"23BCE2B056E6EF70844964A327B611E2"},{"s":"images/场照/亮灰/04.jpg","w":2400,"h":1600,"cats":["亮灰"],"c":"3F9F618EBB56724A59AE64B9F26805F2"},{"s":"images/场照/亮灰/05.jpg","w":2400,"h":1599,"cats":["亮灰"],"c":"42DB6B5516E821DF23FAAE502D7C1BA8_upscayl_2x_upscayl-standard-4x"},{"s":"images/场照/亮灰/06.jpg","w":2400,"h":1600,"cats":["亮灰"],"c":"4F9F6434DDEBAB4C5026E7E82C9800BD"},{"s":"images/场照/亮灰/07.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"51C6F9197822FE8FE6CEED76AEDEA116"},{"s":"images/场照/亮灰/08.jpg","w":2400,"h":1600,"cats":["亮灰"],"c":"554A1AF289860F5666110E340AAE1FB6"},{"s":"images/场照/亮灰/09.jpg","w":2400,"h":1800,"cats":["亮灰"],"c":"614C3B66512256F51B44E8E396D2DE0E"},{"s":"images/场照/亮灰/10.jpg","w":1790,"h":2400,"cats":["亮灰"],"c":"91C395C42EDFF8C10495467A34AEF882"},{"s":"images/场照/亮灰/11.jpg","w":2400,"h":1265,"cats":["亮灰"],"c":"C104B5257F1DD77F4953D7812AD274BC"},{"s":"images/场照/亮灰/12.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"DB8D1EB1BC4E14BE6F8CBE20F35EF466"},{"s":"images/场照/亮灰/13.jpg","w":2400,"h":1350,"cats":["亮灰"],"c":"DSC00249-恢复的"},{"s":"images/场照/亮灰/14.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"DSC00552"},{"s":"images/场照/亮灰/15.jpg","w":2400,"h":1350,"cats":["亮灰"],"c":"DSC00561"},{"s":"images/场照/亮灰/16.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"DSC00685-恢复的"},{"s":"images/场照/亮灰/17.jpg","w":2400,"h":1350,"cats":["亮灰"],"c":"DSC01149"},{"s":"images/场照/亮灰/18.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"DSC01178-恢复的(1)"},{"s":"images/场照/亮灰/19.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"E9CE5728B5C008EDA733CAC5EF7BF620(1)"},{"s":"images/场照/亮灰/20.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"F6D00139A6AB15233AEEF1D0F6010D9B"},{"s":"images/场照/亮灰/21.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"mmexport1771683499240"},{"s":"images/场照/亮灰/22.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"_DSC6186修"},{"s":"images/场照/亮灰/23.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"_DSC6402_(2)"},{"s":"images/场照/亮灰/24.jpg","w":2400,"h":1350,"cats":["亮灰"],"c":"_DSC6606-恢复的"},{"s":"images/场照/亮灰/25.jpg","w":2400,"h":1350,"cats":["亮灰"],"c":"_DSC6731"},{"s":"images/场照/亮灰/26.jpg","w":2400,"h":1350,"cats":["亮灰"],"c":"_DSC6838_(3)"},{"s":"images/场照/亮灰/27.jpg","w":2400,"h":1350,"cats":["亮灰"],"c":"泽兰（阿格莱雅）"},{"s":"images/场照/暗调/28.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"21DB38BA4FEDA625D1B306162079973F"},{"s":"images/场照/暗调/29.jpg","w":1600,"h":2400,"cats":["暗调"],"c":"2D3D9ADFC6FECA1CD86088F30F286A46"},{"s":"images/场照/暗调/30.jpg","w":1600,"h":2400,"cats":["暗调"],"c":"3A42725D1003A9E9363111A1B1A8288A"},{"s":"images/场照/暗调/31.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"45D0206C0FD3F14D3204B7676CC8DCBF"},{"s":"images/场照/暗调/32.jpg","w":1365,"h":2048,"cats":["暗调"],"c":"4BB6FF88A37F5F284D4944E24CA724B1"},{"s":"images/场照/暗调/33.jpg","w":2400,"h":1349,"cats":["暗调"],"c":"7FC44345EE219C0BBEF5AE0BF2715F5C"},{"s":"images/场照/暗调/34.jpg","w":2400,"h":1600,"cats":["暗调"],"c":"C0538E20AA38BDF69145D3AA42F881C2"},{"s":"images/场照/暗调/35.jpg","w":1602,"h":2400,"cats":["暗调"],"c":"C36615DA1FF6211CF8F0CFA2E2734F9D"},{"s":"images/场照/暗调/36.jpg","w":1600,"h":2400,"cats":["暗调"],"c":"D58AC2F0810FEDD9F132168B42291B7A(1)"},{"s":"images/场照/暗调/37.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"DSC00346-恢复的"},{"s":"images/场照/暗调/38.jpg","w":1600,"h":2400,"cats":["暗调"],"c":"DSC00545"},{"s":"images/场照/暗调/39.jpg","w":2400,"h":1600,"cats":["暗调"],"c":"DSC00601"},{"s":"images/场照/暗调/40.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"DSC00798-恢复的_(2)"},{"s":"images/场照/暗调/41.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"DSC00800"},{"s":"images/场照/暗调/42.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"DSC00801"},{"s":"images/场照/暗调/43.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"DSC00995改"},{"s":"images/场照/暗调/44.jpg","w":1601,"h":2400,"cats":["暗调"],"c":"DSC01192"},{"s":"images/场照/暗调/45.jpg","w":2400,"h":1600,"cats":["暗调"],"c":"F31DAF5ADFF11AE4C934D40EA89918F3"},{"s":"images/场照/暗调/46.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"Image_1778951269245_289"},{"s":"images/场照/暗调/47.jpg","w":2400,"h":1600,"cats":["暗调"],"c":"IMG_3211"},{"s":"images/场照/暗调/48.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"IMG_6313"},{"s":"images/场照/暗调/49.jpg","w":1600,"h":2400,"cats":["暗调"],"c":"_DSC2759"},{"s":"images/场照/暗调/50.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"_DSC2762-恢复的"},{"s":"images/场照/暗调/51.jpg","w":1600,"h":2400,"cats":["暗调"],"c":"_DSC2775"},{"s":"images/场照/暗调/52.jpg","w":2400,"h":1029,"cats":["暗调"],"c":"_DSC2818"},{"s":"images/场照/暗调/53.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"_DSC6438"},{"s":"images/场照/暗调/54.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"艾达王"},{"s":"images/场照/暗调/55.jpg","w":2400,"h":1600,"cats":["暗调"],"c":"芮娜1"},{"s":"images/场照/暗调/56.jpg","w":2400,"h":1600,"cats":["暗调"],"c":"蘑菇黑天鹅2"}]},{"key":"texiao","cats":[],"images":[{"s":"images/特效/01.jpg","w":2400,"h":1600,"cats":[],"c":"D129B747276979D1DC70E5A2ECF01EC5"},{"s":"images/特效/02.jpg","w":2400,"h":1350,"cats":[],"c":"F2CB48885FDED0874FBD66E349CF3046"},{"s":"images/特效/03.jpg","w":1350,"h":2400,"cats":[],"c":"yan禾（星宫梅）拼贴海报"},{"s":"images/特效/04.jpg","w":2400,"h":1029,"cats":[],"c":"_DSC3312"},{"s":"images/特效/05.jpg","w":2400,"h":1029,"cats":[],"c":"_DSC7066"},{"s":"images/特效/06.jpg","w":2400,"h":1350,"cats":[],"c":"利艿（小爱）"},{"s":"images/特效/07.jpg","w":1600,"h":2400,"cats":[],"c":"利艿（小爱）竖屏"},{"s":"images/特效/08.jpg","w":2400,"h":1600,"cats":[],"c":"卡1"},{"s":"images/特效/09.jpg","w":2400,"h":1351,"cats":[],"c":"卡卡（怪兽八号）"},{"s":"images/特效/10.jpg","w":1350,"h":2400,"cats":[],"c":"周散拼"},{"s":"images/特效/11.jpg","w":2400,"h":1350,"cats":[],"c":"夏夏（李白2）"},{"s":"images/特效/12.jpg","w":2400,"h":1350,"cats":[],"c":"夏夏（李白）"},{"s":"images/特效/13.jpg","w":1350,"h":2400,"cats":[],"c":"怀青拼"},{"s":"images/特效/14.jpg","w":2400,"h":1350,"cats":[],"c":"柒七（霓虹）"},{"s":"images/特效/15.jpg","w":2400,"h":1350,"cats":[],"c":"柒七（霓虹）半合成"},{"s":"images/特效/16.jpg","w":1600,"h":2400,"cats":[],"c":"汤底蕾塞"},{"s":"images/特效/17.jpg","w":1350,"h":2400,"cats":[],"c":"汤底（雾矢葵）拼贴海报"},{"s":"images/特效/18.jpg","w":1350,"h":2400,"cats":[],"c":"海绵拼图"},{"s":"images/特效/19.jpg","w":2400,"h":1350,"cats":[],"c":"煜曦(蝴蝶忍)"},{"s":"images/特效/20.jpg","w":2400,"h":1350,"cats":[],"c":"砂金"},{"s":"images/特效/21.jpg","w":2400,"h":1381,"cats":[],"c":"缪斯！"},{"s":"images/特效/22.jpg","w":1350,"h":2400,"cats":[],"c":"铮影排"}]}];
