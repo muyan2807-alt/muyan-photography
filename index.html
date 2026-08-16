@@ -1161,7 +1161,7 @@ body.qq-low-memory .nav{background:#f9fcff!important}
 }
 
 /* ===== 1.4 场照价格双列对照 ===== */
-#price-cz .cz-price-grid{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
+#price-cz .cz-price-grid{grid-template-columns:calc(50% - 9px) calc(50% - 9px);grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}
 #price-cz .cz-price-grid .price-card{min-width:0;display:flex;flex-direction:column}
 #price-cz .cz-price-grid .price-card h4{min-height:2.6em;margin-right:52px}
 #price-cz .cz-price-grid .price-card:not(.hot) h4{margin-right:0}
@@ -1170,7 +1170,7 @@ body.qq-low-memory .nav{background:#f9fcff!important}
 #price-cz .cz-money b{font-size:1.03rem;color:var(--blue-deep)}
 #price-cz .cz-money small{font-size:.72rem;line-height:1.35;color:var(--muted);font-weight:600}
 @media(max-width:720px){
-  #price-cz .cz-price-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  #price-cz .cz-price-grid{grid-template-columns:calc(50% - 5px) calc(50% - 5px);grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
   #price-cz .cz-price-grid .price-card{padding:18px 12px;border-radius:18px}
   #price-cz .cz-price-grid .price-card h4{font-size:.9rem;line-height:1.45;min-height:2.9em;margin-right:0;padding-right:0}
   #price-cz .cz-price-grid .price-card.hot h4{padding-top:20px}
@@ -1185,9 +1185,22 @@ body.qq-low-memory .nav{background:#f9fcff!important}
   #price-cz .cz-money small{font-size:.68rem}
 }
 @media(max-width:360px){
-  #price-cz .cz-price-grid{gap:8px}
+  #price-cz .cz-price-grid{grid-template-columns:calc(50% - 4px) calc(50% - 4px);grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
   #price-cz .cz-price-grid .price-card{padding:16px 9px}
   #price-cz .cz-price-grid .price-card h4{font-size:.82rem}
+}
+/* 1.5 手机与 QQ/X5 兼容兜底：旧内核忽略 minmax 时仍强制双列 */
+body.mobile-device #price-cz .cz-price-grid{
+  display:grid!important;gap:10px!important;
+  grid-template-columns:calc(50% - 5px) calc(50% - 5px)!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important
+}
+@media(max-width:360px){
+  body.mobile-device #price-cz .cz-price-grid{
+    gap:8px!important;
+    grid-template-columns:calc(50% - 4px) calc(50% - 4px)!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important
+  }
 }
 </style>
 </head>
@@ -1831,7 +1844,9 @@ const GALLERIES = [{"key":"zhengpian","cats":["外景","棚子"],"fixed":{"外�
 // ===== 灯箱 =====
 const QQ_UA=navigator.userAgent||'';
 const QQ_LOW_MEMORY=/(?:MQQBrowser|QQ\/|TBS\/|V1_AND_SQ)/i.test(QQ_UA)||!!window.mqq||!!window.QQJSBridge;
+const MOBILE_DEVICE=/(?:Android|iPhone|iPad|iPod|HarmonyOS|Mobile)/i.test(QQ_UA)||window.matchMedia('(max-width: 720px)').matches;
 if(QQ_LOW_MEMORY)document.body.classList.add('qq-low-memory');
+if(MOBILE_DEVICE)document.body.classList.add('mobile-device');
 const lb=document.getElementById('lb'),lbImg=document.getElementById('lbImg'),lbCount=document.getElementById('lbCount'),lbCloseBtn=document.getElementById('lbClose');
 let cur=[],idx=0,lbReleaseTimer=0,lbObjectUrl='',lbAbort=null,lbLoadToken=0,lbLastFocus=null;
 function releaseLightboxImage(){
