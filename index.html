@@ -73,6 +73,9 @@ section{padding:84px 0}
 .photo-block .wide{grid-area:wide;aspect-ratio:16/9}
 .photo-block .n1{grid-area:n1;aspect-ratio:2/3}
 .photo-block .n2{grid-area:n2;aspect-ratio:2/3}
+.photo-block.six{grid-template-areas:none;grid-auto-flow:row dense}
+.photo-block.six .is-landscape{grid-column:1/-1;aspect-ratio:16/9}
+.photo-block.six .is-portrait{grid-column:auto;aspect-ratio:2/3}
 .photo-block .card img{width:100%;height:100%;object-fit:contain;object-position:center}
 .photo-block .card:hover img{transform:none}
 @media(max-width:480px){.photo-block{gap:10px}}
@@ -98,16 +101,41 @@ summary::-webkit-details-marker{display:none}
 summary .q{color:var(--blue);font-weight:800;flex-shrink:0}
 summary .txt{flex:1}
 summary .plus{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--blue-soft);color:var(--blue);display:grid;place-items:center;font-weight:800;transition:transform .3s,background .3s}
-details[open] summary .plus{transform:rotate(45deg);background:var(--blue);color:#fff}
+details.faq[open] > summary .plus{transform:rotate(45deg);background:var(--blue);color:#fff}
 .faq-body{padding:2px 18px 16px;color:#5b7086;font-size:.93rem;line-height:1.9}
 .faq-body b{color:var(--blue-deep)}
 .faq-body .hl-line{background:var(--blue-soft);border-radius:8px;padding:10px 14px;margin:10px 0;color:var(--ink);font-size:.9rem}
-.benefit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:40px}
+.benefit-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:40px}
 .benefit-card{background:var(--card);border-radius:16px;padding:22px 20px;box-shadow:var(--shadow);border-top:3px solid var(--blue)}
 .benefit-card h4{display:flex;align-items:center;gap:8px;font-size:1rem;color:var(--blue-deep)}
 .benefit-card ul{margin:12px 0 0;padding-left:20px;color:#5b7086;font-size:.9rem;line-height:2}
 .benefit-card ul b{color:var(--ink)}
 .note-box{background:#fff7f0;border:1px solid #ffe3c9;border-radius:12px;padding:13px 16px;color:#8a5a2e;font-size:.9rem;margin:14px 0;line-height:1.8}
+.policy-notice{
+  max-width:920px;margin:24px auto 22px;padding:22px 24px;border:1px solid #f2c997;border-radius:22px;
+  color:#694822;background:linear-gradient(135deg,#fffaf2,#fff3e6);box-shadow:0 16px 38px rgba(142,93,39,.12)
+}
+.policy-notice-head{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.policy-notice-icon{font-size:1.35rem}
+.policy-notice h3{font-size:1.08rem;color:#805522}
+.policy-notice ol{display:grid;gap:7px;margin:0;padding-left:1.45rem;line-height:1.8;font-size:.94rem}
+.section-fold{
+  max-width:1040px;margin:18px auto;border:1px solid rgba(176,213,237,.85);border-radius:22px;
+  overflow:hidden;background:rgba(255,255,255,.82);box-shadow:0 14px 38px rgba(48,104,146,.1)
+}
+.section-fold > summary{min-height:58px;padding:16px 20px;font-weight:800;color:var(--blue-deep);background:linear-gradient(110deg,#f7fbff,#eff7fd)}
+.section-fold > summary .fold-text{flex:1}
+.fold-chevron{
+  flex:0 0 28px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
+  color:#fff;background:linear-gradient(110deg,var(--anime-blue),var(--anime-violet));transition:transform .25s ease
+}
+.section-fold[open] > summary .fold-chevron{transform:rotate(45deg)}
+.section-fold-body{padding:6px 20px 24px}
+.notice-fold .note-tabs{margin:16px auto 24px}
+.common-deposit{margin:0 0 24px}
+.common-deposit .faq-body ul{margin:4px 0 0;padding-left:1.25rem}
+.common-deposit .faq-body li{margin:6px 0}
+.benefit-fold .benefit-grid{margin-top:8px}
 .quote{background:linear-gradient(135deg,#e8f3fc 0%,#f8ecf3 100%);border-radius:20px;padding:34px 28px;text-align:center;max-width:900px;margin:44px auto 0;box-shadow:var(--shadow)}
 .quote .q-mark{font-size:1.8rem;color:var(--pink)}
 .quote p{color:var(--ink);font-size:.97rem;line-height:2.1;margin-top:8px}
@@ -163,8 +191,8 @@ footer a{color:var(--blue)}
   .benefit-grid{grid-template-columns:1fr}
 }
 @media(max-width:720px){
-  .nav-links{position:fixed;top:60px;left:0;right:0;background:#fff;flex-direction:column;padding:16px 24px;gap:16px;box-shadow:0 14px 30px rgba(43,108,184,.12);transform:translateY(-130%);transition:.35s;border-radius:0 0 16px 16px}
-  .nav-links.open{transform:none}
+  .nav-links{position:fixed;top:60px;left:0;right:0;background:#fff;flex-direction:column;padding:16px 24px;gap:16px;box-shadow:0 14px 30px rgba(43,108,184,.12);transform:translateY(calc(-100% - 72px));opacity:0;visibility:hidden;pointer-events:none;transition:transform .35s,opacity .25s;border-radius:0 0 16px 16px}
+  .nav-links.open{transform:none;opacity:1;visibility:visible;pointer-events:auto}
   .burger{display:flex}
   .grid{grid-template-columns:1fr 1fr;gap:12px}
   .price-grid{grid-template-columns:1fr}
@@ -994,18 +1022,20 @@ a:focus-visible,button:focus-visible,summary:focus-visible,[role="button"]:focus
   outline:3px solid #176fb5;outline-offset:3px
 }
 .quick-actions{
-  position:fixed;right:18px;bottom:20px;z-index:110;display:grid;gap:9px
+  position:fixed;left:50%;bottom:18px;z-index:110;display:grid;grid-template-columns:repeat(5,minmax(88px,1fr));gap:5px;
+  padding:6px;transform:translateX(-50%);border:1px solid rgba(147,195,225,.72);border-radius:999px;
+  background:rgba(250,253,255,.92);box-shadow:0 16px 42px rgba(27,73,111,.22);backdrop-filter:blur(14px)
 }
-.rem-side-companion{bottom:140px}
+.rem-side-companion{bottom:92px}
 .quick-action{
-  min-width:126px;min-height:46px;padding:10px 16px;border:1px solid rgba(91,159,213,.42);border-radius:999px;
+  min-width:88px;min-height:44px;padding:9px 12px;border:0;border-radius:999px;
   display:flex;align-items:center;justify-content:center;gap:7px;font:700 .9rem/1.2 inherit;cursor:pointer;
-  color:#fff;background:linear-gradient(100deg,#2f86cf,#6c9ee4);box-shadow:0 10px 26px rgba(41,111,174,.28);
-  transition:transform .2s ease,box-shadow .2s ease
+  color:#315d80;background:transparent;box-shadow:none;
+  transition:transform .2s ease,background .2s ease,color .2s ease
 }
 button.quick-action{font-family:inherit}
-.quick-action:hover{transform:translateY(-2px);box-shadow:0 13px 30px rgba(41,111,174,.34)}
-.quick-share{color:#2d6697;background:rgba(255,255,255,.94);backdrop-filter:blur(10px)}
+.quick-action:hover,.quick-action.is-active{transform:translateY(-1px);color:#fff;background:linear-gradient(100deg,#2f86cf,#738fd9)}
+.quick-share{color:#496a88;background:transparent}
 .share-toast{
   position:fixed;right:18px;bottom:132px;z-index:120;max-width:260px;padding:10px 14px;border-radius:12px;
   color:#234c70;background:#fff;border:1px solid #cfe6f6;box-shadow:0 10px 28px rgba(42,101,148,.22);font-size:.86rem
@@ -1048,25 +1078,86 @@ footer#contact{scroll-margin-top:60px}
 .contact-card .contact-copy:hover{background:linear-gradient(100deg,#438fbe,#8275bc)}
 .contact-share-row{display:flex;justify-content:center;margin-top:20px}
 .contact-share-row .contact-copy{min-width:150px}
-body.contact-in-view .rem-side-companion,
-body.contact-in-view .quick-actions{opacity:0!important;pointer-events:none!important}
+body.contact-in-view .rem-side-companion{opacity:0!important;pointer-events:none!important}
 .lb[aria-hidden="true"]{visibility:hidden}
 @media(max-width:900px){
   .rem-side-companion{bottom:132px}
   .contact-groups{grid-template-columns:1fr}
 }
 @media(max-width:560px){
-  body{padding-bottom:76px}
+  body{padding-bottom:84px}
   .burger{width:44px;height:44px;padding:10px;align-items:center;justify-content:center}
   .btn,.work-tab,.cat-tab,.price-tab,.note-tab,.refresh-btn{min-height:44px}
-  .quick-actions{left:10px;right:10px;bottom:calc(8px + env(safe-area-inset-bottom));grid-template-columns:1fr 1fr;gap:8px}
-  .quick-action{min-width:0;min-height:46px;padding:9px 12px}
-  .share-toast{left:16px;right:16px;bottom:calc(72px + env(safe-area-inset-bottom));max-width:none;text-align:center}
+  .quick-actions{left:8px;right:8px;bottom:calc(7px + env(safe-area-inset-bottom));grid-template-columns:repeat(5,1fr);gap:2px;padding:5px;transform:none;border-radius:20px}
+  .quick-action{min-width:0;min-height:50px;padding:5px 3px;flex-direction:column;gap:2px;font-size:.74rem}
+  .quick-action span[aria-hidden="true"]{font-size:1rem;line-height:1}
+  .share-toast{left:16px;right:16px;bottom:calc(78px + env(safe-area-inset-bottom));max-width:none;text-align:center}
   .contact-tools{justify-content:center}
   .contact-channel{padding:18px 14px;border-radius:22px}
   .contact-cards{grid-template-columns:1fr}
   .contact-card .qr{width:min(82vw,230px)}
-  .rem-side-companion{bottom:82px}
+  .rem-side-companion{bottom:90px}
+  .policy-notice{padding:18px 17px;border-radius:18px}
+  .section-fold{border-radius:18px}
+  .section-fold > summary{padding:14px 15px}
+  .section-fold-body{padding:4px 12px 18px}
+}
+
+/* ===== 1.3 视觉精修：玻璃悬浮导航与统一层次 ===== */
+.quick-actions{
+  isolation:isolate;overflow:hidden;
+  border-color:rgba(158,207,237,.72);
+  background:linear-gradient(135deg,rgba(255,255,255,.76),rgba(232,246,255,.64));
+  -webkit-backdrop-filter:blur(20px) saturate(155%);
+  backdrop-filter:blur(20px) saturate(155%);
+  box-shadow:0 20px 52px rgba(35,85,124,.22),inset 0 1px 0 rgba(255,255,255,.88)
+}
+.quick-actions::before{
+  content:"";position:absolute;inset:1px;z-index:0;pointer-events:none;border-radius:inherit;
+  border:1px solid rgba(255,255,255,.62);
+  background:linear-gradient(115deg,rgba(255,255,255,.28),transparent 38%,rgba(153,215,247,.1))
+}
+.quick-action{position:relative;z-index:1;color:#365f7f;letter-spacing:.02em}
+.quick-action > span[aria-hidden="true"]{
+  width:24px;height:24px;display:grid;place-items:center;border-radius:9px;
+  background:rgba(255,255,255,.56);box-shadow:inset 0 1px 0 rgba(255,255,255,.9)
+}
+.quick-action:hover,.quick-action.is-active{
+  color:#fff;background:linear-gradient(115deg,#409bda,#6f8fe0);
+  box-shadow:0 8px 18px rgba(62,128,188,.25)
+}
+.quick-action:hover > span[aria-hidden="true"],.quick-action.is-active > span[aria-hidden="true"]{background:rgba(255,255,255,.2)}
+.quick-action.is-active::after{
+  content:"";position:absolute;left:28%;right:28%;bottom:4px;height:2px;border-radius:99px;background:rgba(255,255,255,.82)
+}
+.nav{border-bottom-color:rgba(179,217,241,.55);-webkit-backdrop-filter:blur(18px) saturate(140%);backdrop-filter:blur(18px) saturate(140%)}
+.nav.scrolled{box-shadow:0 12px 34px rgba(42,91,128,.13),inset 0 -1px 0 rgba(255,255,255,.7)}
+#works,#price,#notes{box-shadow:0 28px 72px rgba(44,96,135,.1)}
+.sec-head p{max-width:760px;margin-left:auto;margin-right:auto}
+.work-tab,.price-tab,.note-tab,.cat-tab,.btn,.refresh-btn,.contact-copy{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.section-fold,.policy-notice,.promo{border-color:rgba(163,207,235,.78)}
+.benefit-card,.price-card,.fx-card,.extra-card{box-shadow:0 16px 40px rgba(47,101,143,.11)}
+
+/* QQ/X5：保留玻璃配色，但移除实时模糊与高成本动效 */
+body.qq-low-memory .quick-actions{
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;
+  background:linear-gradient(135deg,#fbfdff,#edf7fd)!important;
+  border-color:#c9e3f2!important;box-shadow:0 9px 24px rgba(38,87,123,.18),inset 0 1px 0 #fff!important
+}
+body.qq-low-memory .quick-actions::before{display:none!important}
+body.qq-low-memory .quick-action,
+body.qq-low-memory .quick-action > span[aria-hidden="true"]{transition:none!important;box-shadow:none!important}
+body.qq-low-memory .quick-action:hover,
+body.qq-low-memory .quick-action.is-active{transform:none!important;box-shadow:none!important}
+body.qq-low-memory .nav{background:#f9fcff!important}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  .quick-actions{background:linear-gradient(135deg,#fbfdff,#edf7fd)}
+}
+@media(max-width:560px){
+  .quick-actions{-webkit-backdrop-filter:blur(15px) saturate(145%);backdrop-filter:blur(15px) saturate(145%)}
+  .quick-action > span[aria-hidden="true"]{width:22px;height:22px;border-radius:8px}
+  .quick-action.is-active::after{bottom:3px}
+  #works,#price,#notes{box-shadow:0 18px 46px rgba(44,96,135,.09)}
 }
 </style>
 </head>
@@ -1077,11 +1168,10 @@ body.contact-in-view .quick-actions{opacity:0!important;pointer-events:none!impo
   <div class="nav-inner">
     <a href="#top" class="brand"><span class="snow">❄</span>慕言のCOS摄影</a>
     <ul class="nav-links" id="navLinks" aria-label="主要导航">
-      <li><a href="#works" class="nav-w" data-w="zhengpian">正片</a></li>
-      <li><a href="#works" class="nav-w" data-w="changzhao">场照</a></li>
-      <li><a href="#works" class="nav-w" data-w="texiao">特效</a></li>
-      <li><a href="#notes">注意事项</a></li>
+      <li><a href="#works">例图</a></li>
       <li><a href="#price">价格</a></li>
+      <li><a href="#notes">拍摄须知</a></li>
+      <li><a href="#contact">联系方式</a></li>
     </ul>
     <button class="burger" id="burger" aria-label="打开菜单" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
   </div>
@@ -1092,7 +1182,7 @@ body.contact-in-view .quick-actions{opacity:0!important;pointer-events:none!impo
   <div class="hero-inner">
     <p class="eyebrow">❄ 新单主必看 · 拍前请阅读</p>
     <h1><span class="title-brand">慕言摄影，</span><span class="hl">定格你的每一次热爱</span></h1>
-    <p class="sub">重C摄影 · 正片 / 场照 / 后期 / 特效<br>慕言，专注把你的热爱拍成作品</p>
+    <p class="sub">重C摄影 · 正片 / 场照 / 后期 / 特效<br>风格多样你想要的都能拍！</p>
     <div class="hero-cta">
       <a href="#works" class="btn primary">查看作品</a>
       <a href="#price" class="btn ghost">拍摄价格</a>
@@ -1135,7 +1225,7 @@ body.contact-in-view .quick-actions{opacity:0!important;pointer-events:none!impo
         <button type="button" class="refresh-btn" onclick="refreshGallery('zhengpian')">🔄 换一批</button>
         <span class="gallery-hint" id="hint-zhengpian"></span>
       </div>
-      <p class="gallery-note">💡 点击图片可放大查看 · 点击「换一批」查看更多</p>
+      <p class="gallery-note">💡 首次固定展示首图 · 点击「换一批」随机浏览且不重复</p>
     </div>
     <div class="work-panel" data-w="changzhao">
       <div class="cat-tabs" id="tabs-changzhao">
@@ -1148,7 +1238,7 @@ body.contact-in-view .quick-actions{opacity:0!important;pointer-events:none!impo
         <button type="button" class="refresh-btn" onclick="refreshGallery('changzhao')">🔄 换一批</button>
         <span class="gallery-hint" id="hint-changzhao"></span>
       </div>
-      <p class="gallery-note">💡 点击图片可放大查看 · 点击「换一批」查看更多</p>
+      <p class="gallery-note">💡 首次固定展示首图 · 点击「换一批」随机浏览且不重复</p>
     </div>
     <div class="work-panel" data-w="texiao">
       <div class="grid" id="grid-texiao"></div>
@@ -1156,7 +1246,7 @@ body.contact-in-view .quick-actions{opacity:0!important;pointer-events:none!impo
         <button type="button" class="refresh-btn" onclick="refreshGallery('texiao')">🔄 换一批</button>
         <span class="gallery-hint" id="hint-texiao"></span>
       </div>
-      <p class="gallery-note">💡 点击图片可放大查看 · 点击「换一批」查看更多</p>
+      <p class="gallery-note">💡 首次固定展示首图 · 点击「换一批」随机浏览且不重复</p>
     </div>
   </section>
 
@@ -1283,18 +1373,44 @@ body.contact-in-view .quick-actions{opacity:0!important;pointer-events:none!impo
       <p>🎬 <b>任何风格都能拍摄</b> · 也接<b>长距离拍摄</b> · 提供<b>包接包送</b>服务 · 旅拍同样欢迎！</p>
     </div>
 
-    <!-- 拍摄前 -->
-    <div class="note-tabs reveal">
+    <!-- 正片与场照之外，始终可见的共同说明 -->
+    <aside class="policy-notice reveal" aria-labelledby="policy-notice-title">
+      <div class="policy-notice-head">
+        <span class="policy-notice-icon" aria-hidden="true">📢</span>
+        <h3 id="policy-notice-title">特别说明</h3>
+      </div>
+      <ol>
+        <li>图片会使用到 AI 辅助（例如背景杂物消除等），如果介意使用 AI，请提前向我说明。</li>
+        <li>成片默认多平台展示，如介意请说明。</li>
+      </ol>
+    </aside>
+
+    <!-- 可折叠的正片 / 场照详细须知 -->
+    <details class="section-fold notice-fold reveal">
+      <summary><span aria-hidden="true">📋</span><span class="fold-text">展开正片 / 场照详细须知</span><span class="fold-chevron" aria-hidden="true">＋</span></summary>
+      <div class="section-fold-body">
+      <div class="note-tabs">
       <button type="button" class="note-tab active" data-note="zp">正片须知</button>
       <button type="button" class="note-tab" data-note="cz">场照须知</button>
     </div>
+    <details class="faq common-deposit">
+      <summary><span class="q">💰</span><span class="txt">定金规则（正片 / 场照通用）</span><span class="plus">+</span></summary>
+      <div class="faq-body">
+        <ul>
+          <li><b>不可抗力</b>（中暑、生病、家里有事等）：每人每年一次机会，<b>定金有效期半年</b>；机会用完后，后续不可抗力定金一次性作废。</li>
+          <li><b>改期：</b>漫展开始前<b>至少提前 7 天</b>说明；少于 7 天则定金无效，需重新付定金。</li>
+          <li><b>正片</b>同理，提前 7 天说明改时间和地点。</li>
+          <li>鉴于迟到问题严重，后续可能会有迟到惩罚，具体内容讨论后实行。</li>
+        </ul>
+      </div>
+    </details>
     <div class="note-panel active" id="note-zp">
       <div class="zp-head reveal">
         <p>📸 正片是<b>双方共同努力</b>的创作，以下规则提前说清，合作更愉快！</p>
       </div>
       <div class="faq-group reveal">
         <h3>✅ 保底标准</h3>
-        <details class="faq" open>
+        <details class="faq">
           <summary><span class="q">📷</span><span class="txt">拍多少张？保底多少？</span><span class="plus">+</span></summary>
           <div class="faq-body">单人<b>保底 15 张能用</b>的成片，双人<b>保底 20 张能用</b>的成片；或者拍摄时间满 <b>4 小时</b>——<b>任意达到一个条件，订单就算完成</b>。</div>
         </details>
@@ -1433,14 +1549,15 @@ body.contact-in-view .quick-actions{opacity:0!important;pointer-events:none!impo
         <div class="faq-body"><p><b>送照片打印</b>！需要展子开始前发给我，展子当天给你带来。</p></div>
       </details>
     </div>
-
-    <!-- 特别说明 -->
-    <div class="note-box reveal">
-      📢 <b>特别说明：</b>1️⃣ 图片会使用到 AI 辅助（例如背景杂物消除等），如果介意使用 AI 请提前向我说明。2️⃣ 成片默认多平台展示，如介意请说明。
     </div>
+      </div>
+    </details>
 
     <!-- 服务与福利 -->
-    <div class="benefit-grid reveal">
+    <details class="section-fold benefit-fold reveal">
+      <summary><span aria-hidden="true">🎁</span><span class="fold-text">展开服务与福利</span><span class="fold-chevron" aria-hidden="true">＋</span></summary>
+      <div class="section-fold-body">
+      <div class="benefit-grid">
       <div class="benefit-card">
         <h4>🎁 COSER 小物提供</h4>
         <ul>
@@ -1459,20 +1576,10 @@ body.contact-in-view .quick-actions{opacity:0!important;pointer-events:none!impo
           <li>请好好保管色纸，兑换时<b>只认实体</b>；兑换优惠会让色纸失效，需要重新集齐；兑换礼物不会失效</li>
         </ul>
       </div>
-      <div class="benefit-card">
-        <h4>💰 定金规则</h4>
-        <ul>
-          <li><b>不可抗力</b>（中暑、生病、家里有事等）：每人每年一次机会，<b>定金有效期半年</b>；机会用完后，后续不可抗力定金一次性作废</li>
-          <li><b>改期：</b>漫展开始前<b>至少提前 7 天</b>说明；少于 7 天则定金无效，需重新付定金</li>
-          <li><b>正片</b>同理，提前 7 天说明改时间和地点</li>
-          <li>鉴于迟到问题严重，后续可能会有迟到惩罚，具体内容讨论后实行</li>
-        </ul>
-      </div>
     </div>
-
-    
-  
-    </div></section>
+      </div>
+    </details>
+  </section>
 
   <!-- 心里话 -->
     <div class="quote reveal">
@@ -1535,11 +1642,14 @@ body.contact-in-view .quick-actions{opacity:0!important;pointer-events:none!impo
   </div>
 </footer>
 
-<!-- 随时可见的约拍与分享入口 -->
-<aside class="quick-actions" aria-label="快捷操作">
-  <a href="#contact" class="quick-action quick-contact"><span aria-hidden="true">💬</span><span>约拍联系</span></a>
+<!-- 随时可见的页面导航与分享入口 -->
+<nav class="quick-actions" aria-label="页面快捷导航">
+  <a href="#works" class="quick-action" data-jump="works"><span aria-hidden="true">🖼️</span><span>例图</span></a>
+  <a href="#price" class="quick-action" data-jump="price"><span aria-hidden="true">💰</span><span>价格</span></a>
+  <a href="#contact" class="quick-action quick-contact" data-jump="contact"><span aria-hidden="true">💬</span><span>联系</span></a>
   <button type="button" class="quick-action quick-share" id="shareSite"><span aria-hidden="true">🔗</span><span>分享网页</span></button>
-</aside>
+  <a href="#top" class="quick-action" data-jump="top"><span aria-hidden="true">⬆️</span><span>回顶部</span></a>
+</nav>
 <p class="share-toast" id="shareStatus" role="status" aria-live="polite" hidden></p>
 
 <!-- 灯箱 -->
@@ -1615,6 +1725,29 @@ burger.addEventListener('click',()=>setMenuOpen(!links.classList.contains('open'
 links.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setMenuOpen(false)));
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&links.classList.contains('open')){setMenuOpen(false);burger.focus()}});
 
+// 固定快捷导航：显示当前浏览区域，方便随时切换例图、价格、联系方式与页面顶部
+const quickJumpLinks=[...document.querySelectorAll('.quick-action[data-jump]')];
+let quickNavLockUntil=0;
+function setActiveQuickJump(id){
+  quickJumpLinks.forEach(link=>{
+    const active=link.dataset.jump===id;
+    link.classList.toggle('is-active',active);
+    if(active)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current');
+  });
+}
+quickJumpLinks.forEach(link=>link.addEventListener('click',()=>{
+  quickNavLockUntil=Date.now()+1000;
+  setActiveQuickJump(link.dataset.jump);
+}));
+if('IntersectionObserver' in window){
+  const quickNavObserver=new IntersectionObserver(entries=>{
+    if(Date.now()<quickNavLockUntil)return;
+    const visible=entries.filter(entry=>entry.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+    if(visible)setActiveQuickJump(visible.target.id);
+  },{rootMargin:'-22% 0px -58% 0px',threshold:[0,.1,.25,.5]});
+  ['top','works','price','contact'].forEach(id=>quickNavObserver.observe(document.getElementById(id)));
+}
+
 // ===== 联系方式复制与网页分享 =====
 const PUBLIC_SITE_URL='https://muyan2807-alt.github.io/muyan-photography/';
 const shareStatus=document.getElementById('shareStatus');
@@ -1662,7 +1795,7 @@ document.querySelectorAll('.copy-contact').forEach(button=>button.addEventListen
 }));
 
 // ===== 图片画廊数据 =====
-const GALLERIES = [{"key":"zhengpian","cats":["外景","棚子"],"images":[{"s":"images/正片/外景/01.jpg","w":2400,"h":1355,"cats":["外景"],"c":"08623e4f831ec8a7f5e7b81d676d8b3c"},{"s":"images/正片/外景/02.jpg","w":2400,"h":1631,"cats":["外景"],"c":"2DBB1A5A7F33DDFFBE973B5453403BF4"},{"s":"images/正片/外景/03.jpg","w":2400,"h":1508,"cats":["外景"],"c":"3660D96A51F1A66E8951E8D5657D678B"},{"s":"images/正片/外景/04.jpg","w":2400,"h":1350,"cats":["外景"],"c":"3750D3FEB70F2B8D14B8386EDA7BF430"},{"s":"images/正片/外景/05.jpg","w":1500,"h":2000,"cats":["外景"],"c":"414D9DC3ECB03D55DF04EEC937BC9363"},{"s":"images/正片/外景/06.jpg","w":1600,"h":2400,"cats":["外景"],"c":"5A5FE0E27E1B85305F1E1667101C5E9F"},{"s":"images/正片/外景/07.jpg","w":1535,"h":2400,"cats":["外景"],"c":"791EF9B33D67BCBFD4553F204020045B"},{"s":"images/正片/外景/08.jpg","w":2400,"h":1600,"cats":["外景"],"c":"9596DE3C3FD1DA7915DCB46B497AD6D8_(2)"},{"s":"images/正片/外景/09.jpg","w":2400,"h":1600,"cats":["外景"],"c":"96CC0516DA8F051D5087CD375BA16A94"},{"s":"images/正片/外景/10.jpg","w":1079,"h":1620,"cats":["外景"],"c":"A3AA4FC4012F18D15E4A112095D776AF"},{"s":"images/正片/外景/11.jpg","w":2400,"h":1600,"cats":["外景","棚子"],"c":"AABC763D31FDE84B2F9271B9552E8B26"},{"s":"images/正片/外景/12.jpg","w":2400,"h":1600,"cats":["外景"],"c":"C7834BE0613E4B17C23527725CB4F28B_(2)"},{"s":"images/正片/外景/13.jpg","w":2400,"h":1600,"cats":["外景"],"c":"DSC09403_(2)"},{"s":"images/正片/外景/14.jpg","w":2400,"h":1350,"cats":["外景"],"c":"DSC09794"},{"s":"images/正片/外景/15.jpg","w":2400,"h":1350,"cats":["外景"],"c":"DSC09843"},{"s":"images/正片/外景/16.jpg","w":2400,"h":1029,"cats":["外景"],"c":"DSC09858"},{"s":"images/正片/外景/17.jpg","w":2400,"h":1600,"cats":["外景"],"c":"DSC09908"},{"s":"images/正片/外景/18.jpg","w":2400,"h":1574,"cats":["外景"],"c":"E1488F5E24AD2D944D22B635A865CDF0"},{"s":"images/正片/外景/19.jpg","w":2400,"h":1434,"cats":["外景"],"c":"FF5130B3C66A7C4AABA1C1DA7FEC9ADA"},{"s":"images/正片/外景/20.jpg","w":2400,"h":1600,"cats":["外景"],"c":"MGE09079"},{"s":"images/正片/外景/21.jpg","w":1600,"h":2400,"cats":["外景"],"c":"retouch_2026032018064055"},{"s":"images/正片/外景/22.jpg","w":2400,"h":1350,"cats":["外景"],"c":"_DSC4721"},{"s":"images/正片/外景/23.jpg","w":2400,"h":1350,"cats":["外景"],"c":"_DSC4929"},{"s":"images/正片/外景/24.jpg","w":2400,"h":1350,"cats":["外景"],"c":"_DSC5327"},{"s":"images/正片/外景/25.jpg","w":1600,"h":2400,"cats":["外景"],"c":"_DSC5369"},{"s":"images/正片/外景/26.jpg","w":2400,"h":1350,"cats":["外景"],"c":"_DSC5508"},{"s":"images/正片/外景/27.jpg","w":2400,"h":1350,"cats":["外景"],"c":"_DSC5639"},{"s":"images/正片/外景/28.jpg","w":2400,"h":1350,"cats":["外景"],"c":"_DSC5747"},{"s":"images/正片/外景/29.jpg","w":1600,"h":2400,"cats":["外景"],"c":"_DSC8200"},{"s":"images/正片/棚子/30.jpg","w":2400,"h":1352,"cats":["棚子"],"c":"2614CA5D3155F6773329FEF5780DFCAE"},{"s":"images/正片/棚子/31.jpg","w":2400,"h":1350,"cats":["棚子"],"c":"38A67DA7C8301BAE0A5BF20FA4C12EE9"},{"s":"images/正片/棚子/32.jpg","w":2400,"h":1600,"cats":["棚子"],"c":"5646BA226A20897B980AF7D47BCE5486"},{"s":"images/正片/棚子/33.jpg","w":2400,"h":1600,"cats":["棚子"],"c":"6BF72E2287F39D2C7A665764AE95FED3"},{"s":"images/正片/棚子/34.jpg","w":1540,"h":2400,"cats":["棚子"],"c":"7DDA6C6A1F0D04F770CB6058020D7DAF"},{"s":"images/正片/棚子/35.jpg","w":2400,"h":1600,"cats":["棚子"],"c":"A69F6772529CF8E8256D27BDE2E1DD3E"},{"s":"images/正片/棚子/36.jpg","w":2400,"h":1600,"cats":["棚子"],"c":"B7844D69A3003847B62A2F879F4011D1"},{"s":"images/正片/棚子/37.jpg","w":2400,"h":1600,"cats":["棚子"],"c":"D3B06849D9E2C8AF64E3D8E7BDF9B29F"},{"s":"images/正片/棚子/38.jpg","w":1600,"h":2400,"cats":["棚子"],"c":"DSC09643"},{"s":"images/正片/棚子/39.jpg","w":1601,"h":2400,"cats":["棚子"],"c":"DSC09659-恢复的"},{"s":"images/正片/棚子/40.jpg","w":1600,"h":2400,"cats":["棚子"],"c":"EC462A98893B4226B3E7D57D1FB49CA9"},{"s":"images/正片/棚子/41.jpg","w":2400,"h":1572,"cats":["棚子"],"c":"IMG_7100"},{"s":"images/正片/棚子/42.jpg","w":1600,"h":2400,"cats":["棚子"],"c":"_DSC3760"},{"s":"images/正片/棚子/43.jpg","w":2400,"h":1350,"cats":["棚子"],"c":"_DSC5824"},{"s":"images/正片/棚子/44.jpg","w":1600,"h":2400,"cats":["棚子"],"c":"_DSC8547"},{"s":"images/正片/棚子/45.jpg","w":1600,"h":2400,"cats":["棚子"],"c":"_DSC8693"}]},{"key":"changzhao","cats":["亮灰","暗调"],"images":[{"s":"images/场照/亮灰/01.jpg","w":2400,"h":1600,"cats":["亮灰"],"c":"134DD75A927E1777369B3C605C84BACD"},{"s":"images/场照/亮灰/02.jpg","w":1800,"h":2400,"cats":["亮灰"],"c":"164BFB5A7565B33B315674776987E651"},{"s":"images/场照/亮灰/03.jpg","w":2400,"h":1600,"cats":["亮灰"],"c":"23BCE2B056E6EF70844964A327B611E2"},{"s":"images/场照/亮灰/04.jpg","w":2400,"h":1600,"cats":["亮灰"],"c":"3F9F618EBB56724A59AE64B9F26805F2"},{"s":"images/场照/亮灰/05.jpg","w":2400,"h":1599,"cats":["亮灰"],"c":"42DB6B5516E821DF23FAAE502D7C1BA8_upscayl_2x_upscayl-standard-4x"},{"s":"images/场照/亮灰/06.jpg","w":2400,"h":1600,"cats":["亮灰"],"c":"4F9F6434DDEBAB4C5026E7E82C9800BD"},{"s":"images/场照/亮灰/07.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"51C6F9197822FE8FE6CEED76AEDEA116"},{"s":"images/场照/亮灰/08.jpg","w":2400,"h":1600,"cats":["亮灰"],"c":"554A1AF289860F5666110E340AAE1FB6"},{"s":"images/场照/亮灰/09.jpg","w":2400,"h":1800,"cats":["亮灰"],"c":"614C3B66512256F51B44E8E396D2DE0E"},{"s":"images/场照/亮灰/10.jpg","w":1790,"h":2400,"cats":["亮灰"],"c":"91C395C42EDFF8C10495467A34AEF882"},{"s":"images/场照/亮灰/11.jpg","w":2400,"h":1265,"cats":["亮灰"],"c":"C104B5257F1DD77F4953D7812AD274BC"},{"s":"images/场照/亮灰/12.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"DB8D1EB1BC4E14BE6F8CBE20F35EF466"},{"s":"images/场照/亮灰/13.jpg","w":2400,"h":1350,"cats":["亮灰"],"c":"DSC00249-恢复的"},{"s":"images/场照/亮灰/14.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"DSC00552"},{"s":"images/场照/亮灰/15.jpg","w":2400,"h":1350,"cats":["亮灰"],"c":"DSC00561"},{"s":"images/场照/亮灰/16.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"DSC00685-恢复的"},{"s":"images/场照/亮灰/17.jpg","w":2400,"h":1350,"cats":["亮灰"],"c":"DSC01149"},{"s":"images/场照/亮灰/18.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"DSC01178-恢复的(1)"},{"s":"images/场照/亮灰/19.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"E9CE5728B5C008EDA733CAC5EF7BF620(1)"},{"s":"images/场照/亮灰/20.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"F6D00139A6AB15233AEEF1D0F6010D9B"},{"s":"images/场照/亮灰/21.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"mmexport1771683499240"},{"s":"images/场照/亮灰/22.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"_DSC6186修"},{"s":"images/场照/亮灰/23.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"_DSC6402_(2)"},{"s":"images/场照/亮灰/24.jpg","w":2400,"h":1350,"cats":["亮灰"],"c":"_DSC6606-恢复的"},{"s":"images/场照/亮灰/25.jpg","w":2400,"h":1350,"cats":["亮灰"],"c":"_DSC6731"},{"s":"images/场照/亮灰/26.jpg","w":2400,"h":1350,"cats":["亮灰"],"c":"_DSC6838_(3)"},{"s":"images/场照/亮灰/27.jpg","w":2400,"h":1350,"cats":["亮灰"],"c":"泽兰（阿格莱雅）"},{"s":"images/场照/暗调/28.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"21DB38BA4FEDA625D1B306162079973F"},{"s":"images/场照/暗调/29.jpg","w":1600,"h":2400,"cats":["暗调"],"c":"2D3D9ADFC6FECA1CD86088F30F286A46"},{"s":"images/场照/暗调/30.jpg","w":1600,"h":2400,"cats":["暗调"],"c":"3A42725D1003A9E9363111A1B1A8288A"},{"s":"images/场照/暗调/31.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"45D0206C0FD3F14D3204B7676CC8DCBF"},{"s":"images/场照/暗调/32.jpg","w":1365,"h":2048,"cats":["暗调"],"c":"4BB6FF88A37F5F284D4944E24CA724B1"},{"s":"images/场照/暗调/33.jpg","w":2400,"h":1349,"cats":["暗调"],"c":"7FC44345EE219C0BBEF5AE0BF2715F5C"},{"s":"images/场照/暗调/34.jpg","w":2400,"h":1600,"cats":["暗调"],"c":"C0538E20AA38BDF69145D3AA42F881C2"},{"s":"images/场照/暗调/35.jpg","w":1602,"h":2400,"cats":["暗调"],"c":"C36615DA1FF6211CF8F0CFA2E2734F9D"},{"s":"images/场照/暗调/36.jpg","w":1600,"h":2400,"cats":["暗调"],"c":"D58AC2F0810FEDD9F132168B42291B7A(1)"},{"s":"images/场照/暗调/37.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"DSC00346-恢复的"},{"s":"images/场照/暗调/38.jpg","w":1600,"h":2400,"cats":["暗调"],"c":"DSC00545"},{"s":"images/场照/暗调/39.jpg","w":2400,"h":1600,"cats":["暗调"],"c":"DSC00601"},{"s":"images/场照/暗调/40.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"DSC00798-恢复的_(2)"},{"s":"images/场照/暗调/41.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"DSC00800"},{"s":"images/场照/暗调/42.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"DSC00801"},{"s":"images/场照/暗调/43.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"DSC00995改"},{"s":"images/场照/暗调/44.jpg","w":1601,"h":2400,"cats":["暗调"],"c":"DSC01192"},{"s":"images/场照/暗调/45.jpg","w":2400,"h":1600,"cats":["暗调"],"c":"F31DAF5ADFF11AE4C934D40EA89918F3"},{"s":"images/场照/暗调/46.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"Image_1778951269245_289"},{"s":"images/场照/暗调/47.jpg","w":2400,"h":1600,"cats":["暗调"],"c":"IMG_3211"},{"s":"images/场照/暗调/48.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"IMG_6313"},{"s":"images/场照/暗调/49.jpg","w":1600,"h":2400,"cats":["暗调"],"c":"_DSC2759"},{"s":"images/场照/暗调/50.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"_DSC2762-恢复的"},{"s":"images/场照/暗调/51.jpg","w":1600,"h":2400,"cats":["暗调"],"c":"_DSC2775"},{"s":"images/场照/暗调/52.jpg","w":2400,"h":1029,"cats":["暗调"],"c":"_DSC2818"},{"s":"images/场照/暗调/53.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"_DSC6438"},{"s":"images/场照/暗调/54.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"艾达王"},{"s":"images/场照/暗调/55.jpg","w":2400,"h":1600,"cats":["暗调"],"c":"芮娜1"},{"s":"images/场照/暗调/56.jpg","w":2400,"h":1600,"cats":["暗调"],"c":"蘑菇黑天鹅2"}]},{"key":"texiao","cats":[],"images":[{"s":"images/特效/01.jpg","w":2400,"h":1600,"cats":[],"c":"D129B747276979D1DC70E5A2ECF01EC5"},{"s":"images/特效/02.jpg","w":2400,"h":1350,"cats":[],"c":"F2CB48885FDED0874FBD66E349CF3046"},{"s":"images/特效/03.jpg","w":1350,"h":2400,"cats":[],"c":"yan禾（星宫梅）拼贴海报"},{"s":"images/特效/04.jpg","w":2400,"h":1029,"cats":[],"c":"_DSC3312"},{"s":"images/特效/05.jpg","w":2400,"h":1029,"cats":[],"c":"_DSC7066"},{"s":"images/特效/06.jpg","w":2400,"h":1350,"cats":[],"c":"利艿（小爱）"},{"s":"images/特效/07.jpg","w":1600,"h":2400,"cats":[],"c":"利艿（小爱）竖屏"},{"s":"images/特效/08.jpg","w":2400,"h":1600,"cats":[],"c":"卡1"},{"s":"images/特效/09.jpg","w":2400,"h":1351,"cats":[],"c":"卡卡（怪兽八号）"},{"s":"images/特效/10.jpg","w":1350,"h":2400,"cats":[],"c":"周散拼"},{"s":"images/特效/11.jpg","w":2400,"h":1350,"cats":[],"c":"夏夏（李白2）"},{"s":"images/特效/12.jpg","w":2400,"h":1350,"cats":[],"c":"夏夏（李白）"},{"s":"images/特效/13.jpg","w":1350,"h":2400,"cats":[],"c":"怀青拼"},{"s":"images/特效/14.jpg","w":2400,"h":1350,"cats":[],"c":"柒七（霓虹）"},{"s":"images/特效/15.jpg","w":2400,"h":1350,"cats":[],"c":"柒七（霓虹）半合成"},{"s":"images/特效/16.jpg","w":1600,"h":2400,"cats":[],"c":"汤底蕾塞"},{"s":"images/特效/17.jpg","w":1350,"h":2400,"cats":[],"c":"汤底（雾矢葵）拼贴海报"},{"s":"images/特效/18.jpg","w":1350,"h":2400,"cats":[],"c":"海绵拼图"},{"s":"images/特效/19.jpg","w":2400,"h":1350,"cats":[],"c":"煜曦(蝴蝶忍)"},{"s":"images/特效/20.jpg","w":2400,"h":1350,"cats":[],"c":"砂金"},{"s":"images/特效/21.jpg","w":2400,"h":1381,"cats":[],"c":"缪斯！"},{"s":"images/特效/22.jpg","w":1350,"h":2400,"cats":[],"c":"铮影排"}]}];
+const GALLERIES = [{"key":"zhengpian","cats":["外景","棚子"],"fixed":{"外景":["images/正片/外景/首图.jpg","images/正片/外景/首图 (2).jpg","images/正片/外景/首图 (3).jpg"],"棚子":["images/正片/棚子/首图.jpg","images/正片/棚子/首图 (2).jpg","images/正片/棚子/首图 (3).jpg"],"all":["images/正片/外景/首图.jpg","images/正片/外景/首图 (2).jpg","images/正片/外景/首图 (3).jpg","images/正片/棚子/首图.jpg","images/正片/棚子/首图 (2).jpg","images/正片/棚子/首图 (3).jpg"]},"images":[{"s":"images/正片/外景/01.jpg","w":2400,"h":1355,"cats":["外景"],"c":"01"},{"s":"images/正片/外景/02.jpg","w":2400,"h":1631,"cats":["外景"],"c":"02"},{"s":"images/正片/外景/03.jpg","w":2400,"h":1508,"cats":["外景"],"c":"03"},{"s":"images/正片/外景/04.jpg","w":2400,"h":1350,"cats":["外景"],"c":"04"},{"s":"images/正片/外景/05.jpg","w":1500,"h":2000,"cats":["外景"],"c":"05"},{"s":"images/正片/外景/06.jpg","w":1600,"h":2400,"cats":["外景"],"c":"06"},{"s":"images/正片/外景/07.jpg","w":1535,"h":2400,"cats":["外景"],"c":"07"},{"s":"images/正片/外景/08.jpg","w":2400,"h":1600,"cats":["外景"],"c":"08"},{"s":"images/正片/外景/11.jpg","w":2400,"h":1600,"cats":["外景"],"c":"11"},{"s":"images/正片/外景/12.jpg","w":2400,"h":1600,"cats":["外景"],"c":"12"},{"s":"images/正片/外景/13.jpg","w":2400,"h":1600,"cats":["外景"],"c":"13"},{"s":"images/正片/外景/14.jpg","w":2400,"h":1350,"cats":["外景"],"c":"14"},{"s":"images/正片/外景/15.jpg","w":2400,"h":1350,"cats":["外景"],"c":"15"},{"s":"images/正片/外景/16.jpg","w":2400,"h":1029,"cats":["外景"],"c":"16"},{"s":"images/正片/外景/17.jpg","w":2400,"h":1600,"cats":["外景"],"c":"17"},{"s":"images/正片/外景/18.jpg","w":2400,"h":1574,"cats":["外景"],"c":"18"},{"s":"images/正片/外景/19.jpg","w":2400,"h":1434,"cats":["外景"],"c":"19"},{"s":"images/正片/外景/20.jpg","w":2400,"h":1600,"cats":["外景"],"c":"20"},{"s":"images/正片/外景/21.jpg","w":1600,"h":2400,"cats":["外景"],"c":"21"},{"s":"images/正片/外景/22.jpg","w":2400,"h":1350,"cats":["外景"],"c":"22"},{"s":"images/正片/外景/24.jpg","w":2400,"h":1350,"cats":["外景"],"c":"24"},{"s":"images/正片/外景/26.jpg","w":2400,"h":1350,"cats":["外景"],"c":"26"},{"s":"images/正片/外景/27.jpg","w":2400,"h":1350,"cats":["外景"],"c":"27"},{"s":"images/正片/外景/28.jpg","w":2400,"h":1350,"cats":["外景"],"c":"28"},{"s":"images/正片/外景/CBA7A010130242A06E82BCEC10DA6D1A.jpg","w":6654,"h":3743,"cats":["外景"],"c":"CBA7A010130242A06E82BCEC10DA6D1A"},{"s":"images/正片/外景/首图 (2).jpg","w":1600,"h":2400,"cats":["外景"],"c":"首图 (2)"},{"s":"images/正片/外景/首图 (3).jpg","w":1079,"h":1620,"cats":["外景"],"c":"首图 (3)"},{"s":"images/正片/外景/首图.jpg","w":2400,"h":1350,"cats":["外景"],"c":"首图"},{"s":"images/正片/棚子/30.jpg","w":2400,"h":1352,"cats":["棚子"],"c":"30"},{"s":"images/正片/棚子/31.jpg","w":2400,"h":1350,"cats":["棚子"],"c":"31"},{"s":"images/正片/棚子/32.jpg","w":2400,"h":1600,"cats":["棚子"],"c":"32"},{"s":"images/正片/棚子/33.jpg","w":2400,"h":1600,"cats":["棚子"],"c":"33"},{"s":"images/正片/棚子/34.jpg","w":1540,"h":2400,"cats":["棚子"],"c":"34"},{"s":"images/正片/棚子/35.jpg","w":2400,"h":1600,"cats":["棚子"],"c":"35"},{"s":"images/正片/棚子/36.jpg","w":2400,"h":1600,"cats":["棚子"],"c":"36"},{"s":"images/正片/棚子/37.jpg","w":2400,"h":1600,"cats":["棚子"],"c":"37"},{"s":"images/正片/棚子/38.jpg","w":1600,"h":2400,"cats":["棚子"],"c":"38"},{"s":"images/正片/棚子/39.jpg","w":1601,"h":2400,"cats":["棚子"],"c":"39"},{"s":"images/正片/棚子/40.jpg","w":1600,"h":2400,"cats":["棚子"],"c":"40"},{"s":"images/正片/棚子/41.jpg","w":2400,"h":1572,"cats":["棚子"],"c":"41"},{"s":"images/正片/棚子/42.jpg","w":1600,"h":2400,"cats":["棚子"],"c":"42"},{"s":"images/正片/棚子/44.jpg","w":1600,"h":2400,"cats":["棚子"],"c":"44"},{"s":"images/正片/棚子/DSC01840.jpg","w":5883,"h":3922,"cats":["棚子"],"c":"DSC01840"},{"s":"images/正片/棚子/首图 (2).jpg","w":1600,"h":2400,"cats":["棚子"],"c":"首图 (2)"},{"s":"images/正片/棚子/首图 (3).jpg","w":4000,"h":6000,"cats":["棚子"],"c":"首图 (3)"},{"s":"images/正片/棚子/首图.jpg","w":2400,"h":1350,"cats":["棚子"],"c":"首图"}]},{"key":"changzhao","cats":["亮灰","暗调"],"fixed":{"亮灰":["images/场照/亮灰/首图 (2).jpg","images/场照/亮灰/首图 (3).jpg","images/场照/亮灰/首图.jpg"],"暗调":["images/场照/暗调/首图.jpg","images/场照/暗调/首图 (2).jpg","images/场照/暗调/首图 (3).jpg"],"all":["images/场照/亮灰/首图 (2).jpg","images/场照/亮灰/首图 (3).jpg","images/场照/亮灰/首图.jpg","images/场照/暗调/首图.jpg","images/场照/暗调/首图 (2).jpg","images/场照/暗调/首图 (3).jpg"]},"images":[{"s":"images/场照/亮灰/01.jpg","w":2400,"h":1600,"cats":["亮灰"],"c":"01"},{"s":"images/场照/亮灰/02.jpg","w":1800,"h":2400,"cats":["亮灰"],"c":"02"},{"s":"images/场照/亮灰/03.jpg","w":2400,"h":1600,"cats":["亮灰"],"c":"03"},{"s":"images/场照/亮灰/04.jpg","w":2400,"h":1600,"cats":["亮灰"],"c":"04"},{"s":"images/场照/亮灰/05.jpg","w":2400,"h":1599,"cats":["亮灰"],"c":"05"},{"s":"images/场照/亮灰/06.jpg","w":2400,"h":1600,"cats":["亮灰"],"c":"06"},{"s":"images/场照/亮灰/07.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"07"},{"s":"images/场照/亮灰/08.jpg","w":2400,"h":1600,"cats":["亮灰"],"c":"08"},{"s":"images/场照/亮灰/09.jpg","w":2400,"h":1800,"cats":["亮灰"],"c":"09"},{"s":"images/场照/亮灰/10.jpg","w":1790,"h":2400,"cats":["亮灰"],"c":"10"},{"s":"images/场照/亮灰/11.jpg","w":2400,"h":1265,"cats":["亮灰"],"c":"11"},{"s":"images/场照/亮灰/12.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"12"},{"s":"images/场照/亮灰/13.jpg","w":2400,"h":1350,"cats":["亮灰"],"c":"13"},{"s":"images/场照/亮灰/15.jpg","w":2400,"h":1350,"cats":["亮灰"],"c":"15"},{"s":"images/场照/亮灰/17.jpg","w":2400,"h":1350,"cats":["亮灰"],"c":"17"},{"s":"images/场照/亮灰/18.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"18"},{"s":"images/场照/亮灰/19.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"19"},{"s":"images/场照/亮灰/20.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"20"},{"s":"images/场照/亮灰/21.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"21"},{"s":"images/场照/亮灰/23.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"23"},{"s":"images/场照/亮灰/24.jpg","w":2400,"h":1350,"cats":["亮灰"],"c":"24"},{"s":"images/场照/亮灰/26.jpg","w":2400,"h":1350,"cats":["亮灰"],"c":"26"},{"s":"images/场照/亮灰/27.jpg","w":2400,"h":1350,"cats":["亮灰"],"c":"27"},{"s":"images/场照/亮灰/34.jpg","w":2400,"h":1600,"cats":["亮灰"],"c":"34"},{"s":"images/场照/亮灰/38.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"38"},{"s":"images/场照/亮灰/39.jpg","w":2400,"h":1600,"cats":["亮灰"],"c":"39"},{"s":"images/场照/亮灰/48.jpg","w":2400,"h":1350,"cats":["亮灰"],"c":"48"},{"s":"images/场照/亮灰/DSC00083.jpg","w":4000,"h":6000,"cats":["亮灰"],"c":"DSC00083"},{"s":"images/场照/亮灰/DSC00500.jpg","w":4000,"h":6000,"cats":["亮灰"],"c":"DSC00500"},{"s":"images/场照/亮灰/Image_1786104236736_939_upscayl_4x_upscayl-standard-4x.jpg","w":9700,"h":6400,"cats":["亮灰"],"c":"Image_1786104236736_939_upscayl_4x_upscayl-standard-4x"},{"s":"images/场照/亮灰/首图 (2).jpg","w":2400,"h":1350,"cats":["亮灰"],"c":"首图 (2)"},{"s":"images/场照/亮灰/首图 (3).jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"首图 (3)"},{"s":"images/场照/亮灰/首图.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"首图"},{"s":"images/场照/暗调/00.jpg","w":7054,"h":3968,"cats":["暗调"],"c":"00"},{"s":"images/场照/暗调/28.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"28"},{"s":"images/场照/暗调/29.jpg","w":1600,"h":2400,"cats":["暗调"],"c":"29"},{"s":"images/场照/暗调/31.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"31"},{"s":"images/场照/暗调/32.jpg","w":1365,"h":2048,"cats":["暗调"],"c":"32"},{"s":"images/场照/暗调/33.jpg","w":2400,"h":1349,"cats":["暗调"],"c":"33"},{"s":"images/场照/暗调/35.jpg","w":1602,"h":2400,"cats":["暗调"],"c":"35"},{"s":"images/场照/暗调/41.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"41"},{"s":"images/场照/暗调/42.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"42"},{"s":"images/场照/暗调/43.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"43"},{"s":"images/场照/暗调/44.jpg","w":1601,"h":2400,"cats":["暗调"],"c":"44"},{"s":"images/场照/暗调/45.jpg","w":2400,"h":1600,"cats":["暗调"],"c":"45"},{"s":"images/场照/暗调/46.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"46"},{"s":"images/场照/暗调/47.jpg","w":2400,"h":1600,"cats":["暗调"],"c":"47"},{"s":"images/场照/暗调/49.jpg","w":1600,"h":2400,"cats":["暗调"],"c":"49"},{"s":"images/场照/暗调/50.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"50"},{"s":"images/场照/暗调/51.jpg","w":1600,"h":2400,"cats":["暗调"],"c":"51"},{"s":"images/场照/暗调/52.jpg","w":2400,"h":1029,"cats":["暗调"],"c":"52"},{"s":"images/场照/暗调/53.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"53"},{"s":"images/场照/暗调/54.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"54"},{"s":"images/场照/暗调/55.jpg","w":2400,"h":1600,"cats":["暗调"],"c":"55"},{"s":"images/场照/暗调/56.jpg","w":2400,"h":1600,"cats":["暗调"],"c":"56"},{"s":"images/场照/暗调/_DSC6247.jpg","w":7046,"h":3964,"cats":["暗调"],"c":"_DSC6247"},{"s":"images/场照/暗调/首图 (2).jpg","w":1600,"h":2400,"cats":["暗调"],"c":"首图 (2)"},{"s":"images/场照/暗调/首图 (3).jpg","w":1600,"h":2400,"cats":["暗调"],"c":"首图 (3)"},{"s":"images/场照/暗调/首图.jpg","w":2400,"h":1350,"cats":["暗调"],"c":"首图"}]},{"key":"texiao","cats":[],"fixed":{"all":["images/特效/首图 (2).jpg","images/特效/首图 (3).jpg","images/特效/首图.jpg"]},"images":[{"s":"images/特效/02.jpg","w":2400,"h":1350,"cats":[],"c":"02"},{"s":"images/特效/04.jpg","w":2400,"h":1029,"cats":[],"c":"04"},{"s":"images/特效/05.jpg","w":2400,"h":1029,"cats":[],"c":"05"},{"s":"images/特效/06.jpg","w":2400,"h":1350,"cats":[],"c":"06"},{"s":"images/特效/09.jpg","w":2400,"h":1351,"cats":[],"c":"09"},{"s":"images/特效/10.jpg","w":1350,"h":2400,"cats":[],"c":"10"},{"s":"images/特效/11.jpg","w":2400,"h":1350,"cats":[],"c":"11"},{"s":"images/特效/12.jpg","w":2400,"h":1350,"cats":[],"c":"12"},{"s":"images/特效/13.jpg","w":1350,"h":2400,"cats":[],"c":"13"},{"s":"images/特效/15.jpg","w":2400,"h":1350,"cats":[],"c":"15"},{"s":"images/特效/16.jpg","w":1600,"h":2400,"cats":[],"c":"16"},{"s":"images/特效/17.jpg","w":1350,"h":2400,"cats":[],"c":"17"},{"s":"images/特效/18.jpg","w":1350,"h":2400,"cats":[],"c":"18"},{"s":"images/特效/19.jpg","w":2400,"h":1350,"cats":[],"c":"19"},{"s":"images/特效/21.jpg","w":2400,"h":1381,"cats":[],"c":"21"},{"s":"images/特效/22.jpg","w":1350,"h":2400,"cats":[],"c":"22"},{"s":"images/特效/_DSC6247.jpg","w":7046,"h":3964,"cats":[],"c":"_DSC6247"},{"s":"images/特效/初六（巴麻美1）.jpg","w":3029,"h":4490,"cats":[],"c":"初六（巴麻美1）"},{"s":"images/特效/夏夏（猴子1）.jpg","w":6556,"h":3688,"cats":[],"c":"夏夏（猴子1）"},{"s":"images/特效/夏夏（韩信1.3).jpg","w":8235,"h":4632,"cats":[],"c":"夏夏（韩信1.3)"},{"s":"images/特效/首图 (2).jpg","w":7054,"h":3968,"cats":[],"c":"首图 (2)"},{"s":"images/特效/首图 (3).jpg","w":2458,"h":3682,"cats":[],"c":"首图 (3)"},{"s":"images/特效/首图.jpg","w":1600,"h":2400,"cats":[],"c":"首图"}]}];
 
 // ===== 灯箱 =====
 const QQ_UA=navigator.userAgent||'';
@@ -1726,7 +1859,7 @@ document.addEventListener('keydown',e=>{
   }
 });
 
-// ===== 画廊：每个板块/风格独立无重复轮播 + 当前缩略图 + 下一批缩略图预载 =====
+// ===== 画廊：首批固定首图，之后每个板块/风格独立无重复轮播 =====
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function poolOf(g){return g.cat==='all'?g.images:g.images.filter(x=>x.cats.includes(g.cat))}
 function thumbOf(src,mobile=window.innerWidth<=900){
@@ -1742,10 +1875,18 @@ function makeQueue(pool,avoid){
   const blocked=new Set(avoid||[]);
   return shuffle(pool.filter(x=>!blocked.has(x.s))).concat(shuffle(pool.filter(x=>blocked.has(x.s))));
 }
+function fixedBatchSize(g){return g.cat==='all'&&g.cats.length?g.cats.length*3:3}
+function fixedBatchOf(g){
+  const paths=(g.fixed&&(g.fixed[g.cat]||g.fixed.all))||[],pool=poolOf(g);
+  const allowed=new Set(pool.map(x=>x.s));
+  const fixed=paths.map(path=>g.images.find(image=>image.s===path)).filter(image=>image&&allowed.has(image.s)).slice(0,fixedBatchSize(g));
+  return g.cat==='all'&&g.cats.length?shuffle(fixed):fixed;
+}
 function stateOf(g){
   if(!g.states[g.cat]){
-    const pool=poolOf(g);
-    g.states[g.cat]={queue:makeQueue(pool),shown:[],prepared:null,seen:0,cycle:1};
+    const pool=poolOf(g),fixed=fixedBatchOf(g),fixedPaths=new Set(fixed.map(image=>image.s));
+    const fixedReady=fixed.length===fixedBatchSize(g);
+    g.states[g.cat]={queue:makeQueue(pool.filter(image=>!fixedPaths.has(image.s))),shown:fixedReady?fixed:[],prepared:null,seen:fixedReady?fixed.length:0,cycle:1};
   }
   return g.states[g.cat];
 }
@@ -1833,8 +1974,13 @@ function renderGallery(key,forceNew){
   const next=state.shown;g.shown=next;
   if(!next.length)return;
   let cards=[...grid.querySelectorAll('.photo-block>.card')];
-  if(cards.length!==3){
-    grid.innerHTML='<div class="photo-block"><figure class="card wide" role="button" tabindex="0"><img alt="" loading="eager" decoding="async"></figure><figure class="card n1" role="button" tabindex="0"><img alt="" loading="eager" decoding="async"></figure><figure class="card n2" role="button" tabindex="0"><img alt="" loading="eager" decoding="async"></figure></div>';
+  if(cards.length!==next.length){
+    const six=next.length===6;
+    const cardMarkup=next.map((img,i)=>{
+      const shape=six?(img.w>=img.h?'is-landscape':'is-portrait'):(i===0?'wide':i===1?'n1':'n2');
+      return '<figure class="card '+shape+'" role="button" tabindex="0"><img alt="" loading="eager" decoding="async"></figure>';
+    }).join('');
+    grid.innerHTML='<div class="photo-block'+(six?' six':'')+'">'+cardMarkup+'</div>';
     cards=[...grid.querySelectorAll('.photo-block>.card')];
     cards.forEach((card,i)=>{
       const openCard=()=>{cur=g.shown.slice();idx=i;show(idx)};
