@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>慕言のCOS摄影 | 正片·场照·特效</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9D%84%EF%B8%8F%3C/text%3E%3C/svg%3E">
-<link rel="preload" as="image" href="images/rem-anime-hero.png" type="image/png" fetchpriority="high">
+<link rel="preload" as="image" href="images/rem-anime-hero-hq.webp" type="image/webp" fetchpriority="high">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -542,7 +542,7 @@ body::before{
   background:
     linear-gradient(90deg,rgba(239,250,255,.97) 0%,rgba(239,250,255,.94) 31%,rgba(239,250,255,.58) 49%,rgba(231,246,255,.08) 67%),
     linear-gradient(180deg,rgba(22,39,64,.02),rgba(22,39,64,.22)),
-    url("images/rem-anime-hero.png") center/cover no-repeat;
+    url("images/rem-anime-hero-hq.webp") center/cover no-repeat;
   border:0;isolation:isolate;
 }
 .hero::before{
@@ -671,21 +671,22 @@ footer .qq-line b{color:#a6ddfb}
 }
 @media(max-width:720px){
   .nav{height:60px}.nav-inner{height:60px;padding:0 15px}.nav-links{top:60px;border-radius:0 0 22px 22px}
-  .hero{height:auto;min-height:860px;align-items:flex-end;background:
+  .hero{height:auto;min-height:720px;align-items:flex-start;background:
     linear-gradient(180deg,rgba(225,246,255,.02) 0 37%,rgba(238,250,255,.82) 54%,rgba(238,250,255,.98) 71%),
-    url("images/rem-anime-hero.png") 68% top/auto 520px no-repeat,
+    url("images/rem-anime-hero-hq.webp") 66% top/auto 430px no-repeat,
     #e6f7ff}
   .hero::before{display:none}
   .hero::after{inset:60px 0 0;background-size:150px 150px,190px 190px,180px 180px,210px 210px}
-  .hero-inner{padding:470px 12px 64px}
-  .hero-inner::before{left:50%;right:auto;top:438px;bottom:28px;width:calc(100% - 24px);transform:translateX(-50%);border-radius:22px;background:rgba(255,255,255,.87)}
-  .hero-inner::after{left:50%;top:461px;transform:translateX(-50%)}
+  .hero-inner{padding:360px 12px 42px}
+  .hero-inner::before{left:50%;right:auto;top:334px;bottom:18px;width:calc(100% - 24px);transform:translateX(-50%);border-radius:22px;background:rgba(255,255,255,.87)}
+  .hero-inner::after{left:50%;top:356px;transform:translateX(-50%)}
   .eyebrow,.hero h1,.hero .sub,.hero-cta{max-width:calc(100% - 44px);margin-left:auto;margin-right:auto}
-  .eyebrow{margin-top:44px}
-  .hero h1{gap:8px;font-size:1rem;line-height:1.08}
+  .eyebrow{margin-top:30px}
+  .hero h1{gap:7px;margin-top:18px;margin-bottom:10px;font-size:1rem;line-height:1.08}
   .hero h1 .title-brand{font-size:clamp(2.1rem,9.4vw,3.35rem)}
   .hero h1 .hl{font-size:clamp(1.72rem,7.5vw,2.65rem)}
-  .hero-cta{justify-content:center}
+  .hero .sub{margin-bottom:16px;padding:6px 12px}
+  .hero-cta{justify-content:center;gap:8px}
   .scroll-hint{display:none}
   main{padding:26px 12px 0}
   section{margin:28px 0;padding:54px 17px}
@@ -697,16 +698,21 @@ footer .qq-line b{color:#a6ddfb}
   .card:hover,.card:nth-child(2):hover,.card:nth-child(3):hover{transform:none}
 }
 @media(max-width:430px){
-  .hero{min-height:825px;background-size:auto 475px;background-position:66% top}
-  .hero-inner{padding-top:425px}
-  .hero-inner::before{top:396px}
-  .hero-inner::after{top:420px}
-  .eyebrow{margin-top:43px;font-size:.68rem;letter-spacing:.19em}
+  .hero{min-height:700px;background-size:auto 410px;background-position:66% top}
+  .hero-inner{padding:340px 8px 40px}
+  .hero-inner::before{top:312px;bottom:16px;width:calc(100% - 16px)}
+  .hero-inner::after{top:334px}
+  .eyebrow{margin-top:26px;font-size:.68rem;letter-spacing:.19em}
   .hero h1{font-size:1rem}
   .hero h1 .title-brand{font-size:clamp(2.08rem,9.3vw,2.42rem)}
   .hero h1 .hl{font-size:clamp(1.48rem,7vw,1.98rem)}
   .hero .sub{font-size:.9rem}
   .btn{padding:10px 15px;font-size:.82rem}
+}
+@media(max-width:360px){
+  .hero-cta{max-width:calc(100% - 20px);gap:5px;flex-wrap:nowrap}
+  .hero-cta .btn{padding:9px 11px;font-size:.76rem;white-space:nowrap}
+  .rem-side-companion{display:none}
 }
 
 /* ===== 女仆花边 / 冰晶徽章 / 章节装饰 ===== */
@@ -1516,54 +1522,6 @@ body.mobile-device #price-cz .cz-price-grid{
 </div>
 
 <script>
-/*
-============================================================
- 慕言のCOS摄影 ·个人网站 代码结构说明（给AI/修改者参考）
-------------------------------------------------------------
- ● 单页网站：index.html（CSS + JS 全部内联，无服务器依赖）
- ● 页面区块（从上到下）：
-   1) <header class="hero">        首页横幅（标题/副标题/3个按钮）
-   2) .slogan-banner               宣传标语横幅（慕言——提供优质服务...）
-   3) <section id="works">         作品例图区
-      - .work-tab    作品选项卡：正片 / 场照 / 特效
-      - .cat-tab     风格选项卡：外景/棚子、亮灰/暗调
-      - .photo-block 每批1横+2竖的照片排版
-      - .refresh-btn 换一批按钮
-   4) <section id="price">         价格区
-      - .price-tab   价格选项卡：正片 / 场照 / 特效
-      - .price-card  价格卡片（定金+尾款+合计）
-   5) <section id="notes">         注意事项区
-      - .note-tab    须知选项卡：正片须知 / 场照须知
-   6) .quote                       心里话
-   7) <footer id="contact">        QQ大号 / QQ小号 / 微信联系方式与二维码
-------------------------------------------------------------
- ● 关键JS对象与函数：
-   GALLERIES —— 全部照片数据（数组，每项：key 板块名、images 照片列表）
-   照片字段：s=路径、c=标题、w/h=宽高、cats=风格分类数组
-   函数：
-   - pickBatch(g)      随机选一批（1横+2竖；同比例成组；最近9张不重复）
-   - renderGallery(k)  渲染某个作品选项卡
-   - refreshGallery(k) 换一批（内部调用renderGallery，强制换新）
-   - switchWorks(w)    作品选项卡切换（正片/场照/特效）
-   - show(i)/closeLb() 灯箱：点击放大、左右切换、ESC关闭
-   - 选项卡绑定：.work-tab / .cat-tab / .price-tab / .note-tab
-------------------------------------------------------------
- ● 图片目录：
-   images/正片/外景/01.jpg...  正片（外景/棚子分类）
-   images/场照/亮灰/01.jpg...  场照（亮灰/暗调分类）
-   images/特效/01.jpg...     特效
-   images/qq.png               页脚QQ大号二维码
-   images/qq-small.png         页脚QQ小号二维码
-   images/wechat.png           页脚微信二维码
-------------------------------------------------------------
- ● 修改提示：
-   - 改文字：直接搜索对应中文关键词（如"定金""保底"）
-   - 改样式：搜索CSS类名（.hero .price-card .cat-tab 等）
-   - 换照片：替换images里同名文件即可，或改GALLERIES数据
-   - 增板块：复制一个<section>并加导航链接
-============================================================
-*/
-
 // ===== 导航 =====
 const nav=document.getElementById('nav'),burger=document.getElementById('burger'),links=document.getElementById('navLinks');
 let navScrollFrame=0;
