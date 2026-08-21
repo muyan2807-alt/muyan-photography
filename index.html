@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "0665d5bee7ca46da8f54b6bc7e0b650a"}'></script><!-- End Cloudflare Web Analytics -->
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "1a8183bf36274076bf25a117293b9989"}'></script><!-- End Cloudflare Web Analytics -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>慕言のCOS摄影 | 正片·场照·特效</title>
@@ -156,7 +156,7 @@ footer a{color:var(--blue)}
 /* ===== 灯箱 ===== */
 .lb{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column;padding:20px}
 .lb.show{display:flex}
-.lb img{max-width:min(92vw,820px);max-height:82vh}
+.lb img{width:auto;height:auto;max-width:min(92vw,820px);max-height:82vh}
 .lb .cap{color:#cfdcf0;margin-top:14px;font-size:.9rem;letter-spacing:.1em}
 .lb button{position:absolute;border:none;color:#fff;font-size:1.6rem;cursor:pointer;width:48px;height:48px;display:grid;place-items:center;transition:.3s}
 .lb button:hover{background:var(--blue)}
@@ -671,6 +671,7 @@ footer .qq-line b{color:#a6ddfb}
 }
 @media(max-width:720px){
   .nav{height:60px}.nav-inner{height:60px;padding:0 15px}.nav-links{top:60px;border-radius:0 0 22px 22px}
+  .nav-links a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:10px 15px}
   .hero{height:auto;min-height:720px;align-items:flex-start;background:
     linear-gradient(180deg,rgba(225,246,255,.02) 0 37%,rgba(238,250,255,.82) 54%,rgba(238,250,255,.98) 71%),
     url("images/rem-anime-hero-hq.webp") 66% top/auto 430px no-repeat,
@@ -1617,16 +1618,28 @@ const MOBILE_DEVICE=/(?:Android|iPhone|iPad|iPod|HarmonyOS|Mobile)/i.test(QQ_UA)
 if(QQ_LOW_MEMORY)document.body.classList.add('qq-low-memory');
 if(MOBILE_DEVICE)document.body.classList.add('mobile-device');
 const lb=document.getElementById('lb'),lbImg=document.getElementById('lbImg'),lbCount=document.getElementById('lbCount'),lbCloseBtn=document.getElementById('lbClose');
-let cur=[],idx=0,lbReleaseTimer=0,lbObjectUrl='',lbAbort=null,lbLoadToken=0,lbLastFocus=null;
+let cur=[],curPreviewSources=[],idx=0,lbReleaseTimer=0,lbObjectUrl='',lbAbort=null,lbLoadToken=0,lbLastFocus=null;
 function releaseLightboxImage(){
   if(lbAbort){lbAbort.abort();lbAbort=null}
   lbImg.removeAttribute('src');
   if(lbObjectUrl){URL.revokeObjectURL(lbObjectUrl);lbObjectUrl=''}
 }
-async function loadLightboxImage(src){
+async function loadLightboxImage(src,previewSrc){
   releaseLightboxImage();
   const token=++lbLoadToken;
-  lbImg.src=thumbOf(src,window.innerWidth<=900);
+  const preview=previewSrc||thumbOf(src,window.innerWidth<=900),current=cur[idx];
+  if(current){lbImg.width=current.w;lbImg.height=current.h}
+  lbImg.src=preview;
+  const previewReady=typeof lbImg.decode==='function'
+    ?lbImg.decode().catch(()=>{})
+    :new Promise(resolve=>{
+      if(lbImg.complete){resolve();return}
+      lbImg.addEventListener('load',resolve,{once:true});
+      lbImg.addEventListener('error',resolve,{once:true});
+    });
+  await Promise.race([previewReady,new Promise(resolve=>setTimeout(resolve,350))]);
+  if(token!==lbLoadToken||!lb.classList.contains('show'))return;
+  await new Promise(resolve=>requestAnimationFrame(()=>resolve()));
   const controller=new AbortController();lbAbort=controller;
   try{
     const response=await fetch(src,{cache:QQ_LOW_MEMORY?'no-store':'force-cache',signal:controller.signal});
@@ -1635,7 +1648,7 @@ async function loadLightboxImage(src){
     if(token!==lbLoadToken||!lb.classList.contains('show'))return;
     lbObjectUrl=URL.createObjectURL(blob);lbImg.src=lbObjectUrl;
   }catch(error){
-    if(error.name!=='AbortError'&&token===lbLoadToken&&lb.classList.contains('show'))lbImg.src=thumbOf(src,window.innerWidth<=900);
+    if(error.name!=='AbortError'&&token===lbLoadToken&&lb.classList.contains('show'))lbImg.src=preview;
   }finally{
     if(lbAbort===controller)lbAbort=null;
   }
@@ -1646,14 +1659,14 @@ function show(i){
   idx=(i+cur.length)%cur.length;
   lb.classList.add('show');lb.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
   lbImg.alt='慕言COS摄影作品大图，第 '+(idx+1)+' 张';
-  lbCount.textContent=(idx+1)+' / '+cur.length;loadLightboxImage(cur[idx].s);
+  lbCount.textContent=(idx+1)+' / '+cur.length;loadLightboxImage(cur[idx].s,curPreviewSources[idx]);
   requestAnimationFrame(()=>lbCloseBtn.focus());
 }
 function closeLb(){
   lb.classList.remove('show');lb.setAttribute('aria-hidden','true');document.body.style.overflow='';
   clearTimeout(lbReleaseTimer);
   lbReleaseTimer=setTimeout(()=>{
-    if(!lb.classList.contains('show')){lbLoadToken++;releaseLightboxImage();cur=[]}
+    if(!lb.classList.contains('show')){lbLoadToken++;releaseLightboxImage();cur=[];curPreviewSources=[]}
   },240);
   if(lbLastFocus&&document.contains(lbLastFocus))lbLastFocus.focus();
 }
@@ -1798,7 +1811,11 @@ function renderGallery(key,forceNew){
     grid.innerHTML='<div class="photo-block'+(six?' six':'')+'">'+cardMarkup+'</div>';
     cards=[...grid.querySelectorAll('.photo-block>.card')];
     cards.forEach((card,i)=>{
-      const openCard=()=>{cur=g.shown.slice();idx=i;show(idx)};
+      const openCard=()=>{
+        cur=g.shown.slice();
+        curPreviewSources=cards.map(item=>{const preview=item.querySelector('img');return preview?(preview.currentSrc||preview.src):''});
+        idx=i;show(idx);
+      };
       card.addEventListener('click',openCard);
       card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();openCard()}});
     });
