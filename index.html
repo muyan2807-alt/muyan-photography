@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>慕言のCOS摄影 | 正片·场照·特效</title>
+<meta name="muyan-site-version" content="1.9">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9D%84%EF%B8%8F%3C/text%3E%3C/svg%3E">
 <link rel="preload" as="image" href="images/rem-anime-hero-hq.webp" type="image/webp" fetchpriority="high">
 <style>
@@ -20,8 +21,9 @@ section{scroll-margin-top:66px}
 .nav.scrolled{border-bottom-color:#e8f0f8}
 .nav-inner{margin:0 auto;display:flex;align-items:center;justify-content:space-between}
 .brand{font-weight:800;display:flex;align-items:center;gap:6px}
-.brand .snow{animation:spin 8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
+.brand-emblem{display:grid;place-items:center;animation:avatar-float 4.8s ease-in-out infinite;transform-origin:50% 50%}
+.brand-emblem img{display:block;width:100%;height:100%;object-fit:cover;border-radius:50%}
+@keyframes avatar-float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-1px) scale(1.035)}}
 .nav-links{display:flex;list-style:none}
 .nav-links a{position:relative}
 .nav-links a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:2px;background:var(--blue);transition:.3s;border-radius:2px}
@@ -55,17 +57,16 @@ main{margin:0 auto}
 .sec-head p{color:var(--muted);margin-top:10px;font-size:.95rem}
 .sec-divider{margin:16px auto 0}
 
-/* ===== 图片墙 ===== */
-.photo-block{display:grid;grid-template-columns:1fr 1fr;grid-template-areas:"wide wide" "n1 n2"}
-.photo-block .wide{grid-area:wide;aspect-ratio:16/9}
-.photo-block .n1{grid-area:n1;aspect-ratio:2/3}
-.photo-block .n2{grid-area:n2;aspect-ratio:2/3}
-.photo-block.six{grid-template-areas:none;grid-auto-flow:row dense}
-.photo-block.six .is-landscape{grid-column:1/-1;aspect-ratio:16/9}
-.photo-block.six .is-portrait{grid-column:auto;aspect-ratio:2/3}
+/* ===== 图片墙：整批限制在一屏高度内，竖图严格成对 ===== */
+.photo-block{--gallery-gap:17px;display:flex;flex-direction:column;height:300px;height:clamp(260px,34vh,340px);height:clamp(260px,34svh,340px);gap:var(--gallery-gap)}
+.photo-row{display:flex;flex:1 1 0;min-height:0;align-items:center;justify-content:center;gap:var(--gallery-gap)}
+.photo-block.is-six{height:auto;min-height:0}
+.photo-block.is-six .photo-row{flex:0 0 auto;width:100%}
+.photo-block .card{flex:0 0 auto;aspect-ratio:var(--media-ratio);max-width:100%;max-height:100%}
 .photo-block .card img{width:100%;height:100%;object-fit:contain;object-position:center}
 .photo-block .card:hover img{transform:none}
-@media(max-width:480px){.photo-block{gap:10px}}
+@media(max-width:720px){.photo-block{height:auto;min-height:0}.photo-row{flex:0 0 auto;width:100%}}
+@media(max-width:480px){.photo-block{--gallery-gap:10px}}
 .refresh-row{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap}
 .refresh-btn{font-size:.95rem;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit;letter-spacing:.05em}
 .refresh-btn:hover{color:#fff}
@@ -537,7 +538,8 @@ body::before{
 .nav.scrolled{background:rgba(250,254,255,.95)}
 .nav-inner{height:72px;max-width:1240px;padding:0 28px}
 .brand{color:var(--anime-night);font-size:1.12rem;letter-spacing:.08em}
-.brand .snow{width:28px;height:28px;display:grid;place-items:center;border-radius:50%;color:#fff;background:linear-gradient(145deg,var(--anime-blue),var(--anime-violet));box-shadow:0 6px 15px rgba(86,149,202,.28)}
+.brand-emblem{width:34px;height:34px;padding:2px;border:1px solid rgba(255,255,255,.88);border-radius:50%;background:linear-gradient(145deg,rgba(105,184,235,.95),rgba(147,135,215,.9));box-shadow:0 6px 16px rgba(72,137,188,.28),inset 0 1px 0 rgba(255,255,255,.55)}
+.brand-emblem img{filter:drop-shadow(0 1px 1px rgba(22,50,82,.2))}
 .brand::after{width:7px;height:7px;border-radius:50%;background:var(--anime-pink);box-shadow:12px 0 0 var(--anime-blue-2)}
 .nav-links{gap:6px;padding:5px;border:1px solid rgba(173,219,244,.72);border-radius:999px;background:rgba(255,255,255,.7)}
 .nav-links a{padding:7px 15px;border:0;border-radius:999px;color:#40536c;font-size:.88rem}
@@ -596,6 +598,8 @@ body::before{
 }
 .hero .sub{margin-bottom:30px;padding:8px 24px;border:0;border-left:5px solid var(--anime-pink);border-radius:0;background:transparent;color:#51677f;font-size:1rem;text-align:center}
 .hero-cta{justify-content:center;gap:11px}
+.site-update{width:max-content;max-width:100%;margin:18px auto 0;padding:7px 16px;border:1px solid rgba(159,212,239,.78);border-radius:999px;background:rgba(255,255,255,.78);color:#52738e;font-size:.82rem;font-weight:700;letter-spacing:.04em;box-shadow:0 7px 18px rgba(61,119,159,.1);backdrop-filter:blur(10px)}
+.site-update time{color:#397fae}
 .btn{padding:12px 24px;border-radius:999px;letter-spacing:.04em}
 .btn.primary{background:linear-gradient(110deg,#4da9df,#7d9de2);box-shadow:0 10px 25px rgba(64,142,198,.3),inset 0 1px 0 rgba(255,255,255,.45)}
 .btn.primary:hover{background:linear-gradient(110deg,#3d97cf,#6d8fd7);transform:translateY(-3px);box-shadow:0 14px 30px rgba(64,142,198,.36)}
@@ -625,6 +629,7 @@ section>*{position:relative;z-index:1}
 .kicker{color:#5da5d1;letter-spacing:.3em}
 .sec-divider{width:88px;height:5px;border-radius:999px;background:linear-gradient(90deg,var(--anime-blue),var(--anime-violet),var(--anime-pink));box-shadow:0 5px 15px rgba(98,171,220,.22)}
 .works-tabs,.price-tabs,.note-tabs,.cat-tabs{width:max-content;max-width:100%;padding:6px;margin-left:auto;margin-right:auto;border:1px solid rgba(165,214,241,.78);border-radius:999px;background:rgba(255,255,255,.86);box-shadow:0 12px 28px rgba(52,110,152,.1);backdrop-filter:blur(12px)}
+#works{scroll-margin-top:78px}
 .work-tab,.price-tab,.note-tab,.cat-tab{border:0;border-radius:999px;background:transparent;color:#4d6078;box-shadow:none}
 .work-tab.active,.price-tab.active,.note-tab.active,.cat-tab.active{border:0;border-radius:999px;background:linear-gradient(110deg,#56ace0,#7e9fe3);color:#fff;box-shadow:0 8px 18px rgba(74,145,199,.27),inset 0 1px 0 rgba(255,255,255,.38)}
 .photo-block{gap:17px}
@@ -637,6 +642,7 @@ section>*{position:relative;z-index:1}
 .refresh-btn{padding:11px 30px;border:0;border-radius:999px;background:linear-gradient(110deg,#55ade2,#839fe2);color:#fff;box-shadow:0 10px 24px rgba(70,143,199,.25)}
 .refresh-btn:hover{background:linear-gradient(110deg,#449ed5,#718fd7);transform:translateY(-2px);box-shadow:0 14px 28px rgba(70,143,199,.31)}
 .gallery-hint{color:#75879c;font-weight:600}
+.works-authorship{width:max-content;max-width:100%;margin:14px auto 0;padding:9px 18px;border:1px solid rgba(174,219,243,.8);border-radius:999px;background:linear-gradient(100deg,rgba(233,247,255,.94),rgba(255,255,255,.96),rgba(255,240,247,.9));color:#49647e;font-size:.92rem;font-weight:700;line-height:1.6;box-shadow:0 10px 24px rgba(54,108,148,.09)}
 .price-card,.fx-card,.extra-card{border:1px solid rgba(177,220,243,.78);border-radius:26px;background:rgba(255,255,255,.94);box-shadow:0 16px 38px rgba(53,105,143,.13);overflow:hidden}
 .price-card::before,.fx-card::before,.extra-card::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:linear-gradient(90deg,var(--anime-blue),var(--anime-violet),var(--anime-pink))}
 .price-card:nth-child(even){box-shadow:0 16px 38px rgba(53,105,143,.13)}
@@ -702,6 +708,10 @@ footer .qq-line b{color:#a6ddfb}
   .card,.card:nth-child(2),.card:nth-child(3){padding:5px;border-radius:17px;box-shadow:0 12px 27px rgba(42,91,127,.16)}
   .card img{border-radius:12px}
   .card:hover,.card:nth-child(2):hover,.card:nth-child(3):hover{transform:none}
+  .refresh-row{margin-top:18px;gap:6px;flex-wrap:nowrap}
+  .refresh-btn{padding:10px 18px;font-size:.88rem}
+  .gallery-hint{font-size:.72rem;white-space:nowrap}
+  .works-authorship{width:100%;max-width:100%;padding:9px 12px;border-radius:18px;overflow-wrap:anywhere}
 }
 @media(max-width:430px){
   .hero{min-height:700px;background-size:auto 410px;background-position:66% top}
@@ -830,7 +840,7 @@ body.qq-low-memory .rem-chibi-card,
 body.qq-low-memory .rem-side-companion,
 body.qq-low-memory .rem-side-companion::after,
 body.qq-low-memory .rem-corner-bow,
-body.qq-low-memory .brand .snow,
+body.qq-low-memory .brand-emblem,
 body.qq-low-memory .slogan-banner .snow,
 body.qq-low-memory .scroll-hint{
   animation:none!important;will-change:auto!important
@@ -1035,7 +1045,7 @@ body.mobile-device #price-cz .cz-price-grid{
 <!-- 导航 -->
 <nav class="nav" id="nav">
   <div class="nav-inner">
-    <a href="#top" class="brand"><span class="snow">❄</span>慕言のCOS摄影</a>
+    <a href="#top" class="brand"><span class="brand-emblem" aria-hidden="true"><img src="images/rem-brand-avatar.webp" width="512" height="512" alt=""></span>慕言のCOS摄影</a>
     <ul class="nav-links" id="navLinks" aria-label="主要导航">
       <li><a href="#works">例图</a></li>
       <li><a href="#price">价格</a></li>
@@ -1057,6 +1067,7 @@ body.mobile-device #price-cz .cz-price-grid{
       <a href="#price" class="btn ghost">拍摄价格</a>
       <a href="#contact" class="btn ghost">联系我</a>
     </div>
+    <p class="site-update">网站更新于 <time datetime="2026-08-26">2026年8月26日</time></p>
   </div>
   <a href="#works" class="scroll-hint">向下滚动</a>
 </header>
@@ -1075,7 +1086,7 @@ body.mobile-device #price-cz .cz-price-grid{
       <span class="kicker">✦ 作品例图 ✦</span>
       <h2>作品展示</h2>
       <p>点击选项，切换查看 正片 / 场照 / 特效 例图</p>
-      <p>无论正片场照的例图所有特效均为本人制作</p>
+      <p class="works-authorship" id="worksAuthorship" aria-live="polite">正片分类：所有图片均由本人拍摄并完成后期。</p>
       <div class="sec-divider"></div>
     </div>
     <div class="works-tabs reveal">
@@ -1615,7 +1626,7 @@ document.querySelectorAll('.copy-contact').forEach(button=>button.addEventListen
 }));
 
 // ===== 图片画廊数据 =====
-const GALLERIES = [{"key":"zhengpian","cats":["外景","棚子"],"fixed":{"外景":["images/正片/外景/首图.jpg","images/正片/外景/首图 (2).jpg","images/正片/外景/首图 (3).jpg"],"棚子":["images/正片/棚子/首图.jpg","images/正片/棚子/首图 (2).jpg","images/正片/棚子/首图 (3).jpg"],"all":["images/正片/外景/首图.jpg","images/正片/外景/首图 (2).jpg","images/正片/外景/首图 (3).jpg","images/正片/棚子/首图.jpg","images/正片/棚子/首图 (2).jpg","images/正片/棚子/首图 (3).jpg"]},"images":[{"s":"images/正片/外景/01.jpg","w":5461,"h":3084,"cats":["外景"],"c":"01"},{"s":"images/正片/外景/02.jpg","w":3840,"h":2610,"cats":["外景"],"c":"02"},{"s":"images/正片/外景/03.jpg","w":3784,"h":2378,"cats":["外景"],"c":"03"},{"s":"images/正片/外景/04.jpg","w":6000,"h":3375,"cats":["外景"],"c":"04"},{"s":"images/正片/外景/05.jpg","w":1500,"h":2000,"cats":["外景"],"c":"05"},{"s":"images/正片/外景/06.jpg","w":1600,"h":2400,"cats":["外景"],"c":"06"},{"s":"images/正片/外景/07.jpg","w":3458,"h":5405,"cats":["外景"],"c":"07"},{"s":"images/正片/外景/08.jpg","w":4096,"h":2730,"cats":["外景"],"c":"08"},{"s":"images/正片/外景/11.jpg","w":6000,"h":4000,"cats":["外景"],"c":"11"},{"s":"images/正片/外景/12.jpg","w":4096,"h":2730,"cats":["外景"],"c":"12"},{"s":"images/正片/外景/13.jpg","w":6000,"h":4000,"cats":["外景"],"c":"13"},{"s":"images/正片/外景/14.jpg","w":6000,"h":3375,"cats":["外景"],"c":"14"},{"s":"images/正片/外景/15.jpg","w":5381,"h":3027,"cats":["外景"],"c":"15"},{"s":"images/正片/外景/16.jpg","w":6854,"h":2938,"cats":["外景"],"c":"16"},{"s":"images/正片/外景/17.jpg","w":6000,"h":4000,"cats":["外景"],"c":"17"},{"s":"images/正片/外景/18.jpg","w":4095,"h":2685,"cats":["外景"],"c":"18"},{"s":"images/正片/外景/19.jpg","w":2678,"h":1600,"cats":["外景"],"c":"19"},{"s":"images/正片/外景/20.jpg","w":7008,"h":4672,"cats":["外景"],"c":"20"},{"s":"images/正片/外景/22.jpg","w":7112,"h":4000,"cats":["外景"],"c":"22"},{"s":"images/正片/外景/24.jpg","w":6672,"h":3753,"cats":["外景"],"c":"24"},{"s":"images/正片/外景/26.jpg","w":7074,"h":3979,"cats":["外景"],"c":"26"},{"s":"images/正片/外景/27.jpg","w":6542,"h":3680,"cats":["外景"],"c":"27"},{"s":"images/正片/外景/28.jpg","w":6000,"h":3375,"cats":["外景"],"c":"28"},{"s":"images/正片/外景/CBA7A010130242A06E82BCEC10DA6D1A.jpg","w":6654,"h":3743,"cats":["外景"],"c":"CBA7A010130242A06E82BCEC10DA6D1A"},{"s":"images/正片/外景/首图 (2).jpg","w":3612,"h":5417,"cats":["外景"],"c":"首图 (2)"},{"s":"images/正片/外景/首图 (3).jpg","w":1079,"h":1620,"cats":["外景"],"c":"首图 (3)"},{"s":"images/正片/外景/首图.jpg","w":5628,"h":3166,"cats":["外景"],"c":"首图"},{"s":"images/正片/棚子/30.png","w":2704,"h":1523,"cats":["棚子"],"c":"30"},{"s":"images/正片/棚子/31.jpg","w":2865,"h":1612,"cats":["棚子"],"c":"31"},{"s":"images/正片/棚子/32.jpg","w":5489,"h":3659,"cats":["棚子"],"c":"32"},{"s":"images/正片/棚子/33.jpg","w":2400,"h":1600,"cats":["棚子"],"c":"33"},{"s":"images/正片/棚子/34.jpg","w":2731,"h":4255,"cats":["棚子"],"c":"34"},{"s":"images/正片/棚子/35.jpg","w":5016,"h":3344,"cats":["棚子"],"c":"35"},{"s":"images/正片/棚子/36.jpg","w":5016,"h":3344,"cats":["棚子"],"c":"36"},{"s":"images/正片/棚子/37.png","w":2400,"h":1600,"cats":["棚子"],"c":"37"},{"s":"images/正片/棚子/38.jpg","w":4000,"h":6000,"cats":["棚子"],"c":"38"},{"s":"images/正片/棚子/39.jpg","w":3486,"h":5227,"cats":["棚子"],"c":"39"},{"s":"images/正片/棚子/40.jpg","w":3344,"h":5016,"cats":["棚子"],"c":"40"},{"s":"images/正片/棚子/41.jpg","w":6597,"h":4320,"cats":["棚子"],"c":"41"},{"s":"images/正片/棚子/42.jpg","w":3532,"h":5298,"cats":["棚子"],"c":"42"},{"s":"images/正片/棚子/44.jpg","w":4000,"h":6000,"cats":["棚子"],"c":"44"},{"s":"images/正片/棚子/DSC01840.jpg","w":5883,"h":3922,"cats":["棚子"],"c":"DSC01840"},{"s":"images/正片/棚子/首图 (2).jpg","w":4000,"h":6000,"cats":["棚子"],"c":"首图 (2)"},{"s":"images/正片/棚子/首图 (3).jpg","w":4000,"h":6000,"cats":["棚子"],"c":"首图 (3)"},{"s":"images/正片/棚子/首图.jpg","w":6275,"h":3530,"cats":["棚子"],"c":"首图"}]},{"key":"changzhao","cats":["亮灰","暗调"],"fixed":{"亮灰":["images/场照/亮灰/首图 (2).jpg","images/场照/亮灰/首图 (3).jpg","images/场照/亮灰/首图.jpg"],"暗调":["images/场照/暗调/首图.jpg","images/场照/暗调/首图 (2).jpg","images/场照/暗调/首图 (3).jpg"],"all":["images/场照/亮灰/首图 (2).jpg","images/场照/亮灰/首图 (3).jpg","images/场照/亮灰/首图.jpg","images/场照/暗调/首图.jpg","images/场照/暗调/首图 (2).jpg","images/场照/暗调/首图 (3).jpg"]},"images":[{"s":"images/场照/亮灰/03.jpg","w":4096,"h":2730,"cats":["亮灰"],"c":"03"},{"s":"images/场照/亮灰/04.jpg","w":5059,"h":3372,"cats":["亮灰"],"c":"04"},{"s":"images/场照/亮灰/06.jpg","w":2400,"h":1600,"cats":["亮灰"],"c":"06"},{"s":"images/场照/亮灰/08.jpg","w":4800,"h":3200,"cats":["亮灰"],"c":"08"},{"s":"images/场照/亮灰/09.jpg","w":2400,"h":1800,"cats":["亮灰"],"c":"09"},{"s":"images/场照/亮灰/10.jpg","w":3694,"h":4954,"cats":["亮灰"],"c":"10"},{"s":"images/场照/亮灰/11.jpg","w":8304,"h":4378,"cats":["亮灰"],"c":"11"},{"s":"images/场照/亮灰/12.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"12"},{"s":"images/场照/亮灰/13.jpg","w":6751,"h":3797,"cats":["亮灰"],"c":"13"},{"s":"images/场照/亮灰/15.jpg","w":7112,"h":4000,"cats":["亮灰"],"c":"15"},{"s":"images/场照/亮灰/17.jpg","w":6926,"h":3896,"cats":["亮灰"],"c":"17"},{"s":"images/场照/亮灰/18.jpg","w":4359,"h":6540,"cats":["亮灰"],"c":"18"},{"s":"images/场照/亮灰/20.jpg","w":4000,"h":6000,"cats":["亮灰"],"c":"20"},{"s":"images/场照/亮灰/23.jpg","w":3483,"h":5224,"cats":["亮灰"],"c":"23"},{"s":"images/场照/亮灰/24.jpg","w":7112,"h":4000,"cats":["亮灰"],"c":"24"},{"s":"images/场照/亮灰/26.jpg","w":7349,"h":4134,"cats":["亮灰"],"c":"26"},{"s":"images/场照/亮灰/27.jpg","w":4856,"h":2732,"cats":["亮灰"],"c":"27"},{"s":"images/场照/亮灰/34.jpg","w":6000,"h":4000,"cats":["亮灰"],"c":"34"},{"s":"images/场照/亮灰/38.jpg","w":4000,"h":6000,"cats":["亮灰"],"c":"38"},{"s":"images/场照/亮灰/39.jpg","w":6000,"h":4000,"cats":["亮灰"],"c":"39"},{"s":"images/场照/亮灰/48.jpg","w":6000,"h":3375,"cats":["亮灰"],"c":"48"},{"s":"images/场照/亮灰/DSC00083.jpg","w":4000,"h":6000,"cats":["亮灰"],"c":"DSC00083"},{"s":"images/场照/亮灰/DSC00500.jpg","w":4000,"h":6000,"cats":["亮灰"],"c":"DSC00500"},{"s":"images/场照/亮灰/Image_1786104236736_939_upscayl_4x_upscayl-standard-4x.jpg","w":9700,"h":6400,"cats":["亮灰"],"c":"Image_1786104236736_939_upscayl_4x_upscayl-standard-4x"},{"s":"images/场照/亮灰/首图 (2).jpg","w":7112,"h":4001,"cats":["亮灰"],"c":"首图 (2)"},{"s":"images/场照/亮灰/首图 (3).jpg","w":4001,"h":6001,"cats":["亮灰"],"c":"首图 (3)"},{"s":"images/场照/亮灰/首图.jpg","w":3729,"h":5594,"cats":["亮灰"],"c":"首图"},{"s":"images/场照/暗调/00.jpg","w":7054,"h":3968,"cats":["暗调"],"c":"00"},{"s":"images/场照/暗调/28.jpg","w":4096,"h":2304,"cats":["暗调"],"c":"28"},{"s":"images/场照/暗调/29.jpg","w":2730,"h":4096,"cats":["暗调"],"c":"29"},{"s":"images/场照/暗调/31.jpg","w":6000,"h":3375,"cats":["暗调"],"c":"31"},{"s":"images/场照/暗调/32.jpg","w":1365,"h":2048,"cats":["暗调"],"c":"32"},{"s":"images/场照/暗调/33.jpg","w":3840,"h":2159,"cats":["暗调"],"c":"33"},{"s":"images/场照/暗调/35.jpg","w":2458,"h":3682,"cats":["暗调"],"c":"35"},{"s":"images/场照/暗调/41.jpg","w":6000,"h":3375,"cats":["暗调"],"c":"41"},{"s":"images/场照/暗调/42.jpg","w":6000,"h":3375,"cats":["暗调"],"c":"42"},{"s":"images/场照/暗调/43.jpg","w":6730,"h":3786,"cats":["暗调"],"c":"43"},{"s":"images/场照/暗调/44.jpg","w":3473,"h":5206,"cats":["暗调"],"c":"44"},{"s":"images/场照/暗调/47.jpg","w":6000,"h":4000,"cats":["暗调"],"c":"47"},{"s":"images/场照/暗调/50.jpg","w":6014,"h":3383,"cats":["暗调"],"c":"50"},{"s":"images/场照/暗调/51.jpg","w":3548,"h":5322,"cats":["暗调"],"c":"51"},{"s":"images/场照/暗调/52.jpg","w":7667,"h":3286,"cats":["暗调"],"c":"52"},{"s":"images/场照/暗调/53.jpg","w":6000,"h":3375,"cats":["暗调"],"c":"53"},{"s":"images/场照/暗调/54.jpg","w":6310,"h":3549,"cats":["暗调"],"c":"54"},{"s":"images/场照/暗调/55.jpg","w":6000,"h":4000,"cats":["暗调"],"c":"55"},{"s":"images/场照/暗调/56.jpg","w":4096,"h":2730,"cats":["暗调"],"c":"56"},{"s":"images/场照/暗调/_DSC6247.jpg","w":7046,"h":3964,"cats":["暗调"],"c":"_DSC6247"},{"s":"images/场照/暗调/首图 (2).jpg","w":3379,"h":5069,"cats":["暗调"],"c":"首图 (2)"},{"s":"images/场照/暗调/首图 (3).jpg","w":4194,"h":6291,"cats":["暗调"],"c":"首图 (3)"},{"s":"images/场照/暗调/首图.jpg","w":6000,"h":3375,"cats":["暗调"],"c":"首图"}]},{"key":"texiao","cats":[],"fixed":{"all":["images/特效/首图 (2).jpg","images/特效/首图 (3).jpg","images/特效/首图.jpg"]},"images":[{"s":"images/特效/02.jpg","w":7399,"h":4162,"cats":[],"c":"02"},{"s":"images/特效/04.jpg","w":9688,"h":4152,"cats":[],"c":"04"},{"s":"images/特效/05.jpg","w":11946,"h":5120,"cats":[],"c":"05"},{"s":"images/特效/06.jpg","w":7091,"h":3989,"cats":[],"c":"06"},{"s":"images/特效/09.jpg","w":4096,"h":2305,"cats":[],"c":"09"},{"s":"images/特效/10.jpg","w":3358,"h":5970,"cats":[],"c":"10"},{"s":"images/特效/11.jpg","w":8248,"h":4640,"cats":[],"c":"11"},{"s":"images/特效/12.jpg","w":7341,"h":4129,"cats":[],"c":"12"},{"s":"images/特效/13.jpg","w":3358,"h":5970,"cats":[],"c":"13"},{"s":"images/特效/15.jpg","w":9548,"h":5371,"cats":[],"c":"15"},{"s":"images/特效/16.jpg","w":3665,"h":5498,"cats":[],"c":"16"},{"s":"images/特效/17.jpg","w":5128,"h":9118,"cats":[],"c":"17"},{"s":"images/特效/18.jpg","w":3358,"h":5970,"cats":[],"c":"18"},{"s":"images/特效/19.jpg","w":12002,"h":6751,"cats":[],"c":"19"},{"s":"images/特效/21.jpg","w":13900,"h":8000,"cats":[],"c":"21"},{"s":"images/特效/22.jpg","w":3358,"h":5970,"cats":[],"c":"22"},{"s":"images/特效/_DSC6247.jpg","w":7046,"h":3964,"cats":[],"c":"_DSC6247"},{"s":"images/特效/初六（巴麻美1）.jpg","w":3029,"h":4490,"cats":[],"c":"初六（巴麻美1）"},{"s":"images/特效/夏夏（猴子1）.jpg","w":6556,"h":3688,"cats":[],"c":"夏夏（猴子1）"},{"s":"images/特效/夏夏（韩信1.3).jpg","w":8235,"h":4632,"cats":[],"c":"夏夏（韩信1.3)"},{"s":"images/特效/首图 (2).jpg","w":7054,"h":3968,"cats":[],"c":"首图 (2)"},{"s":"images/特效/首图 (3).jpg","w":2458,"h":3682,"cats":[],"c":"首图 (3)"},{"s":"images/特效/首图.jpg","w":2659,"h":3989,"cats":[],"c":"首图"}]}];
+const GALLERIES = [{"key":"zhengpian","cats":["外景","棚子"],"fixed":{"外景":["images/正片/外景/首图.jpg","images/正片/外景/首图 (2).jpg","images/正片/外景/首图 (3).jpg"],"棚子":["images/正片/棚子/首图.jpg","images/正片/棚子/首图 (2).jpg","images/正片/棚子/首图 (3).jpg"],"all":["images/正片/外景/首图.jpg","images/正片/外景/首图 (2).jpg","images/正片/外景/首图 (3).jpg","images/正片/棚子/首图.jpg","images/正片/棚子/首图 (2).jpg","images/正片/棚子/首图 (3).jpg"]},"secondary":{"外景":["images/正片/外景/副图.jpg"],"棚子":[],"all":["images/正片/外景/副图.jpg"]},"images":[{"s":"images/正片/外景/01.jpg","w":5461,"h":3084,"cats":["外景"],"c":"01"},{"s":"images/正片/外景/02.jpg","w":3840,"h":2610,"cats":["外景"],"c":"02"},{"s":"images/正片/外景/03.jpg","w":3784,"h":2378,"cats":["外景"],"c":"03"},{"s":"images/正片/外景/04.jpg","w":6000,"h":3375,"cats":["外景"],"c":"04"},{"s":"images/正片/外景/05.jpg","w":1500,"h":2000,"cats":["外景"],"c":"05"},{"s":"images/正片/外景/06.jpg","w":1600,"h":2400,"cats":["外景"],"c":"06"},{"s":"images/正片/外景/07.jpg","w":3458,"h":5405,"cats":["外景"],"c":"07"},{"s":"images/正片/外景/08.jpg","w":4096,"h":2730,"cats":["外景"],"c":"08"},{"s":"images/正片/外景/11.jpg","w":6000,"h":4000,"cats":["外景"],"c":"11"},{"s":"images/正片/外景/12.jpg","w":4096,"h":2730,"cats":["外景"],"c":"12"},{"s":"images/正片/外景/13.jpg","w":6000,"h":4000,"cats":["外景"],"c":"13"},{"s":"images/正片/外景/14.jpg","w":6000,"h":3375,"cats":["外景"],"c":"14"},{"s":"images/正片/外景/15.jpg","w":5381,"h":3027,"cats":["外景"],"c":"15"},{"s":"images/正片/外景/16.jpg","w":6854,"h":2938,"cats":["外景"],"c":"16"},{"s":"images/正片/外景/17.jpg","w":6000,"h":4000,"cats":["外景"],"c":"17"},{"s":"images/正片/外景/18.jpg","w":4095,"h":2685,"cats":["外景"],"c":"18"},{"s":"images/正片/外景/19.jpg","w":2678,"h":1600,"cats":["外景"],"c":"19"},{"s":"images/正片/外景/20.jpg","w":7008,"h":4672,"cats":["外景"],"c":"20"},{"s":"images/正片/外景/22.jpg","w":7112,"h":4000,"cats":["外景"],"c":"22"},{"s":"images/正片/外景/24.jpg","w":6672,"h":3753,"cats":["外景"],"c":"24"},{"s":"images/正片/外景/26.jpg","w":7074,"h":3979,"cats":["外景"],"c":"26"},{"s":"images/正片/外景/27.jpg","w":6542,"h":3680,"cats":["外景"],"c":"27"},{"s":"images/正片/外景/28.jpg","w":6000,"h":3375,"cats":["外景"],"c":"28"},{"s":"images/正片/外景/CBA7A010130242A06E82BCEC10DA6D1A.jpg","w":6654,"h":3743,"cats":["外景"],"c":"CBA7A010130242A06E82BCEC10DA6D1A"},{"s":"images/正片/外景/DSC01999.jpg","w":6000,"h":4000,"cats":["外景"],"c":"DSC01999"},{"s":"images/正片/外景/DSC02103.jpg","w":5971,"h":3359,"cats":["外景"],"c":"DSC02103"},{"s":"images/正片/外景/DSC02267.jpg","w":4096,"h":2304,"cats":["外景"],"c":"DSC02267"},{"s":"images/正片/外景/副图.jpg","w":5502,"h":3094,"cats":["外景"],"c":"副图"},{"s":"images/正片/外景/首图 (2).jpg","w":3612,"h":5417,"cats":["外景"],"c":"首图 (2)"},{"s":"images/正片/外景/首图 (3).jpg","w":1079,"h":1620,"cats":["外景"],"c":"首图 (3)"},{"s":"images/正片/外景/首图.jpg","w":5628,"h":3166,"cats":["外景"],"c":"首图"},{"s":"images/正片/棚子/30.png","w":2704,"h":1523,"cats":["棚子"],"c":"30"},{"s":"images/正片/棚子/31.jpg","w":2865,"h":1612,"cats":["棚子"],"c":"31"},{"s":"images/正片/棚子/32.jpg","w":5489,"h":3659,"cats":["棚子"],"c":"32"},{"s":"images/正片/棚子/33.jpg","w":2400,"h":1600,"cats":["棚子"],"c":"33"},{"s":"images/正片/棚子/34.jpg","w":2731,"h":4255,"cats":["棚子"],"c":"34"},{"s":"images/正片/棚子/35.jpg","w":5016,"h":3344,"cats":["棚子"],"c":"35"},{"s":"images/正片/棚子/36.jpg","w":5016,"h":3344,"cats":["棚子"],"c":"36"},{"s":"images/正片/棚子/37.png","w":2400,"h":1600,"cats":["棚子"],"c":"37"},{"s":"images/正片/棚子/38.jpg","w":4000,"h":6000,"cats":["棚子"],"c":"38"},{"s":"images/正片/棚子/39.jpg","w":3486,"h":5227,"cats":["棚子"],"c":"39"},{"s":"images/正片/棚子/40.jpg","w":3344,"h":5016,"cats":["棚子"],"c":"40"},{"s":"images/正片/棚子/41.jpg","w":6597,"h":4320,"cats":["棚子"],"c":"41"},{"s":"images/正片/棚子/42.jpg","w":3532,"h":5298,"cats":["棚子"],"c":"42"},{"s":"images/正片/棚子/44.jpg","w":4000,"h":6000,"cats":["棚子"],"c":"44"},{"s":"images/正片/棚子/45.jpg","w":4000,"h":6000,"cats":["棚子"],"c":"45"},{"s":"images/正片/棚子/DSC01819.jpg","w":6000,"h":4000,"cats":["棚子"],"c":"DSC01819"},{"s":"images/正片/棚子/DSC01840.jpg","w":5883,"h":3922,"cats":["棚子"],"c":"DSC01840"},{"s":"images/正片/棚子/DSC01940.jpg","w":4000,"h":6000,"cats":["棚子"],"c":"DSC01940"},{"s":"images/正片/棚子/DSC01962.jpg","w":3742,"h":5612,"cats":["棚子"],"c":"DSC01962"},{"s":"images/正片/棚子/首图 (2).jpg","w":4000,"h":6000,"cats":["棚子"],"c":"首图 (2)"},{"s":"images/正片/棚子/首图 (3).jpg","w":4000,"h":6000,"cats":["棚子"],"c":"首图 (3)"},{"s":"images/正片/棚子/首图.jpg","w":6275,"h":3530,"cats":["棚子"],"c":"首图"}]},{"key":"changzhao","cats":["亮灰","暗调"],"fixed":{"亮灰":["images/场照/亮灰/首图 (2).jpg","images/场照/亮灰/首图 (3).jpg","images/场照/亮灰/首图.jpg"],"暗调":["images/场照/暗调/首图.jpg","images/场照/暗调/首图 (2).jpg","images/场照/暗调/首图 (3).jpg"],"all":["images/场照/亮灰/首图 (2).jpg","images/场照/亮灰/首图 (3).jpg","images/场照/亮灰/首图.jpg","images/场照/暗调/首图.jpg","images/场照/暗调/首图 (2).jpg","images/场照/暗调/首图 (3).jpg"]},"secondary":{"亮灰":["images/场照/亮灰/副图.jpg","images/场照/亮灰/副图 (2).jpg","images/场照/亮灰/副图 (3).jpg"],"暗调":["images/场照/暗调/副图 (2).jpg","images/场照/暗调/副图 (3).jpg","images/场照/暗调/副图.jpg"],"all":["images/场照/亮灰/副图.jpg","images/场照/亮灰/副图 (2).jpg","images/场照/亮灰/副图 (3).jpg","images/场照/暗调/副图 (2).jpg","images/场照/暗调/副图 (3).jpg","images/场照/暗调/副图.jpg"]},"images":[{"s":"images/场照/亮灰/03.jpg","w":4096,"h":2730,"cats":["亮灰"],"c":"03"},{"s":"images/场照/亮灰/04.jpg","w":5059,"h":3372,"cats":["亮灰"],"c":"04"},{"s":"images/场照/亮灰/06.jpg","w":2400,"h":1600,"cats":["亮灰"],"c":"06"},{"s":"images/场照/亮灰/08.jpg","w":4800,"h":3200,"cats":["亮灰"],"c":"08"},{"s":"images/场照/亮灰/09.jpg","w":2400,"h":1800,"cats":["亮灰"],"c":"09"},{"s":"images/场照/亮灰/11.jpg","w":8304,"h":4378,"cats":["亮灰"],"c":"11"},{"s":"images/场照/亮灰/12.jpg","w":1600,"h":2400,"cats":["亮灰"],"c":"12"},{"s":"images/场照/亮灰/13.jpg","w":6751,"h":3797,"cats":["亮灰"],"c":"13"},{"s":"images/场照/亮灰/15.jpg","w":7112,"h":4000,"cats":["亮灰"],"c":"15"},{"s":"images/场照/亮灰/17.jpg","w":6926,"h":3896,"cats":["亮灰"],"c":"17"},{"s":"images/场照/亮灰/18.jpg","w":4359,"h":6540,"cats":["亮灰"],"c":"18"},{"s":"images/场照/亮灰/23.jpg","w":3483,"h":5224,"cats":["亮灰"],"c":"23"},{"s":"images/场照/亮灰/24.jpg","w":7112,"h":4000,"cats":["亮灰"],"c":"24"},{"s":"images/场照/亮灰/26.jpg","w":7349,"h":4134,"cats":["亮灰"],"c":"26"},{"s":"images/场照/亮灰/27.jpg","w":4856,"h":2732,"cats":["亮灰"],"c":"27"},{"s":"images/场照/亮灰/34.jpg","w":6000,"h":4000,"cats":["亮灰"],"c":"34"},{"s":"images/场照/亮灰/38.jpg","w":4000,"h":6000,"cats":["亮灰"],"c":"38"},{"s":"images/场照/亮灰/39.jpg","w":6000,"h":4000,"cats":["亮灰"],"c":"39"},{"s":"images/场照/亮灰/48.jpg","w":6000,"h":3375,"cats":["亮灰"],"c":"48"},{"s":"images/场照/亮灰/DSC00083.jpg","w":4000,"h":6000,"cats":["亮灰"],"c":"DSC00083"},{"s":"images/场照/亮灰/DSC00403.jpg","w":3665,"h":5498,"cats":["亮灰"],"c":"DSC00403"},{"s":"images/场照/亮灰/DSC00500.jpg","w":4000,"h":6000,"cats":["亮灰"],"c":"DSC00500"},{"s":"images/场照/亮灰/Image_1786104236736_939_upscayl_4x_upscayl-standard-4x.jpg","w":9700,"h":6400,"cats":["亮灰"],"c":"Image_1786104236736_939_upscayl_4x_upscayl-standard-4x"},{"s":"images/场照/亮灰/副图 (2).jpg","w":3694,"h":4954,"cats":["亮灰"],"c":"副图 (2)"},{"s":"images/场照/亮灰/副图 (3).jpg","w":4000,"h":6000,"cats":["亮灰"],"c":"副图 (3)"},{"s":"images/场照/亮灰/副图.jpg","w":5763,"h":3242,"cats":["亮灰"],"c":"副图"},{"s":"images/场照/亮灰/首图 (2).jpg","w":7112,"h":4001,"cats":["亮灰"],"c":"首图 (2)"},{"s":"images/场照/亮灰/首图 (3).jpg","w":4001,"h":6001,"cats":["亮灰"],"c":"首图 (3)"},{"s":"images/场照/亮灰/首图.jpg","w":3729,"h":5594,"cats":["亮灰"],"c":"首图"},{"s":"images/场照/暗调/00.jpg","w":7054,"h":3968,"cats":["暗调"],"c":"00"},{"s":"images/场照/暗调/28.jpg","w":4096,"h":2304,"cats":["暗调"],"c":"28"},{"s":"images/场照/暗调/29.jpg","w":2730,"h":4096,"cats":["暗调"],"c":"29"},{"s":"images/场照/暗调/31.jpg","w":6000,"h":3375,"cats":["暗调"],"c":"31"},{"s":"images/场照/暗调/33.jpg","w":3840,"h":2159,"cats":["暗调"],"c":"33"},{"s":"images/场照/暗调/35.jpg","w":2458,"h":3682,"cats":["暗调"],"c":"35"},{"s":"images/场照/暗调/41.jpg","w":6000,"h":3375,"cats":["暗调"],"c":"41"},{"s":"images/场照/暗调/42.jpg","w":6000,"h":3375,"cats":["暗调"],"c":"42"},{"s":"images/场照/暗调/43.jpg","w":6730,"h":3786,"cats":["暗调"],"c":"43"},{"s":"images/场照/暗调/47.jpg","w":6000,"h":4000,"cats":["暗调"],"c":"47"},{"s":"images/场照/暗调/50.jpg","w":6014,"h":3383,"cats":["暗调"],"c":"50"},{"s":"images/场照/暗调/51.jpg","w":3548,"h":5322,"cats":["暗调"],"c":"51"},{"s":"images/场照/暗调/52.jpg","w":7667,"h":3286,"cats":["暗调"],"c":"52"},{"s":"images/场照/暗调/54.jpg","w":6310,"h":3549,"cats":["暗调"],"c":"54"},{"s":"images/场照/暗调/55.jpg","w":6000,"h":4000,"cats":["暗调"],"c":"55"},{"s":"images/场照/暗调/56.jpg","w":4096,"h":2730,"cats":["暗调"],"c":"56"},{"s":"images/场照/暗调/_DSC6247.jpg","w":7046,"h":3964,"cats":["暗调"],"c":"_DSC6247"},{"s":"images/场照/暗调/DSC00396.jpg","w":13492,"h":7589,"cats":["暗调"],"c":"DSC00396"},{"s":"images/场照/暗调/副图 (2).jpg","w":6000,"h":3375,"cats":["暗调"],"c":"副图 (2)"},{"s":"images/场照/暗调/副图 (3).jpg","w":1365,"h":2048,"cats":["暗调"],"c":"副图 (3)"},{"s":"images/场照/暗调/副图.jpg","w":3473,"h":5206,"cats":["暗调"],"c":"副图"},{"s":"images/场照/暗调/首图 (2).jpg","w":3379,"h":5069,"cats":["暗调"],"c":"首图 (2)"},{"s":"images/场照/暗调/首图 (3).jpg","w":4194,"h":6291,"cats":["暗调"],"c":"首图 (3)"},{"s":"images/场照/暗调/首图.jpg","w":6000,"h":3375,"cats":["暗调"],"c":"首图"}]},{"key":"texiao","cats":[],"fixed":{"all":["images/特效/首图 (2).jpg","images/特效/首图 (3).jpg","images/特效/首图.jpg"]},"secondary":{"all":["images/特效/副图.jpg","images/特效/副图 (2).jpg","images/特效/副图 (3).jpg"]},"images":[{"s":"images/特效/02.jpg","w":7399,"h":4162,"cats":[],"c":"02"},{"s":"images/特效/04.jpg","w":9688,"h":4152,"cats":[],"c":"04"},{"s":"images/特效/05.jpg","w":11946,"h":5120,"cats":[],"c":"05"},{"s":"images/特效/09.jpg","w":4096,"h":2305,"cats":[],"c":"09"},{"s":"images/特效/10.jpg","w":3358,"h":5970,"cats":[],"c":"10"},{"s":"images/特效/11.jpg","w":8248,"h":4640,"cats":[],"c":"11"},{"s":"images/特效/12.jpg","w":7341,"h":4129,"cats":[],"c":"12"},{"s":"images/特效/13.jpg","w":3358,"h":5970,"cats":[],"c":"13"},{"s":"images/特效/15.jpg","w":9548,"h":5371,"cats":[],"c":"15"},{"s":"images/特效/16.jpg","w":3665,"h":5498,"cats":[],"c":"16"},{"s":"images/特效/17.jpg","w":5128,"h":9118,"cats":[],"c":"17"},{"s":"images/特效/18.jpg","w":3358,"h":5970,"cats":[],"c":"18"},{"s":"images/特效/19.jpg","w":12002,"h":6751,"cats":[],"c":"19"},{"s":"images/特效/21.jpg","w":13900,"h":8000,"cats":[],"c":"21"},{"s":"images/特效/23.jpg","w":7054,"h":3968,"cats":[],"c":"23"},{"s":"images/特效/_DSC6247.jpg","w":7046,"h":3964,"cats":[],"c":"_DSC6247"},{"s":"images/特效/DSC00380.jpg","w":5763,"h":3242,"cats":[],"c":"DSC00380"},{"s":"images/特效/初六（巴麻美1）.jpg","w":3029,"h":4490,"cats":[],"c":"初六（巴麻美1）"},{"s":"images/特效/副图 (2).jpg","w":3665,"h":5498,"cats":[],"c":"副图 (2)"},{"s":"images/特效/副图 (3).jpg","w":3358,"h":5970,"cats":[],"c":"副图 (3)"},{"s":"images/特效/副图.jpg","w":7091,"h":3989,"cats":[],"c":"副图"},{"s":"images/特效/夏夏（猴子1）.jpg","w":6556,"h":3688,"cats":[],"c":"夏夏（猴子1）"},{"s":"images/特效/夏夏（韩信1.3).jpg","w":8235,"h":4632,"cats":[],"c":"夏夏（韩信1.3)"},{"s":"images/特效/首图 (2).jpg","w":13492,"h":7589,"cats":[],"c":"首图 (2)"},{"s":"images/特效/首图 (3).jpg","w":2458,"h":3682,"cats":[],"c":"首图 (3)"},{"s":"images/特效/首图.jpg","w":2659,"h":3989,"cats":[],"c":"首图"}]}];
 
 // ===== 灯箱 =====
 const QQ_UA=navigator.userAgent||'';
@@ -1717,9 +1728,10 @@ document.addEventListener('keydown',e=>{
   }
 });
 
-// ===== 画廊：首批固定首图，之后每个板块/风格独立无重复轮播 =====
+// ===== 画廊：首批固定首图、第二批优先副图，之后独立随机无重复轮播 =====
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function poolOf(g){return g.cat==='all'?g.images:g.images.filter(x=>x.cats.includes(g.cat))}
+function randomPoolOf(g){return poolOf(g).filter(image=>!image.c.startsWith('首图')&&!image.c.startsWith('副图'))}
 function thumbOf(src,mobile=window.innerWidth<=900){
   return src.replace(/^images\//,mobile?'images/thumbs-mobile/':'images/thumbs/').replace(/\.[^.]+$/,'.webp')
 }
@@ -1778,42 +1790,116 @@ function makeQueue(pool,avoid){
   const blocked=new Set(avoid||[]);
   return shuffle(pool.filter(x=>!blocked.has(x.s))).concat(shuffle(pool.filter(x=>blocked.has(x.s))));
 }
+function galleryRows(batch){
+  const landscapes=batch.filter(image=>image.w>=image.h),portraits=batch.filter(image=>image.w<image.h);
+  if(batch.length===3&&landscapes.length===1&&portraits.length===2)return[[landscapes[0]],[portraits[0],portraits[1]]];
+  if(batch.length===3&&landscapes.length===3)return landscapes.map(image=>[image]);
+  if(batch.length===4&&portraits.length===4)return[portraits.slice(0,2),portraits.slice(2,4)];
+  if(batch.length===6&&landscapes.length===2&&portraits.length===4)return[[landscapes[0]],[portraits[0],portraits[1]],[landscapes[1]],[portraits[2],portraits[3]]];
+  if(batch.length===6&&landscapes.length===6)return[landscapes.slice(0,2),landscapes.slice(2,4),landscapes.slice(4,6)];
+  const rows=[];
+  for(let i=0;i<landscapes.length;i+=2)rows.push(landscapes.slice(i,i+2));
+  for(let i=0;i+1<portraits.length;i+=2)rows.push(portraits.slice(i,i+2));
+  return rows;
+}
+function arrangeBatch(batch){return galleryRows(batch).flat()}
+const PORTRAIT_RATIO_TOLERANCE=.035;
+function structuredShape(pool,preferred){
+  const available=[...new Map([...(preferred||[]),...pool].map(image=>[image.s,image])).values()];
+  const landscapes=available.filter(image=>image.w>=image.h).length,portraits=available.length-landscapes;
+  const shapes=[[1,2],[3,0],[0,4]];
+  return shapes.find(([wide,tall])=>landscapes>=wide&&portraits>=tall)||null;
+}
+function pickStructured(queue,pool,preferred,previous){
+  const queueAfter=queue.slice(),chosen=[],used=new Set(),blocked=previous||new Set(),shape=structuredShape(queueAfter,preferred);
+  if(!shape)return{batch:[],queueAfter,newlySeen:0};
+  let newlySeen=0;
+  const add=image=>{if(!image||used.has(image.s))return false;chosen.push(image);used.add(image.s);return true};
+  const addPreferred=image=>{
+    if(!add(image))return false;
+    const queueIndex=queueAfter.findIndex(candidate=>candidate.s===image.s);
+    if(queueIndex>=0){queueAfter.splice(queueIndex,1);newlySeen++}
+    return true;
+  };
+  const takeSimilarPortraits=wanted=>{
+    const preferredPaths=new Set((preferred||[]).map(image=>image.s));
+    const uniquePortraits=allowPrevious=>[...new Map([...(preferred||[]),...queueAfter,...pool].map(image=>[image.s,image])).values()]
+      .filter(image=>image.w<image.h&&!used.has(image.s)&&(allowPrevious||!blocked.has(image.s)));
+    let candidates=uniquePortraits(false);
+    if(candidates.length<wanted)candidates=uniquePortraits(true);
+    const sorted=candidates.slice().sort((a,b)=>(a.w/a.h)-(b.w/b.h)),groups=[];
+    const addGroup=group=>{const ratios=group.map(image=>image.w/image.h);groups.push({group,spread:Math.max(...ratios)-Math.min(...ratios),preferred:group.filter(image=>preferredPaths.has(image.s)).length,tie:Math.random()})};
+    if(wanted===2){for(let first=0;first<sorted.length;first++)for(let second=first+1;second<sorted.length;second++)addGroup([sorted[first],sorted[second]])}
+    else for(let index=0;index+wanted<=sorted.length;index++)addGroup(sorted.slice(index,index+wanted));
+    const close=groups.filter(group=>group.spread<=PORTRAIT_RATIO_TOLERANCE),ranked=close.length?close:groups;
+    ranked.sort((a,b)=>close.length?(b.preferred-a.preferred||a.spread-b.spread||a.tie-b.tie):(a.spread-b.spread||b.preferred-a.preferred||a.tie-b.tie));
+    const selected=ranked[0]?ranked[0].group:[];
+    selected.forEach(image=>{
+      const queueIndex=queueAfter.findIndex(candidate=>candidate.s===image.s);
+      if(queueIndex>=0){queueAfter.splice(queueIndex,1);newlySeen++}
+      add(image);
+    });
+    return selected.length;
+  };
+  const take=(portrait,wanted)=>{
+    if(portrait&&wanted>1){takeSimilarPortraits(wanted);return}
+    for(const image of preferred||[]){if(wanted<=0)break;if((image.w<image.h)===portrait&&addPreferred(image))wanted--}
+    const fromQueue=avoidPrevious=>{
+      while(wanted>0){
+        const index=queueAfter.findIndex(image=>(image.w<image.h)===portrait&&!used.has(image.s)&&(!avoidPrevious||!blocked.has(image.s)));
+        if(index<0)break;
+        if(add(queueAfter.splice(index,1)[0])){wanted--;newlySeen++}
+      }
+    };
+    fromQueue(true);fromQueue(false);
+    while(wanted>0){
+      const candidates=pool.filter(image=>(image.w<image.h)===portrait&&!used.has(image.s)&&!blocked.has(image.s));
+      const fallback=candidates.length?candidates:pool.filter(image=>(image.w<image.h)===portrait&&!used.has(image.s));
+      const image=shuffle(fallback)[0]||null;
+      if(!add(image))break;
+      wanted--;
+    }
+  };
+  take(false,shape[0]);take(true,shape[1]);
+  return{batch:arrangeBatch(chosen),queueAfter,newlySeen};
+}
 function fixedBatchSize(g){return g.cat==='all'&&g.cats.length?g.cats.length*3:3}
 function fixedBatchOf(g){
   const paths=(g.fixed&&(g.fixed[g.cat]||g.fixed.all))||[],pool=poolOf(g);
   const allowed=new Set(pool.map(x=>x.s));
   const fixed=paths.map(path=>g.images.find(image=>image.s===path)).filter(image=>image&&allowed.has(image.s)).slice(0,fixedBatchSize(g));
-  return g.cat==='all'&&g.cats.length?shuffle(fixed):fixed;
+  return arrangeBatch(fixed);
+}
+function secondaryBatchOf(g,queue){
+  const paths=(g.secondary&&(g.secondary[g.cat]||g.secondary.all))||[],fullPool=poolOf(g),pool=randomPoolOf(g);
+  if(!paths.length)return null;
+  const allowed=new Set(fullPool.map(x=>x.s));
+  const preferred=shuffle(paths.map(path=>g.images.find(image=>image.s===path)).filter(image=>image&&allowed.has(image.s)));
+  if(!preferred.length)return null;
+  const picked=pickStructured(queue,pool,preferred,new Set());
+  return picked.batch.length?{...picked,newlySeen:picked.batch.length,crossed:false,secondary:true}:null;
 }
 function stateOf(g){
   if(!g.states[g.cat]){
-    const pool=poolOf(g),fixed=fixedBatchOf(g),fixedPaths=new Set(fixed.map(image=>image.s));
+    const pool=randomPoolOf(g),fixed=fixedBatchOf(g);
     const fixedReady=fixed.length===fixedBatchSize(g);
-    g.states[g.cat]={queue:makeQueue(pool.filter(image=>!fixedPaths.has(image.s))),shown:fixedReady?fixed:[],prepared:null,seen:fixedReady?fixed.length:0,cycle:1};
+    const state={queue:makeQueue(pool),shown:fixedReady?fixed:[],prepared:null,seen:fixedReady?fixed.length:0,cycle:1};
+    if(fixedReady)state.prepared=secondaryBatchOf(g,state.queue);
+    g.states[g.cat]=state;
   }
   return g.states[g.cat];
 }
 function planBatch(g,state){
-  const pool=poolOf(g),previous=new Set(state.shown.map(x=>x.s));
-  let queue=state.queue.slice(),crossed=false,newlySeen=0;
+  const pool=randomPoolOf(g),previous=new Set(state.shown.map(x=>x.s));
+  let queue=state.queue.slice(),crossed=false;
   if(!queue.length){queue=makeQueue(pool,previous);crossed=true}
-  const picked=[];
-  const takeUnseen=portrait=>{
-    const i=queue.findIndex(x=>(x.w<x.h)===portrait&&!previous.has(x.s)&&!picked.some(y=>y.s===x.s));
-    if(i<0)return null;
-    newlySeen++;return queue.splice(i,1)[0];
-  };
-  const takeRepeat=portrait=>{
-    const same=pool.filter(x=>(x.w<x.h)===portrait&&!previous.has(x.s)&&!picked.some(y=>y.s===x.s));
-    return shuffle(same)[0]||null;
-  };
-  const take=portrait=>{
-    const image=takeUnseen(portrait)||takeRepeat(portrait);
-    if(image)picked.push(image);
-    return image;
-  };
-  take(false);take(true);take(true);
-  return{batch:picked,queueAfter:queue,crossed,newlySeen};
+  let picked=pickStructured(queue,queue,[],previous);
+  if(!picked.batch.length){
+    const carry=queue.slice(),carryPaths=new Set(carry.map(image=>image.s));
+    queue=carry.concat(makeQueue(pool.filter(image=>!carryPaths.has(image.s)),previous));
+    picked=pickStructured(queue,queue,carry,previous);crossed=true;
+  }
+  return{...picked,crossed};
 }
 function commitPlan(state,plan){
   state.queue=plan.queueAfter;
@@ -1853,6 +1939,27 @@ function prepareNextFull(g,state){
   if(!g.nextPack)g.nextPack=makeFullPack(state.prepared.batch);
   return g.nextPack.ready;
 }
+function sizeGalleryBlock(block){
+  if(!block)return;
+  block.querySelectorAll('.photo-row').forEach(row=>{
+    const cards=[...row.querySelectorAll('.card')],style=getComputedStyle(row),gap=parseFloat(style.columnGap||style.gap)||0;
+    if(block.classList.contains('is-six')||window.innerWidth<=720){
+      const rowWidth=window.innerWidth<=720?row.clientWidth:Math.min(row.clientWidth,900);
+      const cardWidth=Math.max(1,(rowWidth-gap*Math.max(0,cards.length-1))/Math.max(1,cards.length));
+      cards.forEach(card=>{
+        const ratio=parseFloat(card.dataset.ratio)||1;
+        card.style.width=cardWidth+'px';card.style.height=Math.max(1,cardWidth/ratio)+'px';
+      });
+      return;
+    }
+    const ratios=cards.map(card=>parseFloat(card.dataset.ratio)||1),usableWidth=Math.max(1,row.clientWidth-gap*Math.max(0,cards.length-1));
+    const commonHeight=Math.max(1,Math.min(row.clientHeight,usableWidth/Math.max(1,ratios.reduce((sum,ratio)=>sum+ratio,0))));
+    cards.forEach(card=>{
+      const ratio=parseFloat(card.dataset.ratio)||1;
+      card.style.width=Math.max(1,commonHeight*ratio)+'px';card.style.height=commonHeight+'px';
+    });
+  });
+}
 function renderGallery(key,forceNew){
   const g=GALLERIES.find(x=>x.key===key),state=stateOf(g);
   const grid=document.getElementById('grid-'+key);
@@ -1862,37 +1969,35 @@ function renderGallery(key,forceNew){
   }
   const next=state.shown;g.shown=next;
   if(!next.length)return;
-  let cards=[...grid.querySelectorAll('.photo-block>.card')];
-  if(cards.length!==next.length){
-    const six=next.length===6;
-    const cardMarkup=next.map((img,i)=>{
-      const shape=six?(img.w>=img.h?'is-landscape':'is-portrait'):(i===0?'wide':i===1?'n1':'n2');
-      return '<figure class="card '+shape+'" role="button" tabindex="0"><img alt="" loading="eager" decoding="async"></figure>';
-    }).join('');
-    grid.innerHTML='<div class="photo-block'+(six?' six':'')+'">'+cardMarkup+'</div>';
-    cards=[...grid.querySelectorAll('.photo-block>.card')];
-    cards.forEach((card,i)=>{
-      const openCard=()=>{
-        cur=g.shown.slice();
-        curPreviewSources=cards.map(item=>{const preview=item.querySelector('img');return preview?(preview.currentSrc||preview.src):''});
-        show(i);
-      };
-      card.addEventListener('click',openCard);
-      card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();openCard()}});
-    });
-  }
+  const rows=galleryRows(next);
+  grid.innerHTML='<div class="photo-block'+(next.length===6?' is-six':'')+'">'+rows.map(row=>'<div class="photo-row">'+row.map(()=>'<figure class="card" role="button" tabindex="0"><img alt="" loading="eager" decoding="async"></figure>').join('')+'</div>').join('')+'</div>';
+  const block=grid.querySelector('.photo-block'),cards=[...block.querySelectorAll('.card')];
+  cards.forEach((card,i)=>{
+    const openCard=()=>{
+      cur=g.shown.slice();
+      curPreviewSources=cards.map(item=>{const preview=item.querySelector('img');return preview?(preview.currentSrc||preview.src):''});
+      show(i);
+    };
+    card.addEventListener('click',openCard);
+    card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();openCard()}});
+  });
   const batchKey=next.map(x=>x.s).join('|');
   if(g.nextPack&&g.nextPack.key===batchKey){releaseFullPack(g.nextPack);g.nextPack=null}
   const renderToken=++g.renderToken,thumbs=next.map(img=>thumbOf(img.s));
   grid.style.pointerEvents='none';
   cards.forEach((card,i)=>{
     const im=card.querySelector('img'),img=next[i];
+    const portrait=img.w<img.h;
+    card.className='card '+(portrait?'is-portrait':'is-landscape');
+    card.dataset.ratio=String(img.w/img.h);
+    card.style.setProperty('--media-ratio',img.w+' / '+img.h);
     const typeLabel=key==='zhengpian'?'正片':key==='changzhao'?'场照':'特效';
     im.dataset.original=img.s;im.width=img.w;im.height=img.h;
     im.alt='慕言COS摄影'+typeLabel+'作品，第 '+(i+1)+' 张';
     card.setAttribute('aria-label',im.alt+'，点击查看大图');
     im.src=thumbs[i];
   });
+  requestAnimationFrame(()=>sizeGalleryBlock(block));
   grid.style.pointerEvents='';
   Promise.all(cards.map(card=>waitForImage(card.querySelector('img')))).then(()=>{
     if(renderToken!==g.renderToken||g.shown!==next)return;
@@ -1907,6 +2012,11 @@ function renderGallery(key,forceNew){
   hint.textContent='共 '+total+'张 ·已展示 '+Math.min(state.seen,total)+'张';
 }
 window.refreshGallery=function(k){renderGallery(k,true)};
+let galleryResizeFrame=0;
+window.addEventListener('resize',()=>{
+  cancelAnimationFrame(galleryResizeFrame);
+  galleryResizeFrame=requestAnimationFrame(()=>document.querySelectorAll('.photo-block').forEach(sizeGalleryBlock));
+});
 // 选项卡与筛选器无障碍状态
 const worksTablist=document.querySelector('.works-tabs');
 worksTablist.setAttribute('role','tablist');worksTablist.setAttribute('aria-label','作品类型');
@@ -1980,6 +2090,11 @@ document.querySelectorAll('.price-tab').forEach(btn=>{
 });
 // 作品选项卡切换
 let activeWorks='zhengpian';
+const WORK_AUTHORSHIP={
+  zhengpian:'正片分类：所有图片均由本人拍摄并完成后期。',
+  changzhao:'场照分类：所有图片均由本人拍摄并完成后期。',
+  texiao:'特效分类：部分作品为承接的后期单。'
+};
 function switchWorks(w){
   if(activeWorks!==w){
     const previous=GALLERIES.find(g=>g.key===activeWorks);
@@ -1989,6 +2104,7 @@ function switchWorks(w){
   }
   document.querySelectorAll('.work-tab').forEach(b=>b.classList.toggle('active',b.dataset.w===w));
   document.querySelectorAll('.work-panel').forEach(p=>p.classList.toggle('active',p.dataset.w===w));
+  document.getElementById('worksAuthorship').textContent=WORK_AUTHORSHIP[w]||'';
   syncSelected('.work-tab',w,'w');
   renderGallery(w);
 }
