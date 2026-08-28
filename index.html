@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>慕言のCOS摄影 | 正片·场照·特效</title>
-<meta name="muyan-site-version" content="1.9">
+<meta name="muyan-site-version" content="1.9.1">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9D%84%EF%B8%8F%3C/text%3E%3C/svg%3E">
 <link rel="preload" as="image" href="images/rem-anime-hero-hq.webp" type="image/webp" fetchpriority="high">
 <style>
@@ -19,7 +19,7 @@ section{scroll-margin-top:66px}
 /* ===== 导航 ===== */
 .nav{position:fixed;top:0;left:0;right:0;z-index:100;transition:.3s}
 .nav.scrolled{border-bottom-color:#e8f0f8}
-.nav-inner{margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.nav-inner{position:relative;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
 .brand{font-weight:800;display:flex;align-items:center;gap:6px}
 .brand-emblem{display:grid;place-items:center;animation:avatar-float 4.8s ease-in-out infinite;transform-origin:50% 50%}
 .brand-emblem img{display:block;width:100%;height:100%;object-fit:cover;border-radius:50%}
@@ -65,11 +65,25 @@ main{margin:0 auto}
 .photo-block .card{flex:0 0 auto;aspect-ratio:var(--media-ratio);max-width:100%;max-height:100%}
 .photo-block .card img{width:100%;height:100%;object-fit:contain;object-position:center}
 .photo-block .card:hover img{transform:none}
+.grid{scroll-margin-top:86px;overflow-anchor:none}
+.grid .photo-block{transition:opacity .18s ease,transform .18s ease}
+.grid.gallery-switching .photo-block{opacity:0;transform:translateY(10px) scale(.992)}
+.grid.gallery-entering .photo-block{animation:gallery-batch-enter .46s cubic-bezier(.2,.72,.25,1)}
+@keyframes gallery-batch-enter{from{opacity:0;transform:translateY(18px) scale(.988)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.grid .photo-block{transition:none}.grid.gallery-entering .photo-block{animation:none}.works-side-refresh.refresh-tapped>span[aria-hidden="true"],.refresh-btn.refresh-tapped>span[aria-hidden="true"]{animation:none}}
 @media(max-width:720px){.photo-block{height:auto;min-height:0}.photo-row{flex:0 0 auto;width:100%}}
 @media(max-width:480px){.photo-block{--gallery-gap:10px}}
-.refresh-row{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap}
-.refresh-btn{font-size:.95rem;font-weight:600;cursor:pointer;transition:.25s;font-family:inherit;letter-spacing:.05em}
-.refresh-btn:hover{color:#fff}
+.refresh-row{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:24px}
+.refresh-btn{min-height:48px;padding:11px 28px;border:0;border-radius:999px;color:#fff;background:linear-gradient(110deg,#55ade2,#839fe2);box-shadow:0 10px 24px rgba(70,143,199,.25);font-weight:800;letter-spacing:.04em;cursor:pointer;transition:transform .22s ease,box-shadow .22s ease,opacity .2s ease}
+.refresh-btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(70,143,199,.32)}
+.refresh-btn>span[aria-hidden="true"],.works-side-refresh>span[aria-hidden="true"]{display:inline-block;transform-origin:center}
+.refresh-btn.refresh-tapped>span[aria-hidden="true"],.works-side-refresh.refresh-tapped>span[aria-hidden="true"]{animation:quick-refresh-tap .38s cubic-bezier(.22,.75,.25,1)}
+@keyframes quick-refresh-tap{0%,100%{transform:translateY(0) scale(1)}38%{transform:translateY(2px) scale(.72)}72%{transform:translateY(-1px) scale(1.18)}}
+.works-side-refresh{position:fixed;right:18px;bottom:92px;z-index:97;width:76px;height:118px;padding:10px 7px;border:1px solid rgba(138,203,243,.8);border-radius:25px;color:#fff;background:linear-gradient(155deg,rgba(75,169,221,.96),rgba(132,145,221,.96));box-shadow:0 16px 38px rgba(43,119,183,.28),inset 0 0 0 3px rgba(255,255,255,.34);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-weight:850;cursor:pointer;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(12px);transition:opacity .24s ease,transform .28s ease,box-shadow .22s ease}
+.works-side-refresh>span[aria-hidden="true"]{font-size:1.45rem;line-height:1}
+body.works-in-view .works-side-refresh{opacity:1;visibility:visible;pointer-events:auto;transform:none}
+.works-side-refresh:hover{box-shadow:0 20px 46px rgba(43,119,183,.36),inset 0 0 0 3px rgba(255,255,255,.42)}
+.works-side-refresh[aria-busy="true"],.refresh-btn[aria-busy="true"]{pointer-events:none;opacity:.78}
 .gallery-hint{font-size:.85rem}
 .card{position:relative;overflow:hidden;cursor:pointer;background:#fff}
 .card img{width:100%;height:auto;display:block;object-fit:contain;object-position:center;transition:transform .6s ease}
@@ -239,7 +253,6 @@ body.mobile-device .lb.is-loading .lb-status{top:auto;bottom:72px;transform:tran
   .sec-head{margin-bottom:32px}
   .sec-head h2{font-size:1.5rem}
   .nav-inner{padding:0 14px}
-  .refresh-btn{padding:13px 36px;font-size:1rem}
   .price-card{padding:20px 16px}
   .tier{font-size:.9rem}
   .contact-row{flex-direction:column;text-align:center}
@@ -296,7 +309,7 @@ body{overflow-x:clip}
 @keyframes rem-card-hover{0%,100%{translate:0 0}50%{translate:0 -11px}}
 
 .rem-side-companion{
-  position:fixed;right:18px;width:72px;height:138px;z-index:96;pointer-events:none;
+  position:fixed;left:18px;width:72px;height:138px;z-index:96;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .9s cubic-bezier(.22,.7,.2,1),visibility 0s linear .9s;
   border-radius:24px 24px 18px 18px;background:url("images/rem-chibi-card.webp") 100% 0/300% 100% no-repeat;
   box-shadow:0 14px 34px rgba(43,119,183,.2),inset 0 0 0 4px rgba(255,255,255,.72);
   border:1px solid rgba(133,201,245,.72);animation:rem-companion 5s ease-in-out infinite;
@@ -327,7 +340,7 @@ section>.rem-chibi-card{opacity:.96}
 @media(max-width:820px){
   .rem-chibi-card.pose-2,.rem-chibi-card.pose-3{display:none}
   .rem-chibi-card.pose-1{right:14px;top:80px;width:62px;height:118px;opacity:.28}
-  .rem-side-companion{width:56px;height:106px;right:10px;bottom:12px;opacity:.88}
+  .rem-side-companion{width:56px;height:106px;left:10px;right:auto;bottom:12px}
   .rem-floe:nth-child(even){display:none}
 }
 @media(prefers-reduced-motion:reduce){
@@ -392,7 +405,6 @@ section{position:relative}
 }
 .card{isolation:isolate;transition:transform .35s ease,box-shadow .35s ease}
 .card::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25);pointer-events:none}
-.refresh-btn{border-color:rgba(85,153,215,.72)}
 .price-card,.fx-card,.extra-card,.benefit-card,details.faq,.quote,.promo,.price-banner,.zp-head{
   border-color:rgba(199,222,241,.8);box-shadow:var(--shadow);backdrop-filter:blur(10px);
 }
@@ -638,9 +650,6 @@ section>*{position:relative;z-index:1}
 .card:nth-child(2)::before{background:rgba(244,180,210,.64);transform:translateX(-50%) rotate(3deg)}
 .card img{border-radius:18px}
 .card:hover,.card:nth-child(2):hover,.card:nth-child(3):hover{transform:translateY(-7px) rotate(.25deg);box-shadow:0 26px 58px rgba(42,91,127,.23)}
-.refresh-row{margin-top:30px}
-.refresh-btn{padding:11px 30px;border:0;border-radius:999px;background:linear-gradient(110deg,#55ade2,#839fe2);color:#fff;box-shadow:0 10px 24px rgba(70,143,199,.25)}
-.refresh-btn:hover{background:linear-gradient(110deg,#449ed5,#718fd7);transform:translateY(-2px);box-shadow:0 14px 28px rgba(70,143,199,.31)}
 .gallery-hint{color:#75879c;font-weight:600}
 .works-authorship{width:max-content;max-width:100%;margin:14px auto 0;padding:9px 18px;border:1px solid rgba(174,219,243,.8);border-radius:999px;background:linear-gradient(100deg,rgba(233,247,255,.94),rgba(255,255,255,.96),rgba(255,240,247,.9));color:#49647e;font-size:.92rem;font-weight:700;line-height:1.6;box-shadow:0 10px 24px rgba(54,108,148,.09)}
 .price-card,.fx-card,.extra-card{border:1px solid rgba(177,220,243,.78);border-radius:26px;background:rgba(255,255,255,.94);box-shadow:0 16px 38px rgba(53,105,143,.13);overflow:hidden}
@@ -708,8 +717,6 @@ footer .qq-line b{color:#a6ddfb}
   .card,.card:nth-child(2),.card:nth-child(3){padding:5px;border-radius:17px;box-shadow:0 12px 27px rgba(42,91,127,.16)}
   .card img{border-radius:12px}
   .card:hover,.card:nth-child(2):hover,.card:nth-child(3):hover{transform:none}
-  .refresh-row{margin-top:18px;gap:6px;flex-wrap:nowrap}
-  .refresh-btn{padding:10px 18px;font-size:.88rem}
   .gallery-hint{font-size:.72rem;white-space:nowrap}
   .works-authorship{width:100%;max-width:100%;padding:9px 12px;border-radius:18px;overflow-wrap:anywhere}
 }
@@ -728,7 +735,7 @@ footer .qq-line b{color:#a6ddfb}
 @media(max-width:360px){
   .hero-cta{max-width:calc(100% - 20px);gap:5px;flex-wrap:nowrap}
   .hero-cta .btn{padding:9px 11px;font-size:.76rem;white-space:nowrap}
-  .rem-side-companion{display:none}
+  .rem-side-companion{display:block;width:48px;height:90px;left:6px;right:auto}
 }
 
 /* ===== 女仆花边 / 冰晶徽章 / 章节装饰 ===== */
@@ -914,16 +921,17 @@ footer#contact{scroll-margin-top:60px}
 .contact-card .contact-copy:hover{background:linear-gradient(100deg,#438fbe,#8275bc)}
 .contact-share-row{display:flex;justify-content:center;margin-top:20px}
 .contact-share-row .contact-copy{min-width:150px}
-body.contact-in-view .rem-side-companion,body.price-in-view .rem-side-companion{opacity:0!important;pointer-events:none!important}
+body.works-passed .rem-side-companion{opacity:.96;visibility:visible;transition-delay:0s}
 .lb[aria-hidden="true"]{visibility:hidden}
 @media(max-width:900px){
   .rem-side-companion{bottom:132px}
+  .works-side-refresh{right:10px;bottom:132px;width:60px;height:106px;padding:8px 5px;font-size:.78rem}
   .contact-groups{grid-template-columns:1fr}
 }
 @media(max-width:560px){
   body{padding-bottom:84px}
   .burger{width:44px;height:44px;padding:10px;align-items:center;justify-content:center}
-  .btn,.work-tab,.cat-tab,.price-tab,.note-tab,.refresh-btn{min-height:44px}
+  .btn,.work-tab,.cat-tab,.price-tab,.note-tab{min-height:44px}
   .quick-actions{left:8px;right:8px;bottom:calc(7px + env(safe-area-inset-bottom));grid-template-columns:repeat(5,1fr);gap:2px;padding:5px;transform:none;border-radius:20px}
   .quick-action{min-width:0;min-height:50px;padding:5px 3px;flex-direction:column;gap:2px;font-size:.74rem}
   .quick-action span[aria-hidden="true"]{font-size:1rem;line-height:1}
@@ -933,6 +941,7 @@ body.contact-in-view .rem-side-companion,body.price-in-view .rem-side-companion{
   .contact-cards{grid-template-columns:1fr}
   .contact-card .qr{width:min(82vw,230px)}
   .rem-side-companion{bottom:90px}
+  .works-side-refresh{right:8px;bottom:90px;width:54px;height:96px;padding:7px 4px;font-size:.72rem}
   .policy-notice{padding:18px 17px;border-radius:18px}
   .section-fold{border-radius:18px}
   .section-fold > summary{padding:14px 15px}
@@ -970,7 +979,7 @@ body.contact-in-view .rem-side-companion,body.price-in-view .rem-side-companion{
 .nav.scrolled{box-shadow:0 12px 34px rgba(42,91,128,.13),inset 0 -1px 0 rgba(255,255,255,.7)}
 #works,#price,#notes{box-shadow:0 28px 72px rgba(44,96,135,.1)}
 .sec-head p{max-width:760px;margin-left:auto;margin-right:auto}
-.work-tab,.price-tab,.note-tab,.cat-tab,.btn,.refresh-btn,.contact-copy{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.work-tab,.price-tab,.note-tab,.cat-tab,.btn,.contact-copy{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 .section-fold,.policy-notice,.promo{border-color:rgba(163,207,235,.78)}
 .benefit-card,.price-card,.fx-card,.extra-card{box-shadow:0 16px 40px rgba(47,101,143,.11)}
 
@@ -1067,7 +1076,7 @@ body.mobile-device #price-cz .cz-price-grid{
       <a href="#price" class="btn ghost">拍摄价格</a>
       <a href="#contact" class="btn ghost">联系我</a>
     </div>
-    <p class="site-update">网站更新于 <time datetime="2026-08-26">2026年8月26日</time></p>
+    <p class="site-update">网站更新于 <time datetime="2026-08-28">2026年8月28日</time></p>
   </div>
   <a href="#works" class="scroll-hint">向下滚动</a>
 </header>
@@ -1101,10 +1110,7 @@ body.mobile-device #price-cz .cz-price-grid{
         <button type="button" class="cat-tab" data-cat="棚子">棚子</button>
       </div>
       <div class="grid" id="grid-zhengpian"></div>
-      <div class="refresh-row">
-        <button type="button" class="refresh-btn" onclick="refreshGallery('zhengpian')">🔄 换一批</button>
-        <span class="gallery-hint" id="hint-zhengpian"></span>
-      </div>
+      <div class="refresh-row"><button type="button" class="refresh-btn" data-gallery-refresh="zhengpian"><span aria-hidden="true">🔄</span> 换一批</button><span class="gallery-hint" id="hint-zhengpian"></span></div>
     </div>
     <div class="work-panel" data-w="changzhao">
       <div class="cat-tabs" id="tabs-changzhao">
@@ -1113,17 +1119,11 @@ body.mobile-device #price-cz .cz-price-grid{
         <button type="button" class="cat-tab" data-cat="暗调">暗调</button>
       </div>
       <div class="grid" id="grid-changzhao"></div>
-      <div class="refresh-row">
-        <button type="button" class="refresh-btn" onclick="refreshGallery('changzhao')">🔄 换一批</button>
-        <span class="gallery-hint" id="hint-changzhao"></span>
-      </div>
+      <div class="refresh-row"><button type="button" class="refresh-btn" data-gallery-refresh="changzhao"><span aria-hidden="true">🔄</span> 换一批</button><span class="gallery-hint" id="hint-changzhao"></span></div>
     </div>
     <div class="work-panel" data-w="texiao">
       <div class="grid" id="grid-texiao"></div>
-      <div class="refresh-row">
-        <button type="button" class="refresh-btn" onclick="refreshGallery('texiao')">🔄 换一批</button>
-        <span class="gallery-hint" id="hint-texiao"></span>
-      </div>
+      <div class="refresh-row"><button type="button" class="refresh-btn" data-gallery-refresh="texiao"><span aria-hidden="true">🔄</span> 换一批</button><span class="gallery-hint" id="hint-texiao"></span></div>
     </div>
   </section>
 
@@ -1520,6 +1520,7 @@ body.mobile-device #price-cz .cz-price-grid{
 </footer>
 
 <!-- 随时可见的页面导航与分享入口 -->
+<button type="button" class="works-side-refresh" id="worksSideRefresh" aria-label="更换当前作品批次"><span aria-hidden="true">🔄</span><span>换批</span></button>
 <nav class="quick-actions" aria-label="页面快捷导航">
   <a href="#works" class="quick-action" data-jump="works"><span aria-hidden="true">🖼️</span><span>例图</span></a>
   <a href="#price" class="quick-action" data-jump="price"><span aria-hidden="true">💰</span><span>价格</span></a>
@@ -1560,6 +1561,7 @@ const quickJumpLinks=[...document.querySelectorAll('.quick-action[data-jump]')];
 let quickNavLockUntil=0;
 function setActiveQuickJump(id){
   document.body.classList.toggle('price-in-view',id==='price');
+  document.body.classList.toggle('works-in-view',id==='works');
   quickJumpLinks.forEach(link=>{
     const active=link.dataset.jump===id;
     link.classList.toggle('is-active',active);
@@ -1578,6 +1580,20 @@ if('IntersectionObserver' in window){
   },{rootMargin:'-22% 0px -58% 0px',threshold:[0,.1,.25,.5]});
   ['top','works','price','contact'].forEach(id=>quickNavObserver.observe(document.getElementById(id)));
 }
+
+// 左侧蕾姆在作品展示区域完全离开屏幕后才淡入；主页及作品区域内始终隐藏。
+const worksSection=document.getElementById('works');
+let worksCompanionFrame=0;
+const syncWorksCompanion=()=>{
+  cancelAnimationFrame(worksCompanionFrame);
+  worksCompanionFrame=requestAnimationFrame(()=>{
+    const navBottom=document.querySelector('.nav')?.getBoundingClientRect().bottom||0;
+    document.body.classList.toggle('works-passed',worksSection.getBoundingClientRect().bottom<=navBottom+8);
+  });
+};
+addEventListener('scroll',syncWorksCompanion,{passive:true});
+addEventListener('resize',syncWorksCompanion,{passive:true});
+syncWorksCompanion();
 
 // ===== 联系方式复制与网页分享 =====
 const PUBLIC_SITE_URL='https://muyan2807-alt.github.io/muyan-photography/';
@@ -2011,7 +2027,55 @@ function renderGallery(key,forceNew){
   const total=poolOf(g).length,hint=document.getElementById('hint-'+key);
   hint.textContent='共 '+total+'张 ·已展示 '+Math.min(state.seen,total)+'张';
 }
-window.refreshGallery=function(k){renderGallery(k,true)};
+const worksSideRefreshButton=document.getElementById('worksSideRefresh');
+const galleryRefreshButtons=[...document.querySelectorAll('[data-gallery-refresh]')];
+const reduceGalleryMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let gallerySwitchToken=0;
+function scrollToGalleryTop(key){
+  const grid=document.getElementById('grid-'+key);
+  if(!grid)return;
+  const anchor=document.querySelector('.works-tabs')||grid;
+  const top=Math.max(0,window.scrollY+anchor.getBoundingClientRect().top-nav.offsetHeight-10);
+  try{window.scrollTo({top,behavior:reduceGalleryMotion?'auto':'smooth'})}catch(error){window.scrollTo(0,top)}
+}
+window.refreshGallery=async function(key){
+  const grid=document.getElementById('grid-'+key);
+  if(!grid||grid.dataset.switching==='true')return;
+  const triggers=[worksSideRefreshButton,...galleryRefreshButtons.filter(button=>button.dataset.galleryRefresh===key)].filter(Boolean);
+  const token=++gallerySwitchToken,oldHeight=Math.ceil(grid.getBoundingClientRect().height);
+  const oldHtmlAnchor=document.documentElement.style.overflowAnchor,oldBodyAnchor=document.body.style.overflowAnchor;
+  document.documentElement.style.overflowAnchor='none';document.body.style.overflowAnchor='none';
+  grid.dataset.switching='true';
+  grid.style.minHeight=Math.max(1,oldHeight)+'px';
+  grid.classList.add('gallery-switching');
+  triggers.forEach(trigger=>{trigger.disabled=true;trigger.setAttribute('aria-busy','true')});
+  await new Promise(resolve=>setTimeout(resolve,reduceGalleryMotion?0:180));
+  if(token!==gallerySwitchToken)return;
+  renderGallery(key,true);
+  grid.classList.remove('gallery-switching');grid.classList.add('gallery-entering');
+  requestAnimationFrame(()=>{
+    const block=grid.querySelector('.photo-block');if(block)sizeGalleryBlock(block);
+    const newHeight=Math.max(1,Math.ceil(block?block.getBoundingClientRect().height:grid.scrollHeight));
+    grid.style.transition=reduceGalleryMotion?'none':'min-height .46s cubic-bezier(.2,.72,.25,1)';
+    requestAnimationFrame(()=>{grid.style.minHeight=newHeight+'px';scrollToGalleryTop(key)});
+  });
+  window.dispatchEvent(new CustomEvent('gallerybatchchange',{detail:{key}}));
+  if(!reduceGalleryMotion)setTimeout(()=>{if(token===gallerySwitchToken)scrollToGalleryTop(key)},1100);
+  setTimeout(()=>{
+    if(token!==gallerySwitchToken)return;
+    grid.classList.remove('gallery-entering');grid.style.transition='';grid.style.minHeight='';delete grid.dataset.switching;
+    document.documentElement.style.overflowAnchor=oldHtmlAnchor;document.body.style.overflowAnchor=oldBodyAnchor;
+    triggers.forEach(trigger=>{trigger.disabled=false;trigger.removeAttribute('aria-busy')});
+  },reduceGalleryMotion?60:1700);
+};
+function playRefreshTap(button){
+  button.classList.remove('refresh-tapped');
+  void button.offsetWidth;
+  button.classList.add('refresh-tapped');
+  setTimeout(()=>button.classList.remove('refresh-tapped'),420);
+}
+worksSideRefreshButton.addEventListener('click',()=>{playRefreshTap(worksSideRefreshButton);window.refreshGallery(activeWorks)});
+galleryRefreshButtons.forEach(button=>button.addEventListener('click',()=>{playRefreshTap(button);window.refreshGallery(button.dataset.galleryRefresh)}));
 let galleryResizeFrame=0;
 window.addEventListener('resize',()=>{
   cancelAnimationFrame(galleryResizeFrame);
@@ -2105,6 +2169,7 @@ function switchWorks(w){
   document.querySelectorAll('.work-tab').forEach(b=>b.classList.toggle('active',b.dataset.w===w));
   document.querySelectorAll('.work-panel').forEach(p=>p.classList.toggle('active',p.dataset.w===w));
   document.getElementById('worksAuthorship').textContent=WORK_AUTHORSHIP[w]||'';
+  worksSideRefreshButton.setAttribute('aria-label','更换当前'+(w==='zhengpian'?'正片':w==='changzhao'?'场照':'特效')+'作品批次');
   syncSelected('.work-tab',w,'w');
   renderGallery(w);
 }
