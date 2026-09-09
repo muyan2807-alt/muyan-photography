@@ -1,0 +1,55 @@
+/* C2 — 品牌与口号分层，手机首屏提前露出作品，紧凑价目。 */
+/* 成对套餐保持标题、说明和价格行对齐。 */
+.hero{padding-top:100px}.hero-intro{padding-bottom:23px}
+.hero h1.art-title{display:block;margin:0 0 9px;font-size:clamp(2rem,3.6vw,3rem);line-height:1.3;letter-spacing:.06em;font-weight:620;color:#31566f}
+.hero-slogan{font-size:.88rem;font-weight:550;line-height:1.8;letter-spacing:.03em;color:#60849e}.hero-cta{margin-top:17px}
+.service-intro{margin:13px 0 19px}.service-intro .sub{font-size:.74rem}.service-intro .slogan-sub{font-size:.66rem;margin-top:8px;line-height:1.85}
+.contact-channel-wechat .contact-cards{width:100%;max-width:none;grid-template-columns:minmax(0,1fr)}
+.contact-channel-wechat .contact-card{display:flex;flex-direction:column;align-items:center;text-align:center;padding:25px 20px;gap:0}
+.contact-channel-wechat .qr{width:min(100%,280px);height:auto;aspect-ratio:auto;object-fit:contain;margin:0 auto 17px;grid-row:auto;grid-column:auto}
+.contact-channel-wechat .contact-kind{align-self:auto;font-size:.73rem}.contact-channel-wechat .contact-id{font-size:1.1rem;margin:5px 0 17px;white-space:nowrap;overflow-wrap:normal}
+.contact-channel-wechat .contact-copy{align-self:auto;width:min(100%,260px);margin:0 auto;min-height:44px;font-size:.78rem}
+#price .section-heading{margin-bottom:16px}#price .sec-head>p{margin-top:6px}
+.price-card{padding:19px 17px;border-radius:19px}.price-card h4{font-size:.94rem;line-height:1.5;margin-bottom:6px}.price-card .ver{min-height:0;margin-bottom:11px;font-size:.72rem;line-height:1.7}
+.ver strong{font-weight:650;color:#447897}.tier{padding:8px 0;line-height:1.5;gap:8px}.money{font-size:1.03rem;line-height:1.4}.money small{font-size:.65rem}
+#price-zp .tier.total{margin:9px -17px -19px;padding:12px 17px!important;border-radius:0 0 19px 19px}.tier.total .money{font-size:1.45rem}
+.cz-price-grid .price-card{padding:16px 13px}.cz-price-grid .tier{padding:7px 0;gap:5px}.cz-money b{font-size:.95rem;line-height:1.5}.cz-money small{font-size:.62rem;line-height:1.6}.cz-price-grid .tag{font-size:.58rem;margin-bottom:5px;padding:2px 6px;line-height:1.5}
+.extra-card{margin-top:16px;padding:16px 19px}.extra-card li{font-size:.71rem;padding:4px 9px}.price-banner{margin-top:16px;padding:12px 16px;font-size:.73rem;line-height:1.8}.fx-card li{padding:8px 0}.fx-note,.fx-tip{margin-top:12px;line-height:1.8}
+@media(max-width:720px){
+ .hero{padding-top:78px}.hero-intro{padding:0 19px 14px}.hero h1.art-title{font-size:1.8rem;letter-spacing:.04em;line-height:1.2;margin-bottom:6px}.hero-slogan{font-size:.71rem;letter-spacing:0;line-height:1.75}
+ .hero-cta{margin-top:12px;gap:8px}.hero-cta .btn{min-height:44px;padding:9px 15px;font-size:.72rem}
+ .hero-stage{height:auto;width:calc(100% - 32px);border-radius:19px 19px 30px 19px}.hero-photo{width:100%;height:auto;object-fit:contain;border-radius:inherit}
+ .hero-rem{width:43px;height:43px;left:13px;bottom:-11px;padding:2px;border-radius:14px}.hero-rem img{border-radius:10px}.hero-rem .rem-bow{transform:scale(.57) rotate(12deg)}
+ .star-one{font-size:23px;top:-15px;right:-9px}.star-two{font-size:15px;top:-23px;right:18px}
+ .hero-tail{padding:7px 3px 8px 73px;align-items:center;gap:6px}.site-update{font-size:.52rem;letter-spacing:0}.scroll-hint{font-size:.55rem}
+ #works{padding-top:19px}#works .sec-head h2{font-size:1.48rem;line-height:1.35}#works .sec-head>p{margin-top:5px;font-size:.69rem;line-height:1.65}#works .works-authorship{margin-top:7px!important;padding:5px 8px;font-size:.63rem!important;line-height:1.7}
+ #works .works-tabs{margin-top:11px}#works .section-heading{margin-bottom:12px}#works .cat-tabs{margin-bottom:12px}
+ #price .sec-head h2{font-size:1.55rem}#price .sec-head>p{font-size:.7rem;line-height:1.6}#price .price-tabs{margin-top:13px}
+ #price-zp>.price-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-columns:auto;grid-auto-flow:row;overflow:visible;scroll-snap-type:none;gap:10px;padding:0}
+ #price-zp .price-card{padding:14px 12px;border-radius:16px;scroll-snap-align:none}#price-zp .price-card h4{font-size:.81rem;margin-bottom:5px;line-height:1.5}#price-zp .ver{font-size:.63rem;line-height:1.65;margin-bottom:7px}
+ #price-zp .tier{font-size:.68rem;padding:6px 0;gap:5px}#price-zp .money{font-size:.89rem}#price-zp .money small{font-size:.59rem}
+ #price-zp .tier.total{margin:8px -12px -14px;padding:9px 12px!important;border-radius:0 0 16px 16px}#price-zp .tier.total .money{font-size:1.24rem}
+ #price-zp .price-card:nth-child(3){display:grid;grid-column:1/-1;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;padding:13px 12px}
+ #price-zp .price-card:nth-child(3)>h4,#price-zp .price-card:nth-child(3)>.ver{grid-column:1/-1}#price-zp .price-card:nth-child(3)>.ver{margin-bottom:7px}
+ #price-zp .price-card:nth-child(3)>.tier{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;border:0;border-left:1px solid #dfedf6;padding:4px 2px;text-align:center}#price-zp .price-card:nth-child(3)>.tier:nth-of-type(2){border-left:0}#price-zp .price-card:nth-child(3) .money{font-size:1rem}
+ .extra-card{padding:14px 13px;border-radius:15px;margin-top:12px}.extra-card h4{font-size:.78rem}.extra-card ul{margin-top:8px;gap:5px}.extra-card li{font-size:.63rem;line-height:1.5;padding:4px 7px}
+ .cz-price-grid{gap:10px}.cz-price-grid .price-card{padding:13px 10px;border-radius:16px}.cz-price-grid h4{font-size:.73rem;line-height:1.5;margin-bottom:4px}.cz-price-grid .ver{font-size:.59rem;line-height:1.65;min-height:0;margin-bottom:7px}
+ .cz-price-grid .tier{display:grid;grid-template-columns:44px minmax(0,1fr);align-items:center;gap:4px;padding:7px 0;font-size:.64rem;line-height:1.45}.cz-price-grid .tier .name{font-size:.64rem}.cz-price-grid .tier .detail{font-size:.56rem;white-space:nowrap}
+ .cz-price-grid .money{max-width:none;text-align:right;font-size:.64rem;line-height:1.55}.cz-money{align-items:flex-end}.cz-money b{font-size:.89rem;line-height:1.45}.cz-money small{font-size:.55rem;line-height:1.55;white-space:normal}.cz-price-grid .ask{font-size:.62rem}.cz-price-grid .tag{font-size:.55rem;margin-bottom:5px;line-height:1.4}
+ .cz-price-grid .tier>span:first-child{grid-column:1;grid-row:1}
+ .cz-price-grid .cz-money{display:contents}
+ .cz-price-grid .cz-money b{grid-column:2;grid-row:1;text-align:right}
+ .cz-price-grid .cz-money small{grid-column:1/-1;grid-row:2;text-align:right;font-size:.6rem;white-space:nowrap}
+ .price-wrap{gap:12px}.price-wrap>.fx-card{padding:14px 15px;border-radius:15px}.fx-card h4{font-size:.8rem}.fx-card li{font-size:.75rem;padding:6px 0}.fx-note,.fx-tip{font-size:.67rem;line-height:1.75;margin-top:9px}.price-banner{padding:12px 13px;font-size:.66rem;line-height:1.75;margin-top:12px}
+ .contact-channel-wechat .contact-card{display:flex;padding:20px 10px}.contact-channel-wechat .qr{width:min(100%,280px);height:auto;margin:0 auto 16px;grid-row:auto;grid-column:auto}.contact-channel-wechat .contact-kind{font-size:.72rem}.contact-channel-wechat .contact-id{font-size:1.07rem;margin:5px 0 16px;white-space:nowrap}.contact-channel-wechat .contact-copy{width:min(100%,260px);font-size:.75rem;min-height:44px}
+}
+.cz-price-grid{padding-top:0}
+.cz-price-grid .price-card.hot{overflow:visible}
+.cz-price-grid .price-card.hot::after{display:none}
+.cz-price-grid .price-card.hot>.tag{position:absolute;right:8px;top:7px;margin:0;padding:2px 8px;font-size:.74rem;line-height:1.4;border:1px solid #fff;border-radius:7px;background:linear-gradient(120deg,#bfe3fa,#edf8ff);color:#3e7395;white-space:nowrap;transform:rotate(8deg);pointer-events:none;z-index:2}
+.cz-price-grid .price-card h4{min-height:1.5em}
+.cz-price-grid .price-card .ver{min-height:1.7em}
+@media(max-width:720px){
+ .cz-price-grid .price-card .ver{min-height:3.3em}
+ .cz-price-grid .price-card.hot>.tag{font-size:.66rem}
+}

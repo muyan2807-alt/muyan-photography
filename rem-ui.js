@@ -1,4 +1,66 @@
 /* Muyan 2.0 visual controls and social code viewer. */
+// Equalize adjacent descriptions using their actual wrapped text, including older QQ engines.
+(()=>{
+  const grid=document.querySelector('.cz-price-grid');
+  if(!grid)return;
+  let frame=0,lastWidth=0;
+  const sync=()=>{
+    frame=0;
+    if(!grid.getClientRects().length)return;
+    const descriptions=[...grid.querySelectorAll('.price-card>.ver')];
+    descriptions.forEach(el=>el.style.minHeight='0');
+    const cards=[...grid.querySelectorAll('.price-card')];
+    cards.forEach(card=>card.querySelectorAll('.tier').forEach(el=>el.style.minHeight='0'));
+    for(let i=0;i<descriptions.length;i+=2){
+      const pair=descriptions.slice(i,i+2);
+      const height=Math.max(...pair.map(el=>el.getBoundingClientRect().height));
+      pair.forEach(el=>el.style.minHeight=height+'px');
+    }
+    for(let i=0;i<cards.length;i+=2){
+      const left=[...cards[i].querySelectorAll('.tier')],right=[...cards[i+1].querySelectorAll('.tier')];
+      left.forEach((row,j)=>{
+        if(!right[j])return;
+        const height=Math.max(row.getBoundingClientRect().height,right[j].getBoundingClientRect().height);
+        row.style.minHeight=right[j].style.minHeight=height+'px';
+      });
+    }
+  };
+  const schedule=()=>{if(!frame)frame=requestAnimationFrame(sync)};
+  document.querySelectorAll('.price-tab').forEach(el=>el.addEventListener('click',schedule));
+  addEventListener('resize',schedule,{passive:true});
+  if('ResizeObserver'in window)new ResizeObserver(entries=>{
+    const width=entries[0].contentRect.width;
+    if(width!==lastWidth){lastWidth=width;schedule()}
+  }).observe(grid);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(schedule);
+  schedule();
+})();
+// Finite entrance and tap transitions; disabled in QQ and for reduced-motion users.
+(()=>{
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+  const quiet=()=>reduced.matches||document.body.classList.contains('qq-low-memory');
+  if(quiet())return;
+  if('IntersectionObserver'in window){
+    const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
+      if(!entry.isIntersecting)return;
+      if(!quiet())entry.target.classList.add('soft-entered');
+      observer.unobserve(entry.target);
+    }),{threshold:.12});
+    document.querySelectorAll('.contact-channel,.backup-notice,.retouch-guide,.price-example').forEach(el=>observer.observe(el));
+  }
+  let panelAnimation=null;
+  document.querySelectorAll('.price-tab,.note-tab').forEach(button=>button.addEventListener('click',()=>{
+    if(panelAnimation)panelAnimation.cancel();
+    if(quiet())return;
+    const panel=document.getElementById(button.dataset.p?'price-'+button.dataset.p:'note-'+button.dataset.note);
+    if(panel&&panel.animate)panelAnimation=panel.animate(
+      [{opacity:.65,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],
+      {duration:230,easing:'cubic-bezier(.2,.7,.2,1)'}
+    );
+  }));
+  const stop=()=>{if(reduced.matches&&panelAnimation)panelAnimation.cancel()};
+  if(reduced.addEventListener)reduced.addEventListener('change',stop);
+})();
 /* Progressive visual enhancement only; gallery selection and navigation remain native. */
 (()=>{
   const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -92,4 +154,21 @@
     if(event.shiftKey&&document.activeElement===closeButton){event.preventDefault();last.focus();}
     else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();closeButton.focus();}
   });
+})();
+
+;
+/* User-driven interactions only: no permanent rendering loop. */
+(()=>{
+ const progress=document.getElementById('readingProgress');
+ const sections=['works','price','notes','contact'].map(id=>document.getElementById(id));
+ const navLinks=[...document.querySelectorAll('#navLinks a')];let pending=0,current='';
+ function sync(){
+  pending=0;const end=Math.max(1,document.documentElement.scrollHeight-innerHeight);
+  const amount=Math.max(0,Math.min(1,scrollY/end));let active='';
+  sections.forEach(section=>{if(section.getBoundingClientRect().top<Math.min(220,innerHeight*.28))active=section.id;});
+  progress.style.transform='scaleX('+amount+')';
+  if(active!==current){current=active;navLinks.forEach(link=>{const selected=link.hash==='#'+active;link.classList.toggle('current',selected);if(selected)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current');});}
+ }
+ const schedule=()=>{if(!pending)pending=requestAnimationFrame(sync);};
+ addEventListener('scroll',schedule,{passive:true});addEventListener('resize',schedule,{passive:true});addEventListener('pageshow',schedule);schedule();
 })();
