@@ -12,7 +12,7 @@
     document.getElementById('bookingQQCopy').dataset.bookingCopy=uin;
     // Best-effort legacy client links, only followed on an explicit visitor click.
     document.getElementById('bookingQQLaunch').href=mobile
-      ?'mqqwpa://im/chat?chat_type=wpa&uin='+uin+'&version=1&src_type=web'
+      ?'mqq://'
       :'tencent://message/?uin='+uin+'&Site=qq&Menu=yes';
     status.textContent='';
   }
@@ -58,7 +58,14 @@
     catch{if(token===generation&&!modal.hidden)status.textContent='复制未成功，请手动复制：'+value}
   }));
   document.getElementById('bookingQQLaunch').addEventListener('click',()=>{
-    status.textContent='正在尝试打开 QQ；若没有跳转，请复制账号或扫码添加。';
+    const token=++generation,value=select.value==='2389375218'?'2389375218':'2745867337';
+    status.textContent='正在复制 '+value+' 并尝试打开 QQ…';
+    // Start clipboard work within the click gesture; let the native link open the client immediately.
+    copyPlainText(value).then(()=>{
+      if(token===generation&&!modal.hidden)status.textContent='已复制 '+value+'，正在尝试打开 QQ；打开后请粘贴搜索。';
+    }).catch(()=>{
+      if(token===generation&&!modal.hidden)status.textContent='已尝试打开 QQ，但复制未成功。请手动输入：'+value;
+    });
   });
   document.getElementById('bookingWechatLaunch').addEventListener('click',()=>{
     status.textContent='正在尝试打开微信；请搜索 mi20180709 添加。若没有打开，请手动打开微信。';

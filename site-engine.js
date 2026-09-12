@@ -145,19 +145,10 @@ async function loadDesktopLightboxImage(src,previewSrc){
   const preview=previewSrc||thumbOf(src,false),current=cur[idx];
   if(current){lbImg.width=current.w;lbImg.height=current.h}
   lbImg.src=preview;
-  const previewReady=typeof lbImg.decode==='function'
-    ?lbImg.decode().catch(()=>{})
-    :new Promise(resolve=>{
-      if(lbImg.complete){resolve();return}
-      lbImg.addEventListener('load',resolve,{once:true});
-      lbImg.addEventListener('error',resolve,{once:true});
-    });
-  await Promise.race([previewReady,new Promise(resolve=>setTimeout(resolve,350))]);
-  if(token!==lbLoadToken||!lb.classList.contains('show'))return;
-  await new Promise(resolve=>requestAnimationFrame(()=>resolve()));
+  // Show the thumbnail while the selected full image starts downloading immediately.
   const controller=new AbortController();lbAbort=controller;
   try{
-    const response=await fetch(src,{cache:'force-cache',signal:controller.signal});
+    const response=await fetch(src,{cache:'force-cache',signal:controller.signal,priority:'high'});
     if(!response.ok)throw new Error('image');
     const blob=await response.blob();
     if(token!==lbLoadToken||!lb.classList.contains('show'))return;
@@ -181,14 +172,14 @@ async function loadDesktopLightboxImage(src,previewSrc){
   }
 }
 function loadLightboxImage(src,previewSrc){
+  releaseOriginalWarm();
+  GALLERIES.forEach(g=>{releaseFullPack(g.nextPack);g.nextPack=null});
   if(MOBILE_DEVICE||QQ_LOW_MEMORY)loadMobileLightboxImage(src);
   else loadDesktopLightboxImage(src,previewSrc);
 }
 function show(i){
   clearTimeout(lbReleaseTimer);
   const opening=!lb.classList.contains('show');
-  releaseOriginalWarm();
-  GALLERIES.forEach(g=>{releaseFullPack(g.nextPack);g.nextPack=null});
   if(opening){cancelGalleryTransition();lbLastFocus=document.activeElement;}
   idx=(i+cur.length)%cur.length;
   lb.classList.add('show');lb.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
