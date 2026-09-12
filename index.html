@@ -5,13 +5,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>慕言·次元映像 | 正片·场照·特效</title>
-<meta name="muyan-site-version" content="2.1">
-<meta name="muyan-design-revision" content="20260909-release-2.1">
+<meta name="muyan-site-version" content="2.1.3">
+<meta name="muyan-design-revision" content="20260912-qq-first-wechat-launch">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9D%84%EF%B8%8F%3C/text%3E%3C/svg%3E">
 <link rel="preload" as="image" href="images/rem-anime-hero-hq.webp" type="image/webp" fetchpriority="high">
-<link rel="stylesheet" href="rem-studio.css?v=2.1">
-<link rel="stylesheet" href="compact-layout.css?v=2.1">
-<link rel="stylesheet" href="glass-sections.css?v=2.1">
+<link rel="stylesheet" href="rem-studio.css?v=2.1.3">
+<link rel="stylesheet" href="compact-layout.css?v=2.1.3">
+<link rel="stylesheet" href="glass-sections.css?v=2.1.3">
+<link rel="stylesheet" href="booking.css?v=2.1.3">
 </head>
 <body>
 <div class="reading-progress" id="readingProgress" aria-hidden="true"></div>
@@ -35,14 +36,14 @@
   <div class="hero-intro">
     <h1 class="art-title">慕言·次元映像</h1>
     <p class="hero-slogan">提供优质服务，上乘质量，适中价格！</p>
-    <div class="hero-cta"><a href="#works" class="btn primary">查看作品 <span aria-hidden="true">↗</span></a><a href="#price" class="btn ghost">拍摄价格</a><a href="#contact" class="btn ghost">联系我</a></div>
+    <div class="hero-cta"><a href="#works" class="btn primary">查看作品 <span aria-hidden="true">↗</span></a><a href="#price" class="btn ghost">拍摄价格</a><a href="#contact" class="btn ghost" data-booking-open aria-haspopup="dialog" aria-controls="bookingModal">立即约拍</a></div>
   </div>
   <div class="hero-stage">
     <img class="hero-photo" src="images/rem-anime-hero-hq.webp" width="2048" height="1152" fetchpriority="high" decoding="async" alt="蕾姆主题COS摄影作品">
     <span class="hero-rem" aria-hidden="true"><img src="images/rem-brand-avatar.webp" width="512" height="512" alt=""><i class="rem-bow"></i></span>
     <span class="hero-star star-one" aria-hidden="true">✧</span><span class="hero-star star-two" aria-hidden="true">✧</span>
   </div>
-  <div class="hero-tail"><p class="site-update">网站更新于 <time datetime="2026-09-09">2026年9月9日</time></p><a href="#works" class="scroll-hint">向下滚动 <span aria-hidden="true">↓</span></a></div>
+  <div class="hero-tail"><p class="site-update">网站更新于 <time datetime="2026-09-12">2026年9月12日</time></p><a href="#works" class="scroll-hint">向下滚动 <span aria-hidden="true">↓</span></a></div>
 </header>
 <main>
   <div class="service-intro service-lead"><p class="sub">重庆摄影 · 正片 / 场照 / 后期 / 特效 / 远距离拍摄，可选包接包送<br>风格多样，欢迎带上你的想法，一起拍出你喜欢的作品！</p></div>
@@ -515,6 +516,35 @@
   </div>
 </footer>
 
+<div class="booking-modal" id="bookingModal" role="dialog" aria-modal="true" aria-labelledby="bookingTitle" hidden>
+  <div class="booking-panel">
+    <button type="button" class="booking-close" id="bookingClose" aria-label="关闭约拍面板">×</button>
+    <h2 id="bookingTitle">和慕言聊聊约拍</h2>
+    <p class="booking-lead">欢迎带上角色、日期与拍摄想法来找我。</p>
+    <div class="booking-tabs" role="tablist" aria-label="选择联系方式">
+      <button type="button" role="tab" id="bookingQQTab" aria-selected="true" aria-controls="bookingQQ" data-booking-tab="qq">QQ 联系</button>
+      <button type="button" role="tab" id="bookingWechatTab" aria-selected="false" aria-controls="bookingWechat" tabindex="-1" data-booking-tab="wechat">微信联系</button>
+    </div>
+    <section id="bookingWechat" role="tabpanel" aria-labelledby="bookingWechatTab" hidden>
+      <p class="booking-account">mi20180709</p>
+      <div class="booking-buttons"><button type="button" class="booking-button" data-booking-copy="mi20180709">复制微信号</button><a class="booking-button booking-secondary" id="bookingWechatLaunch" href="weixin://">尝试打开微信</a></div>
+      <img class="booking-wechat-code" src="images/wechat.png" width="643" height="678" alt="慕言微信 mi20180709 的二维码" loading="lazy" decoding="async">
+      <p class="booking-help">建议先复制微信号，再尝试打开微信搜索添加。此按钮不能自动进入慕言的聊天；未打开时，可手动打开微信，或保存二维码后识别。</p>
+    </section>
+    <section id="bookingQQ" role="tabpanel" aria-labelledby="bookingQQTab">
+      <label class="booking-select-label" for="bookingQQAccount">选择 QQ 账号</label>
+      <select id="bookingQQAccount"><option value="2745867337">QQ 大号 · 2745867337</option><option value="2389375218">QQ 小号 · 2389375218</option></select>
+      <div class="booking-buttons">
+        <a class="booking-button" id="bookingQQLaunch" href="tencent://message/?uin=2745867337&amp;Site=qq&amp;Menu=yes">尝试打开 QQ</a>
+        <button type="button" class="booking-button booking-secondary" id="bookingQQCopy" data-booking-copy="2745867337">复制 QQ 号</button>
+      </div>
+      <div class="booking-qq-frame"><img id="bookingQQImage" src="images/qq.png" width="934" height="892" alt="QQ 大号 2745867337 的二维码" loading="lazy" decoding="async"></div>
+      <p class="booking-help">需安装并登录 QQ。浏览器或账号设置可能限制直接聊天；若未打开，请复制账号或用 QQ 扫码添加。网页不会自动发送消息。</p>
+    </section>
+    <p id="bookingStatus" class="booking-status" role="status" aria-live="polite"></p>
+  </div>
+</div>
+
 <div class="social-code-modal" id="socialCodeModal" role="dialog" aria-modal="true" aria-labelledby="socialCodeTitle" hidden>
   <div class="social-code-panel">
     <button type="button" class="social-code-close" id="socialCodeClose" aria-label="关闭社交账号识别码">✕</button>
@@ -532,7 +562,7 @@
   <a href="#works" class="quick-action" data-jump="works"><span aria-hidden="true">🖼️</span><span>例图</span></a>
   <a href="#price" class="quick-action" data-jump="price"><span aria-hidden="true">💰</span><span>价格</span></a>
   <a href="#contact" class="quick-action quick-contact" data-jump="contact"><span aria-hidden="true">💬</span><span>联系</span></a>
-  <button type="button" class="quick-action quick-share" id="shareSite"><span aria-hidden="true">🔗</span><span>分享网页</span></button>
+  <a href="#contact" class="quick-action quick-booking" id="bookingQuickOpen" data-booking-open aria-haspopup="dialog" aria-controls="bookingModal"><span aria-hidden="true">✉</span><span>立即约拍</span></a>
   <a href="#top" class="quick-action" data-jump="top"><span aria-hidden="true">⬆️</span><span>回顶部</span></a>
   <button type="button" class="quick-action quick-refresh" id="worksDockRefresh" aria-label="更换当前作品批次"><span aria-hidden="true">🔄</span><span>换批</span></button>
 </nav>
@@ -549,7 +579,8 @@
   <button class="lb-next" id="lbNext" aria-label="下一张">›</button>
 </div>
 
-<script src="site-engine.js?v=2.1"></script>
-<script src="rem-ui.js?v=2.1"></script>
+<script src="site-engine.js?v=2.1.3"></script>
+<script src="rem-ui.js?v=2.1.3"></script>
+<script src="booking.js?v=2.1.3"></script>
 </body>
 </html>

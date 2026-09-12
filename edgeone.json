@@ -1,0 +1,37 @@
+{
+  "buildCommand": "echo Static website ready",
+  "installCommand": "echo No dependencies required",
+  "outputDirectory": ".",
+  "headers": [
+    {
+      "source": "/*",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    },
+    {
+      "source": "/images/*",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
+      ]
+    },
+    {
+      "source": "/",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache" }
+      ]
+    },
+    {
+      "source": "/index.html",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache" }
+      ]
+    }
+  ],
+  "caches": [
+    { "source": "/", "cacheTtl": 0 },
+    { "source": "/index.html", "cacheTtl": 0 },
+    { "source": "/images/*", "cacheTtl": 3600 }
+  ]
+}

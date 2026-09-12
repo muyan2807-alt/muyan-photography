@@ -77,7 +77,7 @@
   };
   const icon=key=>'<svg class="comfort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">'+drawings[key]+'</svg>';
   document.querySelectorAll('.quick-action').forEach(button=>{
-    const key=button.id==='worksDockRefresh'?'refresh':button.id==='shareSite'?'share':{works:'photo',price:'price',contact:'contact',top:'top'}[button.dataset.jump];
+    const key=button.id==='worksDockRefresh'?'refresh':button.id==='bookingQuickOpen'?'contact':{works:'photo',price:'price',contact:'contact',top:'top'}[button.dataset.jump];
     const holder=button.querySelector('span[aria-hidden="true"]');if(key&&holder)holder.innerHTML=icon(key);
   });
   document.querySelectorAll('.works-side-refresh,.refresh-btn').forEach(button=>{

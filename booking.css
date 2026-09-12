@@ -1,0 +1,19 @@
+.booking-modal[hidden],.booking-modal [hidden]{display:none!important}
+.booking-modal{position:fixed;inset:0;z-index:240;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(43,70,93,.36);overscroll-behavior:contain}
+.booking-panel{position:relative;width:100%;max-width:520px;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:28px 26px 18px;border:1px solid #fff;border-radius:25px;background:linear-gradient(135deg,#fcfeff,#e5f4ff);box-shadow:inset 0 1px 0 #fff,0 18px 65px #234b7130;text-align:center;color:#3d6681}
+.booking-close{position:absolute;right:8px;top:8px;display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:50%;background:#e3f2fb;color:#426d87;font-size:1.6rem}
+.booking-panel h2{padding:0 30px;font-size:1.28rem;line-height:1.5}.booking-lead{margin:9px 0 18px;font-size:.79rem;color:#66869e;line-height:1.8}
+.booking-tabs{display:flex;gap:8px;padding:5px;margin-bottom:16px;border:1px solid #d1e5f2;border-radius:17px;background:#ffffffb3}
+.booking-tabs button{flex:1;min-width:0;min-height:44px;padding:8px 12px;border:0;border-radius:12px;background:transparent;color:#597d97;font-size:.82rem}.booking-tabs [aria-selected=true]{background:#cde9fb;color:#315f7d;font-weight:600}
+.booking-account{font-size:1.1rem;font-weight:650;margin:8px 0 13px}
+.booking-button{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:9px 16px;border:1px solid #fff;border-radius:15px;background:#c5e5fa;box-shadow:0 0 0 1px #c3dfef;color:#315d7b;font-size:.82rem;text-decoration:none;cursor:pointer}
+.booking-secondary{background:#f5fbff}.booking-buttons{display:flex;gap:10px;margin-top:14px}.booking-buttons>*{flex:1;min-width:0}
+.booking-wechat-code{width:200px;max-width:85%;height:auto;object-fit:contain;margin:18px auto 12px;border:0;border-radius:13px;background:#fff}
+.booking-qq-frame{position:relative;width:190px;max-width:85%;margin:18px auto 12px;border-radius:13px;background:#fff;overflow:hidden}.booking-qq-frame::before{content:"";display:block;padding-top:100%}
+.booking-qq-frame img{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;height:auto;clip-path:inset(2%);-webkit-clip-path:inset(2%)}
+.booking-help{font-size:.73rem;line-height:1.8;color:#5c7a90}.booking-status{min-height:1.8em;margin-top:12px;font-size:.75rem;font-weight:550;color:#315f7d}
+.booking-select-label{display:block;text-align:left;margin-bottom:6px;font-size:.8rem}.booking-panel select{width:100%;min-height:46px;padding:9px;border:1px solid #bddcea;border-radius:12px;color:#365d78;background:#fff;font-size:.85rem}
+.booking-modal :focus-visible{outline:3px solid #3d8cb9;outline-offset:3px}
+@keyframes booking-arrive{from{opacity:.6;transform:translateY(7px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:no-preference){body:not(.qq-low-memory) .booking-panel{animation:booking-arrive .2s ease-out}}
+@media(max-width:420px){.booking-modal{padding:9px}.booking-panel{max-height:calc(100vh - 18px);max-height:calc(100dvh - 18px);padding:22px 16px 14px;border-radius:20px}.booking-panel h2{font-size:1.12rem}.booking-lead{font-size:.73rem}.booking-wechat-code{width:185px}.booking-button{font-size:.77rem;padding:9px 10px}}
