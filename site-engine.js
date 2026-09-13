@@ -238,10 +238,6 @@ function waitForImage(image,timeout=4000){
 }
 let qrAssetsPromise=null,originalWarmController=null,originalWarmTimer=0,originalWarmToken=0;
 const warmedOriginals=new Set();
-// Compressed file sizes allow a strict budget before starting any speculative download.
-const ORIGINAL_FILE_BYTES={"images/works/hd-3b1a96df1f3810ca247f9137.jpg":3903405,"images/works/hd-60565e476e45a53ef63276c3.jpg":1580700,"images/works/hd-2c6e03ae8eb0b454a33a321e.jpg":962550,"images/works/hd-3edeca3a3c6007c8d89de926.jpg":2825612,"images/works/hd-6b3a52d4d3aec6572bc44199.jpg":1468148,"images/works/hd-0cd7561599409d4a4465254e.jpg":351472,"images/works/hd-7a7e9a49b4e088ff7aca29ca.jpg":2200903,"images/works/hd-3b84a4b639daa7c6249985c5.jpg":1785478,"images/works/hd-c813d124833e3014d6455430.jpg":4546736,"images/works/hd-840b5de7cb0c83d6a6ea1fb1.jpg":2422281,"images/works/hd-f27e75a21f0f91fe8503f4f7.jpg":2719873,"images/works/hd-b494f817e44258b0c7d7b9e7.jpg":2555268,"images/works/hd-2d59446f55ffe9a5a340aedd.jpg":2000470,"images/works/hd-228ca14c3ec943564612f34b.jpg":1792073,"images/works/hd-ed258d5d1b8aa6d7a9e2cb25.jpg":2046659,"images/works/hd-356038c5ca010b96ea4105e3.jpg":940861,"images/works/hd-3552594ca0bce9d48ea8135f.jpg":611938,"images/works/hd-76404e1fcc3f72bdb9fc3d8a.jpg":4541122,"images/works/hd-28ed4d5d1131f4ab338453b3.jpg":4205742,"images/works/hd-8ee64d4a735329ec3505641b.jpg":3480275,"images/works/hd-dd9cfbe824fec071552482fc.jpg":2607773,"images/works/hd-2f0a03988d094f76b444c6ec.jpg":3859795,"images/works/hd-e2d30017b93615a460688996.jpg":4658471,"images/works/hd-8c0201c3759bb2b12be2c01a.jpg":2481008,"images/works/hd-78820b76f49663783b4dac96.jpg":4748967,"images/works/hd-f2f4bdce9d4a5df409914c9c.jpg":3942655,"images/works/hd-d61c3ab2493e69dcd82e7a38.jpg":1553248,"images/works/hd-0fad050a5af7f1b77193a80b.jpg":3295798,"images/works/hd-c1e6573cdfb8d7277ee5c81e.jpg":2634120,"images/works/hd-f2c8659f3e27f16a21ee6659.jpg":251461,"images/works/hd-2e51bcc1dab564f3036bba26.jpg":4975797,"images/works/hd-4ccc7d3852de49b09e293893.png":1596178,"images/works/hd-806022848b99b0fbaaffc241.jpg":739516,"images/works/hd-63c478bc26ade58a5b1ecb46.jpg":3957344,"images/works/hd-dc4de2fa3040eef61f88816e.jpg":313376,"images/works/hd-c982acc7c73ee4fa1becfa8d.jpg":2368952,"images/works/hd-f9cea3b5461a6a3dffca1897.jpg":1785357,"images/works/hd-5f6ae9bdd2355251ac2030aa.jpg":2519874,"images/works/hd-663345c1b537d9eca34b9a7c.png":4716868,"images/works/hd-0adcf91bb9f80bbeaed91cbb.jpg":4395659,"images/works/hd-1b3764c135f483c6aea51bdc.jpg":2593310,"images/works/hd-68c35e309725da705df3313c.jpg":2783975,"images/works/hd-ddd840ec97a865e44851bdb5.jpg":3989472,"images/works/hd-e2b55609cb0b14e81ed10f77.jpg":2965755,"images/works/hd-9760debab6f3208f14b73607.jpg":3551695,"images/works/hd-e7fe7c274f18228a244ec329.jpg":3785646,"images/works/hd-9960671462a08d969498c759.jpg":4737962,"images/works/hd-0c2362472de6763a0533efdd.jpg":4831213,"images/works/hd-8d39e9b2d1dac0b19b3c36f5.jpg":3311753,"images/works/hd-c1da0f0703b8fa38f5918d5e.jpg":3403063,"images/works/hd-0da04ad7b0bde84c6b1939d6.jpg":2106926,"images/works/hd-b5f40bbbfe9ab6dc03d9a48c.jpg":4209158,"images/works/hd-24bf8345a1125d9b7c65d70b.jpg":3896961,"images/works/hd-c62b84e387909ff04fbd37bc.jpg":1748433,"images/works/hd-284d4da5ade436ccfaeb0a0f.jpg":2623034,"images/works/hd-27410c06cb74f714f07b5d3e.jpg":315380,"images/works/hd-476d1682db9cd0d70dc5c7eb.jpg":3968956,"images/works/hd-2e3aefbc3d5faa5eb487b37f.jpg":670331,"images/works/hd-302fc4982521895be645e271.jpg":3712700,"images/works/hd-db2feb40eae38131204952d7.jpg":389037,"images/works/hd-7d18ee4a40ca3aa7a20c5a89.jpg":3733480,"images/works/hd-d88c17c689ab64937b47196b.jpg":4017106,"images/works/hd-20e36a5d963bbd0b06a4bea2.jpg":2851061,"images/works/hd-7338ec058bb20eb05eb3a521.jpg":3511747,"images/works/hd-ecdce560b922adf29af0f03e.jpg":3291549,"images/works/hd-42eedd978a7c9d4b6c89dc92.jpg":2343053,"images/works/hd-1778c982831d0b2aa20d7e57.jpg":2643008,"images/works/hd-a4d6ddd452ebc7f6a53bfaa8.jpg":1955498,"images/works/hd-efaa66fe574651c3be3c9d45.jpg":2280130,"images/works/hd-d58b4cdf6476297d0a3ea088.jpg":4296714,"images/works/hd-6fe41661e6ed6f8859a9a82c.jpg":3908348,"images/works/hd-a0f556af46406db334cc28ad.jpg":3858609,"images/works/hd-4157300b2328b5fea3f3d1b3.jpg":2969430,"images/works/hd-44ac357f096cae3843d39f66.jpg":4688736,"images/works/hd-2a835ce2139dc178bd9a4b6e.jpg":3884441,"images/works/hd-2313a3d3d33521391e670854.jpg":2183451,"images/works/hd-8ac12d60879f05eb5076c0c3.jpg":3030142,"images/works/hd-fe8081e36b404e1722b2b774.jpg":4070894,"images/works/hd-a072c8e93dc0236ecd3d0ba0.jpg":4687355,"images/works/hd-da4df4a263351d511a43be69.jpg":3447338,"images/works/hd-6cf0ca23dfdf1f7c8f836d7d.jpg":3392325,"images/works/hd-eab7c7e6a1e5ecca4aea085e.jpg":3599476,"images/works/hd-1c80f851cefaf597765f1120.jpg":4220635,"images/works/hd-d1422d3aeabb504639aa2394.jpg":928756,"images/works/hd-1c8c1f06854a2cfac5aac2d3.jpg":2040440,"images/works/hd-4a9dd97bab31e6b435270fc3.jpg":2506318,"images/works/hd-d0b039b0cb1ddd8cc27785e2.jpg":1633274,"images/works/hd-2cdce8f5b6ad66e753be42fa.jpg":2294705,"images/works/hd-0a97f97f984994849c2530d9.jpg":3002099,"images/works/hd-9ca46e3d621762687de7453e.jpg":2474119,"images/works/hd-bd8f3457e5d2e259c1dd2db8.jpg":2656417,"images/works/hd-e55cce767a5128e288edcecb.jpg":2413243,"images/works/hd-cec2822993cf455a3798d599.jpg":2424412,"images/works/hd-d794308dc612b3e57f4adedd.jpg":3834874,"images/works/hd-dde893dab8eca14c1c94b5ca.jpg":2945219,"images/works/hd-5c60bd3bf584be00ce72ebaf.jpg":2690967,"images/works/hd-07e92ed1e8efd8f686ba41dd.jpg":3728367,"images/works/hd-00aa73910e4637cf188d3a99.jpg":2240916,"images/works/hd-76a1152b7df035f690fc8a4a.jpg":3583577,"images/works/hd-0303cd1910d322e507877ba8.jpg":3519105,"images/works/hd-7be6a88935086344aa69eeb9.jpg":1691533,"images/works/hd-19961199ea78a111986c288b.jpg":649131,"images/works/hd-6699bfba5ba45bc60a186f84.jpg":1954613,"images/works/hd-ca378c313422a442f852f618.jpg":4077047,"images/works/hd-8b0fbba3775fa7c6605a626d.jpg":3034543,"images/works/hd-04da57d96758ccc7920e82b6.jpg":3733476,"images/works/hd-84589c42123fa57726102ed9.jpg":3310007,"images/works/hd-0f3b918e7145b1b2ec86f6d9.jpg":2065475,"images/works/hd-510b33f505e45f84f11ac30d.jpg":4020105,"images/works/hd-6631a0acd8e6668180343ce7.jpg":1028585,"images/works/hd-96b0a030128c34ef1f826f05.jpg":4356414,"images/works/hd-d74feb73e04c0d76f689a3dc.jpg":4529198,"images/works/hd-0d973bedc9745fa43f1948e6.jpg":2657588,"images/works/hd-a6c308679818c483aaa70dff.jpg":3270617,"images/works/hd-3e3742fd6bea074f6e39760d.jpg":2538752,"images/works/hd-8130e6362d4cd5d006d25ae9.jpg":1662251,"images/works/hd-bf5259e924c6ffe188a43994.jpg":3023085,"images/works/hd-aae55c71989645ba51c329f3.jpg":4333283,"images/works/hd-166509108fce5639307ab7d6.jpg":2069412,"images/works/hd-29f277c093d509151d06af72.jpg":3299698,"images/works/hd-a7c46451e738a6e03f499dee.jpg":4232358,"images/works/hd-0c09eec7ea2f6aff3652af46.jpg":3576766,"images/works/hd-af9089cb5f1555cd07b4bf4e.jpg":4068163,"images/works/hd-e4d8bd320484bd626b3f374b.jpg":4404053,"images/works/hd-06d59bd6ad94bc83536064f7.jpg":4716091,"images/works/hd-0dce292fcbb4770dfe732ff5.jpg":2602671};
-const AUTO_BATCH_BUDGET=8*1024*1024,AUTO_PAGE_BUDGET=12*1024*1024,AUTO_BATCH_COUNT=2;
-let autoWarmReservedBytes=0;
 function loadQrAssets(){
   if(qrAssetsPromise)return qrAssetsPromise;
   const images=[...document.querySelectorAll('.nav img,.hero img,img.qr,img.social-code-image')];
@@ -260,10 +256,7 @@ function releaseOriginalWarm(){
 }
 function canWarmOriginals(){
   if(document.hidden||lb.classList.contains('show')||document.body.classList.contains('booking-is-open')||!window.fetch||!window.AbortController)return false;
-  const connection=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
-  if(!connection||connection.saveData||connection.effectiveType!=='4g'||!(connection.downlink>=8)||connection.rtt>200)return false;
-  if(navigator.deviceMemory&&navigator.deviceMemory<4)return false;
-  return autoWarmReservedBytes<AUTO_PAGE_BUDGET;
+  return true;
 }
 function foregroundImagesReady(){
   const cards=[...document.querySelectorAll('.work-panel.active .card img')];
@@ -275,16 +268,12 @@ function scheduleOriginalWarm(batch){
   if(!canWarmOriginals()||!foregroundImagesReady())return;
   const token=originalWarmToken;
   const run=async()=>{
-    let batchBytes=0,batchCount=0;
-    // Download compressed bytes into the browser HTTP cache; never decode hidden full images.
+    // Sequentially cache this displayed batch only, regardless of network type.
+    // Do not construct Images, object URLs or pixel buffers for background HD.
     for(const image of batch){
       if(token!==originalWarmToken||!canWarmOriginals())break;
       if(warmedOriginals.has(image.s))continue;
-      const bytes=ORIGINAL_FILE_BYTES[image.s];
-      if(!bytes||batchCount>=AUTO_BATCH_COUNT||batchBytes+bytes>AUTO_BATCH_BUDGET||autoWarmReservedBytes+bytes>AUTO_PAGE_BUDGET)break;
-      batchBytes+=bytes;batchCount++;autoWarmReservedBytes+=bytes;
       const controller=new AbortController();originalWarmController=controller;
-      const timeout=setTimeout(()=>controller.abort(),8000);
       try{
         const response=await fetch(image.s,{cache:'force-cache',signal:controller.signal,priority:'low'});
         if(!response.ok)throw new Error('preload-http');
@@ -298,7 +287,6 @@ function scheduleOriginalWarm(batch){
         // A slow/failed background download must never stop the page or retry in a loop.
         if(token!==originalWarmToken)break;
       }finally{
-        clearTimeout(timeout);
         if(originalWarmController===controller)originalWarmController=null;
       }
     }
@@ -306,7 +294,7 @@ function scheduleOriginalWarm(batch){
   originalWarmTimer=setTimeout(()=>{
     originalWarmTimer=0;
     if(token===originalWarmToken&&canWarmOriginals())run();
-  },3000);
+  },0);
 }
 function resumeCurrentOriginalWarm(){
   const g=GALLERIES.find(item=>item.key===activeWorks);
