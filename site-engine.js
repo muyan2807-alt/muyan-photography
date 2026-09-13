@@ -239,10 +239,14 @@ function waitForImage(image,timeout=4000){
 }
 let qrAssetsPromise=null,originalWarmController=null,originalWarmTimer=0,originalWarmToken=0;
 const warmedOriginals=new Set();
+// Compressed file sizes allow a strict budget before starting any speculative download.
+const ORIGINAL_FILE_BYTES={"images/正片/外景/01.jpg":4576586,"images/正片/外景/02.jpg":1580700,"images/正片/外景/03.jpg":962550,"images/正片/外景/04.jpg":3053323,"images/正片/外景/05.jpg":1468148,"images/正片/外景/06.jpg":351472,"images/正片/外景/07.jpg":2355452,"images/正片/外景/08.jpg":1785478,"images/正片/外景/11.jpg":5186054,"images/正片/外景/12.jpg":2422281,"images/正片/外景/13.jpg":3282481,"images/正片/外景/14.jpg":2940187,"images/正片/外景/15.jpg":2590199,"images/正片/外景/16.jpg":2521961,"images/正片/外景/17.jpg":2441281,"images/正片/外景/18.jpg":940861,"images/正片/外景/19.jpg":611938,"images/正片/外景/20.jpg":7208848,"images/正片/外景/22.jpg":6911111,"images/正片/外景/24.jpg":4700393,"images/正片/外景/26.jpg":4248835,"images/正片/外景/27.jpg":5107305,"images/正片/外景/28.jpg":5384359,"images/正片/外景/CBA7A010130242A06E82BCEC10DA6D1A.jpg":2858395,"images/正片/外景/DSC01999.jpg":8728315,"images/正片/外景/DSC02103.jpg":4273669,"images/正片/外景/DSC02267.jpg":1553248,"images/正片/外景/副图.jpg":4127329,"images/正片/外景/首图 (2).jpg":2980092,"images/正片/外景/首图 (3).jpg":251461,"images/正片/外景/首图.jpg":6049171,"images/正片/棚子/30.png":1596178,"images/正片/棚子/31.jpg":739516,"images/正片/棚子/32.jpg":4554688,"images/正片/棚子/33.jpg":313376,"images/正片/棚子/34.jpg":2368952,"images/正片/棚子/35.jpg":1785357,"images/正片/棚子/36.jpg":2519874,"images/正片/棚子/37.png":4716868,"images/正片/棚子/38.jpg":4958930,"images/正片/棚子/39.jpg":3105864,"images/正片/棚子/40.jpg":2783975,"images/正片/棚子/41.jpg":5840474,"images/正片/棚子/42.jpg":3224225,"images/正片/棚子/44.jpg":4408581,"images/正片/棚子/45.jpg":4258521,"images/正片/棚子/DSC01819.jpg":5414241,"images/正片/棚子/DSC01840.jpg":5170687,"images/正片/棚子/DSC01940.jpg":4079007,"images/正片/棚子/DSC01962.jpg":3661428,"images/正片/棚子/首图 (2).jpg":2703318,"images/正片/棚子/首图 (3).jpg":8523578,"images/正片/棚子/首图.jpg":4600986,"images/场照/亮灰/03.jpg":1748433,"images/场照/亮灰/04.jpg":2623034,"images/场照/亮灰/06.jpg":315380,"images/场照/亮灰/08.jpg":3968956,"images/场照/亮灰/09.jpg":670331,"images/场照/亮灰/11.jpg":6515403,"images/场照/亮灰/12.jpg":389037,"images/场照/亮灰/13.jpg":5144772,"images/场照/亮灰/15.jpg":6081710,"images/场照/亮灰/17.jpg":4155269,"images/场照/亮灰/18.jpg":4596583,"images/场照/亮灰/23.jpg":3804156,"images/场照/亮灰/24.jpg":3621723,"images/场照/亮灰/26.jpg":4209165,"images/场照/亮灰/27.jpg":1955498,"images/场照/亮灰/34.jpg":2810558,"images/场照/亮灰/38.jpg":6098653,"images/场照/亮灰/39.jpg":5506693,"images/场照/亮灰/48.jpg":4393137,"images/场照/亮灰/DSC00083.jpg":3367922,"images/场照/亮灰/DSC00403.jpg":7796814,"images/场照/亮灰/DSC00500.jpg":5660906,"images/场照/亮灰/Image_1786104236736_939_upscayl_4x_upscayl-standard-4x.jpg":5121657,"images/场照/亮灰/副图 (2).jpg":3030142,"images/场照/亮灰/副图 (3).jpg":5493330,"images/场照/亮灰/副图.jpg":6297051,"images/场照/亮灰/首图 (2).jpg":4983086,"images/场照/亮灰/首图 (3).jpg":3789571,"images/场照/亮灰/首图.jpg":3692471,"images/场照/暗调/00.jpg":5676478,"images/场照/暗调/28.jpg":928756,"images/场照/暗调/29.jpg":2040440,"images/场照/暗调/31.jpg":2949915,"images/场照/暗调/33.jpg":1633274,"images/场照/暗调/35.jpg":2294705,"images/场照/暗调/41.jpg":3991611,"images/场照/暗调/42.jpg":3380253,"images/场照/暗调/43.jpg":3997546,"images/场照/暗调/47.jpg":3099807,"images/场照/暗调/50.jpg":2696185,"images/场照/暗调/51.jpg":3910414,"images/场照/暗调/52.jpg":5368608,"images/场照/暗调/54.jpg":3133375,"images/场照/暗调/55.jpg":4188940,"images/场照/暗调/56.jpg":2240916,"images/场照/暗调/_DSC6247.jpg":6053758,"images/场照/暗调/DSC00396.jpg":13488956,"images/场照/暗调/副图 (2).jpg":2084869,"images/场照/暗调/副图 (3).jpg":649131,"images/场照/暗调/副图.jpg":2459904,"images/场照/暗调/首图 (2).jpg":4077047,"images/场照/暗调/首图 (3).jpg":3983194,"images/场照/暗调/首图.jpg":4363894,"images/特效/02.jpg":4597391,"images/特效/04.jpg":4895790,"images/特效/05.jpg":11541371,"images/特效/09.jpg":1028585,"images/特效/10.jpg":4866803,"images/特效/11.jpg":8191323,"images/特效/12.jpg":4433003,"images/特效/13.jpg":3612174,"images/特效/15.jpg":6001740,"images/特效/16.jpg":2279368,"images/特效/17.jpg":6159104,"images/特效/18.jpg":4836608,"images/特效/19.jpg":6485283,"images/特效/21.jpg":9495076,"images/特效/23.jpg":5676478,"images/特效/_DSC6247.jpg":6053758,"images/特效/DSC00380.jpg":6297051,"images/特效/初六（巴麻美1）.jpg":4232358,"images/特效/副图 (2).jpg":7796814,"images/特效/副图 (3).jpg":3927527,"images/特效/副图.jpg":5623876,"images/特效/夏夏（猴子1）.jpg":5735438,"images/特效/夏夏（韩信1.3).jpg":7155385,"images/特效/首图 (2).jpg":13488956,"images/特效/首图 (3).jpg":2294705,"images/特效/首图.jpg":2602671};
+const AUTO_BATCH_BUDGET=8*1024*1024,AUTO_PAGE_BUDGET=12*1024*1024,AUTO_BATCH_COUNT=2;
+let autoWarmReservedBytes=0;
 function loadQrAssets(){
   if(qrAssetsPromise)return qrAssetsPromise;
-  const images=[...document.querySelectorAll('img.qr,img.social-code-image')];
-  const load=image=>{image.fetchPriority='low';image.loading='eager';return waitForImage(image)};
+  const images=[...document.querySelectorAll('.nav img,.hero img,img.qr,img.social-code-image')];
+  const load=image=>{if(image.matches('img.qr,img.social-code-image'))image.fetchPriority='low';image.loading='eager';return waitForImage(image)};
   const started=QQ_LOW_MEMORY
     ?images.reduce((chain,image)=>chain.then(()=>load(image)),Promise.resolve())
     :Promise.all(images.map(load));
@@ -258,12 +262,13 @@ function releaseOriginalWarm(){
 function canWarmOriginals(){
   if(document.hidden||lb.classList.contains('show')||document.body.classList.contains('booking-is-open')||!window.fetch||!window.AbortController)return false;
   const connection=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
-  if(connection&&(connection.saveData||/2g/i.test(connection.effectiveType||'')))return false;
-  return true;
+  if(!connection||connection.saveData||connection.effectiveType!=='4g'||!(connection.downlink>=8)||connection.rtt>200)return false;
+  if(navigator.deviceMemory&&navigator.deviceMemory<4)return false;
+  return autoWarmReservedBytes<AUTO_PAGE_BUDGET;
 }
 function foregroundImagesReady(){
   const cards=[...document.querySelectorAll('.work-panel.active .card img')];
-  const supporting=[...document.querySelectorAll('img.qr,img.social-code-image,.hero-photo')];
+  const supporting=[...document.querySelectorAll('.nav img,.hero img,img.qr,img.social-code-image')];
   return cards.length>0&&cards.every(image=>image.complete&&image.naturalWidth>0)&&supporting.every(image=>image.complete);
 }
 function scheduleOriginalWarm(batch){
@@ -271,12 +276,16 @@ function scheduleOriginalWarm(batch){
   if(!canWarmOriginals()||!foregroundImagesReady())return;
   const token=originalWarmToken;
   const run=async()=>{
+    let batchBytes=0,batchCount=0;
     // Download compressed bytes into the browser HTTP cache; never decode hidden full images.
     for(const image of batch){
       if(token!==originalWarmToken||!canWarmOriginals())break;
       if(warmedOriginals.has(image.s))continue;
+      const bytes=ORIGINAL_FILE_BYTES[image.s];
+      if(!bytes||batchCount>=AUTO_BATCH_COUNT||batchBytes+bytes>AUTO_BATCH_BUDGET||autoWarmReservedBytes+bytes>AUTO_PAGE_BUDGET)break;
+      batchBytes+=bytes;batchCount++;autoWarmReservedBytes+=bytes;
       const controller=new AbortController();originalWarmController=controller;
-      const timeout=setTimeout(()=>controller.abort(),20000);
+      const timeout=setTimeout(()=>controller.abort(),8000);
       try{
         const response=await fetch(image.s,{cache:'force-cache',signal:controller.signal,priority:'low'});
         if(!response.ok)throw new Error('preload-http');
@@ -294,15 +303,11 @@ function scheduleOriginalWarm(batch){
         if(originalWarmController===controller)originalWarmController=null;
       }
     }
-    if(token===originalWarmToken&&canWarmOriginals()){
-      const g=GALLERIES.find(item=>item.key===activeWorks);
-      if(g&&g.shown===batch)prepareNextFull(g,stateOf(g));
-    }
   };
   originalWarmTimer=setTimeout(()=>{
     originalWarmTimer=0;
     if(token===originalWarmToken&&canWarmOriginals())run();
-  },250);
+  },3000);
 }
 function resumeCurrentOriginalWarm(){
   const g=GALLERIES.find(item=>item.key===activeWorks);
@@ -528,7 +533,9 @@ function renderGallery(key,forceNew){
       if(renderToken!==g.renderToken||g.shown!==next)return;
       // Current HD has priority over speculative thumbnails for a future batch.
       waitForImage(document.querySelector('.hero-photo'),0).then(()=>{
-        if(renderToken===g.renderToken&&g.shown===next&&activeWorks===key)scheduleOriginalWarm(next);
+        if(renderToken===g.renderToken&&g.shown===next&&activeWorks===key){
+          scheduleOriginalWarm(next);
+        }
       });
     });
   });
