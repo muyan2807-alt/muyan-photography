@@ -6,6 +6,8 @@
 .booking-tabs{display:flex;gap:8px;padding:5px;margin-bottom:16px;border:1px solid #d1e5f2;border-radius:17px;background:#ffffffb3}
 .booking-tabs button{flex:1;min-width:0;min-height:44px;padding:8px 12px;border:0;border-radius:12px;background:transparent;color:#597d97;font-size:.82rem}.booking-tabs [aria-selected=true]{background:#cde9fb;color:#315f7d;font-weight:600}
 .booking-account{font-size:1.1rem;font-weight:650;margin:8px 0 13px}
+.booking-qr-label{margin:16px 0 0;font-size:.88rem;line-height:1.6;font-weight:650;color:#365f7c}
+.booking-qr-label+.booking-qq-frame{margin-top:8px}
 .booking-button{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:9px 16px;border:1px solid #fff;border-radius:15px;background:#c5e5fa;box-shadow:0 0 0 1px #c3dfef;color:#315d7b;font-size:.82rem;text-decoration:none;cursor:pointer}
 .booking-secondary{background:#f5fbff}.booking-buttons{display:flex;gap:10px;margin-top:14px}.booking-buttons>*{flex:1;min-width:0}
 .booking-wechat-code{width:200px;max-width:85%;height:auto;object-fit:contain;margin:18px auto 12px;border:0;border-radius:13px;background:#fff}

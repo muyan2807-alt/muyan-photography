@@ -9,6 +9,7 @@
     const image=document.getElementById('bookingQQImage');
     image.src=small?'images/qq-small.png':'images/qq.png';image.width=small?582:934;image.height=small?583:892;
     image.alt='QQ '+(small?'小号 ':'大号 ')+uin+' 的二维码';
+    document.getElementById('bookingQQLabel').textContent=small?'QQ 小号二维码':'QQ 大号二维码';
     document.getElementById('bookingQQCopy').dataset.bookingCopy=uin;
     // Best-effort legacy client links, only followed on an explicit visitor click.
     document.getElementById('bookingQQLaunch').href=mobile

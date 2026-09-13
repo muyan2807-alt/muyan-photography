@@ -48,8 +48,6 @@
 .cz-price-grid .price-card.hot::after{display:none}
 .cz-price-grid .price-card.hot>.tag{position:absolute;right:8px;top:7px;margin:0;padding:2px 8px;font-size:.74rem;line-height:1.4;border:1px solid #fff;border-radius:7px;background:linear-gradient(120deg,#bfe3fa,#edf8ff);color:#3e7395;white-space:nowrap;transform:rotate(8deg);pointer-events:none;z-index:2}
 .cz-price-grid .price-card h4{min-height:1.5em}
-.cz-price-grid .price-card .ver{min-height:1.7em}
 @media(max-width:720px){
- .cz-price-grid .price-card .ver{min-height:3.3em}
  .cz-price-grid .price-card.hot>.tag{font-size:.66rem}
 }
