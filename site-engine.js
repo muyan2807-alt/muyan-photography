@@ -1,11 +1,6 @@
 
 // ===== 导航 =====
-const nav=document.getElementById('nav'),burger=document.getElementById('burger'),links=document.getElementById('navLinks');
-let navScrollFrame=0;
-window.addEventListener('scroll',()=>{
-  if(navScrollFrame)return;
-  navScrollFrame=requestAnimationFrame(()=>{navScrollFrame=0;nav.classList.toggle('scrolled',window.scrollY>10)});
-},{passive:true});
+const burger=document.getElementById('burger'),links=document.getElementById('navLinks');
 function setMenuOpen(open){
   burger.classList.toggle('open',open);links.classList.toggle('open',open);
   burger.setAttribute('aria-expanded',String(open));burger.setAttribute('aria-label',open?'关闭菜单':'打开菜单');
@@ -18,7 +13,6 @@ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&links.class
 const quickJumpLinks=[...document.querySelectorAll('.quick-action[data-jump]')];
 let quickNavLockUntil=0;
 function setActiveQuickJump(id){
-  document.body.classList.toggle('price-in-view',id==='price');
   quickJumpLinks.forEach(link=>{
     const active=link.dataset.jump===id;
     link.classList.toggle('is-active',active);
@@ -57,7 +51,7 @@ if('ResizeObserver' in window)new ResizeObserver(syncWorksCompanion).observe(wor
 syncWorksCompanion();
 
 // ===== 联系方式复制与网页分享 =====
-const PUBLIC_SITE_URL='https://muyan2807-alt.github.io/muyan-photography/';
+const PUBLIC_SITE_URL='https://muyancos.cn/';
 const shareStatus=document.getElementById('shareStatus');
 const contactSection=document.getElementById('contact');
 let shareStatusTimer=0;
@@ -69,12 +63,6 @@ function alignContactSection(){
 }
 document.querySelectorAll('a[href="#contact"]').forEach(link=>link.addEventListener('click',()=>setTimeout(alignContactSection,0)));
 window.addEventListener('load',()=>{if(location.hash==='#contact')setTimeout(alignContactSection,0)},{once:true});
-if('IntersectionObserver' in window){
-  const contactObserver=new IntersectionObserver(entries=>{
-    document.body.classList.toggle('contact-in-view',entries[0].isIntersecting);
-  },{threshold:.08});
-  contactObserver.observe(contactSection);
-}
 function showShareStatus(message){
   clearTimeout(shareStatusTimer);shareStatus.textContent=message;shareStatus.hidden=false;
   shareStatusTimer=setTimeout(()=>{shareStatus.hidden=true},2600);
@@ -114,7 +102,8 @@ const MOBILE_DEVICE=/(?:Android|iPhone|iPad|iPod|HarmonyOS|Mobile)/i.test(QQ_UA)
 if(QQ_LOW_MEMORY)document.body.classList.add('qq-low-memory');
 if(MOBILE_DEVICE)document.body.classList.add('mobile-device');
 const lb=document.getElementById('lb'),lbImg=document.getElementById('lbImg'),lbStatus=document.getElementById('lbStatus'),lbCount=document.getElementById('lbCount'),lbCloseBtn=document.getElementById('lbClose'),lbRetry=document.getElementById('lbRetry');
-let cur=[],curPreviewSources=[],idx=0,lbReleaseTimer=0,lbObjectUrl='',lbAbort=null,lbLoadToken=0,lbLastFocus=null;
+let cur=[],curPreviewSources=[],idx=0,lbReleaseTimer=0,lbObjectUrl='',lbAbort=null,lbLoadToken=0;
+const lightboxDialog=createDialogController(lb,lbCloseBtn,closeLb);
 function releaseLightboxImage(){
   if(lbAbort){lbAbort.abort();lbAbort=null}
   lbImg.onload=null;lbImg.onerror=null;
@@ -179,20 +168,20 @@ function loadLightboxImage(src,previewSrc){
 function show(i){
   clearTimeout(lbReleaseTimer);
   const opening=!lb.classList.contains('show');
-  if(opening){cancelGalleryTransition();lbLastFocus=document.activeElement;}
+  const opener=document.activeElement;
   idx=(i+cur.length)%cur.length;
-  lb.classList.add('show');lb.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+  lb.classList.add('show');lb.setAttribute('aria-hidden','false');
   lbImg.alt='慕言·次元映像 COS摄影作品大图，第 '+(idx+1)+' 张';
   lbCount.textContent=(idx+1)+' / '+cur.length;loadLightboxImage(cur[idx].s,curPreviewSources[idx]);
-  if(opening)requestAnimationFrame(()=>lbCloseBtn.focus());
+  if(opening)lightboxDialog.open(opener);
 }
 function closeLb(){
-  lb.classList.remove('show');lb.setAttribute('aria-hidden','true');document.body.style.overflow='';
+  lb.classList.remove('show');lb.setAttribute('aria-hidden','true');
+  lightboxDialog.close({resume:false});
   clearTimeout(lbReleaseTimer);
   lbReleaseTimer=setTimeout(()=>{
     if(!lb.classList.contains('show')){lbLoadToken++;releaseLightboxImage();cur=[];curPreviewSources=[];resumeCurrentOriginalWarm()}
   },240);
-  if(lbLastFocus&&document.contains(lbLastFocus))lbLastFocus.focus();
 }
 lbCloseBtn.addEventListener('click',closeLb);
 lbRetry.addEventListener('click',e=>{
@@ -206,15 +195,8 @@ document.getElementById('lbNext').addEventListener('click',e=>{e.stopPropagation
 lb.addEventListener('click',e=>{if(e.target===lb)closeLb()});
 document.addEventListener('keydown',e=>{
   if(!lb.classList.contains('show'))return;
-  if(e.key==='Escape')closeLb();
   if(e.key==='ArrowLeft')show(idx-1);
   if(e.key==='ArrowRight')show(idx+1);
-  if(e.key==='Tab'){
-    const focusable=[...lb.querySelectorAll('button')].filter(button=>!button.hidden&&button.getClientRects().length);
-    const first=focusable[0],last=focusable[focusable.length-1];
-    if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
-    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
-  }
 });
 
 // ===== 画廊：首批固定首图、第二批优先副图，之后独立随机无重复轮播 =====
@@ -255,7 +237,7 @@ function releaseOriginalWarm(){
   if(originalWarmController){originalWarmController.abort();originalWarmController=null}
 }
 function canWarmOriginals(){
-  if(document.hidden||lb.classList.contains('show')||document.body.classList.contains('booking-is-open')||!window.fetch||!window.AbortController)return false;
+  if(document.hidden||lb.classList.contains('show')||document.body.classList.contains('dialog-is-open')||!window.fetch||!window.AbortController)return false;
   return true;
 }
 function foregroundImagesReady(){
@@ -405,7 +387,7 @@ function stateOf(g){
   if(!g.states[g.cat]){
     const pool=randomPoolOf(g),fixed=fixedBatchOf(g);
     const fixedReady=fixed.length===fixedBatchSize(g);
-    const state={queue:makeQueue(pool),shown:fixedReady?fixed:[],prepared:null,seen:fixedReady?fixed.length:0,cycle:1};
+    const state={queue:makeQueue(pool),shown:fixedReady?fixed:[],prepared:null,seen:fixedReady?fixed.length:0};
     if(fixedReady)state.prepared=secondaryBatchOf(g,state.queue);
     g.states[g.cat]=state;
   }
@@ -426,7 +408,7 @@ function planBatch(g,state){
 function commitPlan(state,plan){
   state.queue=plan.queueAfter;
   state.shown=plan.batch;
-  if(plan.crossed){state.cycle++;state.seen=0}
+  if(plan.crossed)state.seen=0;
   state.seen+=plan.newlySeen;
 }
 function invalidateGalleryRender(g){g.renderToken++}
@@ -454,7 +436,7 @@ function renderGallery(key,forceNew){
   const next=state.shown;g.shown=next;
   if(!next.length)return;
   const rows=galleryRows(next);
-  grid.innerHTML='<div class="photo-block'+(next.length===6?' is-six':'')+'">'+rows.map(row=>'<div class="photo-row">'+row.map(()=>'<figure class="card" role="button" tabindex="0"><img alt="" loading="eager" decoding="async"></figure>').join('')+'</div>').join('')+'</div>';
+  grid.innerHTML='<div class="photo-block">'+rows.map(row=>'<div class="photo-row">'+row.map(()=>'<figure class="card" role="button" tabindex="0"><img alt="" loading="eager" decoding="async"></figure>').join('')+'</div>').join('')+'</div>';
   const block=grid.querySelector('.photo-block'),cards=[...block.querySelectorAll('.card')];
   cards.forEach((card,i)=>{
     const openCard=()=>{
@@ -469,10 +451,7 @@ function renderGallery(key,forceNew){
   grid.style.pointerEvents='none';
   cards.forEach((card,i)=>{
     const im=card.querySelector('img'),img=next[i];
-    const portrait=img.w<img.h;
-    card.className='card '+(portrait?'is-portrait':'is-landscape');
     card.dataset.ratio=String(img.w/img.h);
-    card.style.setProperty('--media-ratio',img.w+' / '+img.h);
     const typeLabel=key==='zhengpian'?'正片':key==='changzhao'?'场照':'特效';
     im.dataset.original=img.s;im.width=img.w;im.height=img.h;
     im.alt='慕言·次元映像 COS摄影'+typeLabel+'作品，第 '+(i+1)+' 张';
@@ -592,8 +571,16 @@ document.querySelectorAll('.note-tab').forEach(button=>{
   const panel=document.getElementById('note-'+button.dataset.note);panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby',button.id);
 });
 function syncSelected(selector,activeKey,dataName){
-  document.querySelectorAll(selector).forEach(button=>button.setAttribute('aria-selected',String(button.dataset[dataName]===activeKey)));
+  document.querySelectorAll(selector).forEach(button=>{
+    const selected=button.dataset[dataName]===activeKey;
+    button.setAttribute('aria-selected',String(selected));button.tabIndex=selected?0:-1;
+  });
 }
+[['.works-tabs','.work-tab','w'],['.price-tabs','.price-tab','p'],['.note-tabs','.note-tab','note']].forEach(([group,selector,dataName])=>{
+  const active=document.querySelector(selector+'.active');
+  syncSelected(selector,active.dataset[dataName],dataName);
+  bindTabKeys(document.querySelector(group),selector);
+});
 // 选项卡绑定
 GALLERIES.forEach(g=>{
   g.cat='all';g.shown=[];g.states={};g.renderToken=0;
@@ -632,7 +619,6 @@ document.querySelectorAll('.note-tab').forEach(btn=>{
 // 价格选项卡
 document.querySelectorAll('.price-tab').forEach(btn=>{
   btn.addEventListener('click',function(){
-    document.body.classList.add('price-in-view');
     document.querySelectorAll('.price-tab').forEach(b=>b.classList.remove('active'));
     this.classList.add('active');
     document.querySelectorAll('.price-panel').forEach(p=>p.classList.remove('active'));
@@ -664,11 +650,13 @@ function switchWorks(w){
   renderGallery(w);
 }
 document.querySelectorAll('.work-tab').forEach(b=>b.addEventListener('click',()=>switchWorks(b.dataset.w)));
-document.querySelectorAll('.nav-w').forEach(a=>a.addEventListener('click',function(e){e.preventDefault();switchWorks(this.dataset.w);document.getElementById('works').scrollIntoView({behavior:'smooth'});}));
 
 // ===== 滚动淡入 =====
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1});
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+if('IntersectionObserver' in window){
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+}
+document.documentElement.classList.add('interactive-ready');
 
 // 静态角色陪伴；不创建持续绘制的装饰画布或粒子。
 (()=>{

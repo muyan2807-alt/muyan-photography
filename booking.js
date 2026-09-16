@@ -2,7 +2,8 @@
   const modal=document.getElementById('bookingModal'),closeButton=document.getElementById('bookingClose');
   const status=document.getElementById('bookingStatus'),select=document.getElementById('bookingQQAccount');
   const tabs=[...modal.querySelectorAll('[data-booking-tab]')];
-  let opener=null,oldOverflow='',background=[],generation=0;
+  let generation=0;
+  const dialog=createDialogController(modal,closeButton,close);
   const mobile=/Android|iPhone|iPad|iPod|HarmonyOS|Mobile/i.test(navigator.userAgent)||navigator.maxTouchPoints>0;
   function updateQQ(){
     const small=select.value==='2389375218',uin=small?'2389375218':'2745867337';
@@ -27,31 +28,18 @@
   }
   function open(button){
     if(!modal.hidden)return;
-    opener=button;oldOverflow=document.body.style.overflow;
-    if(typeof cancelGalleryTransition==='function')cancelGalleryTransition();
-    if(typeof releaseOriginalWarm==='function')releaseOriginalWarm();
-    document.body.classList.add('booking-is-open');modal.hidden=false;document.body.style.overflow='hidden';
-    updateQQ();choose('qq');closeButton.focus({preventScroll:true});
-    background=[...document.querySelectorAll('.nav,.hero,main,footer,.quick-actions,.works-side-refresh,.rem-side-companion')].map(el=>({el,inert:el.inert,aria:el.getAttribute('aria-hidden')}));
-    background.forEach(({el})=>{el.inert=true;el.setAttribute('aria-hidden','true')});
+    document.body.classList.add('booking-is-open');modal.hidden=false;
+    updateQQ();choose('qq');dialog.open(button);
   }
   function close(){
     if(modal.hidden)return;
-    generation++;modal.hidden=true;document.body.classList.remove('booking-is-open');document.body.style.overflow=oldOverflow;
-    background.forEach(({el,inert,aria})=>{el.inert=inert;if(aria===null)el.removeAttribute('aria-hidden');else el.setAttribute('aria-hidden',aria)});background=[];
-    if(opener&&document.contains(opener))opener.focus({preventScroll:true});
-    if(typeof resumeCurrentOriginalWarm==='function')resumeCurrentOriginalWarm();
+    generation++;modal.hidden=true;document.body.classList.remove('booking-is-open');dialog.close();
   }
   document.querySelectorAll('[data-booking-open]').forEach(button=>button.addEventListener('click',event=>{
     event.preventDefault();event.stopImmediatePropagation();open(button);
   },true));
   tabs.forEach(tab=>tab.addEventListener('click',()=>choose(tab.dataset.bookingTab)));
-  modal.querySelector('.booking-tabs').addEventListener('keydown',event=>{
-    if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
-    event.preventDefault();const current=tabs.indexOf(document.activeElement);
-    const next=event.key==='Home'?0:event.key==='End'?tabs.length-1:(current+(event.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;
-    choose(tabs[next].dataset.bookingTab);tabs[next].focus();
-  });
+  bindTabKeys(modal.querySelector('.booking-tabs'),'[data-booking-tab]');
   select.addEventListener('change',()=>{generation++;updateQQ()});
   modal.querySelectorAll('[data-booking-copy]').forEach(button=>button.addEventListener('click',async()=>{
     const token=generation,value=button.dataset.bookingCopy;
@@ -73,12 +61,4 @@
   });
   closeButton.addEventListener('click',close);
   modal.addEventListener('click',event=>{if(event.target===modal)close()});
-  modal.addEventListener('keydown',event=>{
-    if(event.key==='Escape'){event.preventDefault();event.stopPropagation();close();return}
-    if(event.key!=='Tab')return;
-    const controls=[...modal.querySelectorAll('button,a[href],select,[tabindex="0"]')].filter(el=>!el.disabled&&el.tabIndex>=0&&el.getClientRects().length);
-    const first=controls[0],last=controls[controls.length-1];
-    if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}
-    else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
-  });
 })();
