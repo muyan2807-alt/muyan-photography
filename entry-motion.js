@@ -10,7 +10,7 @@
   };
   const ease='cubic-bezier(.2,.75,.25,1)';
   const running=new Set(),welcome=new Set(),detailsMotions=new WeakMap();
-  let veil=null,photoAccent=null,welcomeTimer=0;
+  let veil=null,photoAccent=null;
   function animate(element,frames,options,isWelcome=false){
     if(!element||quiet()||document.hidden)return null;
     // Multi-stage scenes use actual timeline offsets, not a global ease that
@@ -23,13 +23,11 @@
     motion.finished.then(release,release);
     return motion;
   }
-  const stopEvents=['wheel','touchstart','pointerdown','keydown','pagehide','resize'];
   function stopWelcome(){
-    clearTimeout(welcomeTimer);welcome.forEach(motion=>motion.cancel());welcome.clear();
+    welcome.forEach(motion=>motion.cancel());welcome.clear();
     veil?.remove();veil=null;
     photoAccent?.remove();photoAccent=null;
     boot?.release(false);
-    stopEvents.forEach(name=>window.removeEventListener(name,stopWelcome));
   }
   function stopAll(){stopWelcome();running.forEach(motion=>motion.cancel());running.clear()}
   // Expand content immediately; animate only its appearance, not container height.
@@ -178,6 +176,4 @@
   enter('.hero-stage',800,1150,12,.98);
   enter('.hero-tail',1050,850);
   });
-  stopEvents.forEach(name=>window.addEventListener(name,stopWelcome,{passive:true}));
-  welcomeTimer=setTimeout(stopWelcome,Math.max(0,2000-(performance.now()-boot.startedAt)));
 })();

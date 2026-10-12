@@ -41,13 +41,13 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
     if(!document.getElementById('entryWelcome'))return;
     observer.disconnect();
     if(!boot.startedAt)boot.startedAt=performance.now();
-    clearTimeout(boot.timer);boot.timer=setTimeout(cancel,2000);
+    clearTimeout(boot.timer);boot.timer=setTimeout(cancel,Math.max(0,2000-(performance.now()-boot.startedAt)));
   });
   observer.observe(document.documentElement,{childList:true,subtree:true});
   boot.timer=setTimeout(cancel,3000); // Missing animation script must never trap the page.
 })();
 </script>
-<link rel="preload" as="script" href="entry-motion.js?v=2.3" fetchpriority="high">
+<link rel="preload" as="script" href="entry-motion.js?v=2.3-cleanup1" fetchpriority="high">
 <link rel="stylesheet" href="entry-motion.css?v=2.3" fetchpriority="high">
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "1a8183bf36274076bf25a117293b9989"}'></script><!-- End Cloudflare Web Analytics -->
 <title>慕言·次元映像 | 正片·场照·特效</title>
@@ -67,8 +67,8 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
 <meta property="og:image:alt" content="慕言的蕾姆主题 COS 摄影作品">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9D%84%EF%B8%8F%3C/text%3E%3C/svg%3E">
 <link rel="preload" as="image" href="images/rem-anime-hero-hq.webp" type="image/webp" fetchpriority="high">
-<link rel="stylesheet" href="rem-studio.css?v=2.2.2">
-<link rel="stylesheet" href="compact-layout.css?v=2.3">
+<link rel="stylesheet" href="rem-studio.css?v=2.3-cleanup1">
+<link rel="stylesheet" href="compact-layout.css?v=2.3-cleanup1">
 <link rel="stylesheet" href="glass-sections.css?v=2.2.2">
 <link rel="stylesheet" href="booking.css?v=2.2">
 <link rel="stylesheet" href="mobile-refinements.css?v=2.3">
@@ -83,7 +83,7 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
     <span class="entry-title">慕言·次元映像</span><span class="entry-subtitle">提供优质服务，上乘质量，适中价格！</span>
   </div>
 </div>
-<script src="entry-motion.js?v=2.3" async fetchpriority="high"></script>
+<script src="entry-motion.js?v=2.3-cleanup1" async fetchpriority="high"></script>
 <div class="reading-progress" id="readingProgress" aria-hidden="true"></div>
 
 <!-- 导航 -->
