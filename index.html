@@ -1,12 +1,58 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "1a8183bf36274076bf25a117293b9989"}'></script><!-- End Cloudflare Web Analytics -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Critical first-paint guard: no dependency on the site bundle or images. -->
+<style id="entry-critical">
+#entryWelcome{display:none}
+html.entry-boot:not(.entry-playing)::before{content:'';position:fixed;inset:0;z-index:2147483646;background:linear-gradient(155deg,#f5fbff,#edf6ff 58%,#f7f7ff);pointer-events:none}
+html.entry-boot #entryWelcome{display:block;position:fixed;inset:0;z-index:2147483647;overflow:hidden;pointer-events:none;opacity:1;user-select:none;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif}
+#entryWelcome .entry-wash{position:absolute;inset:0;background:linear-gradient(155deg,#f5fbff,#edf6ff 58%,#f7f7ff)}
+#entryWelcome .entry-identity{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;padding:0 20px 9vh;text-align:center}
+#entryWelcome .entry-bow{width:92px;height:70px;margin-bottom:7px;stroke:#8c9fc9;stroke-width:1.15;overflow:visible}
+#entryWelcome .entry-title{font-size:clamp(1.4rem,5vw,2.15rem);font-weight:550;letter-spacing:.1em;line-height:1.6;color:#3d7092}
+#entryWelcome .entry-subtitle{font-size:clamp(.64rem,1.9vw,.78rem);letter-spacing:.04em;line-height:1.8;color:#7796ae}
+@keyframes entry-brand-first{0%{opacity:0;transform:translateY(12px)}25%,67%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-8px)}}
+html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entry-brand-first 1550ms 100ms linear both}
+</style>
+<script>
+(()=>{
+  const connection=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+  const lowMemory=/(?:M?QQBrowser|QQ\/|TBS\/|X5|V1_AND_SQ|TIM\/)/i.test(navigator.userAgent)||!!window.mqq||!!window.QQJSBridge;
+  const navigation=performance.getEntriesByType?.('navigation')[0];
+  const active=!matchMedia('(prefers-reduced-motion: reduce)').matches&&!connection?.saveData&&!lowMemory&&!document.hidden&&(!location.hash||location.hash==='#top')&&navigation?.type!=='back_forward'&&!!Element.prototype.animate;
+  const boot=window.muyanEntryBoot={active,lowMemory,startedAt:0,onStop:null,timer:0};
+  const events=['wheel','touchstart','pointerdown','keydown','pagehide','resize'];
+  let observer=null;
+  boot.release=(notify=true)=>{
+    if(!boot.active)return;
+    boot.active=false;clearTimeout(boot.timer);observer?.disconnect();
+    document.documentElement.classList.remove('entry-boot','entry-playing');
+    events.forEach(name=>removeEventListener(name,cancel));
+    if(notify)boot.onStop?.();
+    document.getElementById('entryWelcome')?.remove();
+  };
+  function cancel(){boot.release()}
+  if(!active)return;
+  document.documentElement.classList.add('entry-boot');
+  events.forEach(name=>addEventListener(name,cancel,{passive:true}));
+  observer=new MutationObserver(()=>{
+    if(!document.getElementById('entryWelcome'))return;
+    observer.disconnect();
+    if(!boot.startedAt)boot.startedAt=performance.now();
+    clearTimeout(boot.timer);boot.timer=setTimeout(cancel,2000);
+  });
+  observer.observe(document.documentElement,{childList:true,subtree:true});
+  boot.timer=setTimeout(cancel,3000); // Missing animation script must never trap the page.
+})();
+</script>
+<link rel="preload" as="script" href="entry-motion.js?v=2.3" fetchpriority="high">
+<link rel="stylesheet" href="entry-motion.css?v=2.3" fetchpriority="high">
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "1a8183bf36274076bf25a117293b9989"}'></script><!-- End Cloudflare Web Analytics -->
 <title>慕言·次元映像 | 正片·场照·特效</title>
-<meta name="muyan-site-version" content="2.2.2">
-<meta name="muyan-design-revision" content="20260916-readable-accessible">
+<meta name="muyan-site-version" content="2.3">
+<meta name="muyan-design-revision" content="20261012-mobile-entry-first-paint">
 <meta name="description" content="慕言·次元映像，重庆 COS 摄影。浏览正片、场照与特效作品，了解拍摄价格、拍摄须知，通过 QQ 或微信沟通约拍。">
 <link rel="canonical" href="https://muyancos.cn/">
 <meta property="og:type" content="website">
@@ -22,11 +68,22 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9D%84%EF%B8%8F%3C/text%3E%3C/svg%3E">
 <link rel="preload" as="image" href="images/rem-anime-hero-hq.webp" type="image/webp" fetchpriority="high">
 <link rel="stylesheet" href="rem-studio.css?v=2.2.2">
-<link rel="stylesheet" href="compact-layout.css?v=2.2.2">
+<link rel="stylesheet" href="compact-layout.css?v=2.3">
 <link rel="stylesheet" href="glass-sections.css?v=2.2.2">
 <link rel="stylesheet" href="booking.css?v=2.2">
+<link rel="stylesheet" href="mobile-refinements.css?v=2.3">
 </head>
 <body>
+<div class="entry-veil" id="entryWelcome" aria-hidden="true">
+  <div class="entry-wash"></div>
+  <div class="entry-mist entry-mist-blue"></div><div class="entry-mist entry-mist-lilac"></div><div class="entry-mist entry-mist-white"></div>
+  <div class="entry-aura"></div>
+  <div class="entry-identity">
+    <svg class="entry-bow" viewBox="0 0 100 76" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M47 31C33 15 15 8 14 26C13 42 34 42 47 34M53 31C67 15 85 8 86 26C87 42 66 42 53 34"/><path d="M47 29Q50 26 53 29L54 35Q50 39 46 35ZM47 36C44 47 37 52 32 62L42 57L44 65C48 52 50 43 50 37M53 36C57 47 64 51 70 60L60 57L58 64C53 53 51 43 50 37"/></svg>
+    <span class="entry-title">慕言·次元映像</span><span class="entry-subtitle">提供优质服务，上乘质量，适中价格！</span>
+  </div>
+</div>
+<script src="entry-motion.js?v=2.3" async fetchpriority="high"></script>
 <div class="reading-progress" id="readingProgress" aria-hidden="true"></div>
 
 <!-- 导航 -->
@@ -55,7 +112,7 @@
     <span class="hero-rem" aria-hidden="true"><img src="images/rem-brand-avatar.webp" width="512" height="512" alt=""><i class="rem-bow"></i></span>
     <span class="hero-star star-one" aria-hidden="true">✧</span><span class="hero-star star-two" aria-hidden="true">✧</span>
   </div>
-  <div class="hero-tail"><p class="site-update">网站更新于 <time datetime="2026-09-16">2026年9月16日</time></p><a href="#works" class="scroll-hint">向下滚动 <span aria-hidden="true">↓</span></a></div>
+  <div class="hero-tail"><p class="site-update">网站更新于 <time datetime="2026-10-12">2026年10月12日</time></p><a href="#works" class="scroll-hint">向下滚动 <span aria-hidden="true">↓</span></a></div>
 </header>
 <main>
   <div class="service-intro service-lead"><p class="sub">重庆摄影 · 正片 / 场照 / 后期 / 特效 / 远距离拍摄，可选包接包送<br>风格多样，欢迎带上你的想法，一起拍出你喜欢的作品！</p></div>
@@ -65,7 +122,7 @@
     <div class="sec-head reveal">
       <h2>作品展示</h2>
       <p>点击选项，切换查看 正片 / 场照 / 特效 例图</p>
-      <p class="works-authorship" id="worksAuthorship" aria-live="polite">正片分类：所有图片均由本人拍摄并完成后期。</p>
+      <p class="works-authorship" id="worksAuthorship" aria-live="polite">正片分类：所有图片均由本人拍摄，特效／合成及后期均为本人制作，无他人后期参与！</p>
       <div class="sec-divider"></div>
     </div>
     <div class="works-tabs reveal">
@@ -121,19 +178,24 @@
       <div class="price-grid">
         <div class="price-card reveal">
           <h4>🧍 单人正片</h4>
-          <div class="ver">含拍摄后期与车费 · <strong>15 张可用成片或满 4 小时</strong> · 停车费另计</div>
+          <div class="ver">含拍摄基础后期 · <strong>15 张可用成片或满 4 小时</strong> · 拍摄所需杂费另计</div>
           <div class="tier"><span><span class="name">定金</span></span><span class="money">129 <small>元</small></span></div>
           <div class="tier"><span><span class="name">尾款</span></span><span class="money">200 <small>元</small></span></div>
           <div class="tier total"><span><span class="name">合计</span></span><span class="money">329 <small>元</small></span></div>
         </div>
         <div class="price-card reveal">
           <h4>👥 双人正片</h4>
-          <div class="ver">含拍摄后期与车费 · <strong>20 张可用成片或满 4 小时</strong> · 停车费另计</div>
+          <div class="ver">含拍摄基础后期 · <strong>20 张可用成片或满 4 小时</strong> · 拍摄所需杂费另计</div>
           <div class="tier"><span><span class="name">定金</span></span><span class="money">180 <small>元</small></span></div>
           <div class="tier"><span><span class="name">尾款</span></span><span class="money">249 <small>元</small></span></div>
           <div class="tier total"><span><span class="name">合计</span></span><span class="money">429 <small>元</small></span></div>
         </div>
-        <div class="price-card reveal">
+        <div class="price-card retouch-addon reveal">
+          <h4>💎 推荐增购</h4>
+          <div class="tier"><span class="name">9 张精修后期</span><span class="money">100 <small>元</small></span></div>
+          <div class="ver">约后期可以免拍摄所需杂费</div>
+        </div>
+        <div class="price-card group-price-card reveal">
           <h4>👨‍👩‍👧 团片（6 人及以下）</h4>
           <div class="ver">多人一起拍更划算 · 交付标准私聊确认</div>
           <div class="tier"><span><span class="name">3 人</span></span><span class="money">480 <small>元</small></span></div>
@@ -148,7 +210,7 @@
           <li>远的多地点 / 同地方多角色 <b>+100</b></li>
           <li>夜景 <b>+100</b></li>
           <li>雨景 <b>+100</b></li>
-          <li>开车到主城区指定地点 <b>包接包送 +60</b></li>
+          <li>开车到主城区指定地点 <b>包接包送 +30</b></li>
           <li>也接 <b>旅拍</b></li>
         </ul>
       </div>
@@ -213,10 +275,6 @@
         <p class="fx-note">拍摄时把你的想法或需要的特效类型给我参考，才能得到想要的效果。<br>特效在拍摄前说明需求，现场确认效果，具体价格私聊咨询。</p>
         <p class="fx-tip">具体价格私聊咨询</p>
       </div>
-    </div>
-    <div class="price-banner reveal" >
-      <span class="b-title">💡 温馨提示</span>
-      <span class="b-price">想多拍：展前补差额改排单表 / 现场可升级 B·C 套餐 · 定金与排单请<b>私聊咨询</b> · 付款后记得拿<b>色纸</b>哦～</span>
     </div>
   </section>
   <!-- 注意事项 -->
@@ -285,7 +343,7 @@
         </details>
         <details class="faq">
           <summary><span class="q">🙏</span><span class="txt">我（摄影）迟到了呢？</span><span class="plus">+</span></summary>
-          <div class="faq-body">如果我（摄影）迟到：<ul><li>不超过 <b>30 分钟</b>：免<b>车费和停车费</b>。</li><li>超过 <b>30 分钟</b>、不超过 <b>1 小时</b>：<b>尾款减半</b>。</li><li>超过 <b>1 小时</b>：<b>免尾款</b>。</li></ul>按实际迟到时长对应一档计算，不叠加。现场确认。</div>
+          <div class="faq-body">如果我（摄影）迟到：<ul><li>不超过 <b>30 分钟</b>：免<b>车费和拍摄所需杂费</b>。</li><li>超过 <b>30 分钟</b>、不超过 <b>1 小时</b>：<b>尾款减半</b>。</li><li>超过 <b>1 小时</b>：<b>免尾款</b>。</li></ul>按实际迟到时长对应一档计算，不叠加。现场确认。</div>
         </details>
       </div>
       <div class="faq-group reveal">
@@ -480,6 +538,8 @@
           </article>
         </div>
       </section>
+      <details class="contact-fold" open>
+        <summary>抖音与小红书<span aria-hidden="true">＋</span></summary>
       <section class="contact-channel contact-social" id="social" aria-labelledby="social-contact-title">
         <div class="contact-channel-head">
           <span class="contact-channel-icon" aria-hidden="true">✧</span>
@@ -507,6 +567,9 @@
         </div>
         <p class="social-scan-note">请用对应 App 扫码，也可以复制账号搜索。</p>
       </section>
+      </details>
+      <details class="contact-fold" open>
+        <summary>微信联系<span aria-hidden="true">＋</span></summary>
       <section class="contact-channel contact-channel-wechat" aria-labelledby="wechat-contact-title">
         <div class="contact-channel-head">
           <span class="contact-channel-icon" aria-hidden="true">微</span>
@@ -524,6 +587,7 @@
           </article>
         </div>
       </section>
+      </details>
     </div>
     <div class="contact-share-row">
       <button type="button" class="contact-copy" id="shareSiteFooter">分享网页</button>
@@ -578,10 +642,10 @@
 <nav class="quick-actions" aria-label="页面快捷导航">
   <a href="#works" class="quick-action" data-jump="works"><span aria-hidden="true">🖼️</span><span>例图</span></a>
   <a href="#price" class="quick-action" data-jump="price"><span aria-hidden="true">💰</span><span>价格</span></a>
+  <a href="#notes" class="quick-action quick-notes" data-jump="notes"><span aria-hidden="true">📋</span><span>须知</span></a>
   <a href="#contact" class="quick-action quick-contact" data-jump="contact"><span aria-hidden="true">💬</span><span>联系</span></a>
   <a href="#contact" class="quick-action quick-booking" id="bookingQuickOpen" data-booking-open aria-haspopup="dialog" aria-controls="bookingModal"><span aria-hidden="true">✉</span><span>立即约拍</span></a>
   <a href="#top" class="quick-action" data-jump="top"><span aria-hidden="true">⬆️</span><span>回顶部</span></a>
-  <button type="button" class="quick-action quick-refresh" id="worksDockRefresh" aria-label="更换当前作品批次"><span aria-hidden="true">🔄</span><span>换批</span></button>
 </nav>
 <p class="share-toast" id="shareStatus" role="status" aria-live="polite" hidden></p>
 
@@ -597,9 +661,8 @@
 </div>
 
 <script src="ui-primitives.js?v=2.2.2"></script>
-<script src="site-engine.js?v=2.2.2"></script>
-<script src="rem-ui.js?v=2.2.2"></script>
+<script src="site-engine.js?v=2.3"></script>
+<script src="rem-ui.js?v=2.3"></script>
 <script src="booking.js?v=2.2.2"></script>
-<script src="entry-motion.js?v=2.1.5"></script>
 </body>
 </html>

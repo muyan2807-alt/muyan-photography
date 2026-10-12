@@ -29,9 +29,9 @@
  #price-zp .price-card{padding:14px 12px;border-radius:16px;scroll-snap-align:none}#price-zp .price-card h4{font-size:.875rem;margin-bottom:7px;line-height:1.5}#price-zp .ver{font-size:.75rem;line-height:1.7;margin-bottom:9px}
  #price-zp .tier{font-size:.8125rem;padding:8px 0;gap:5px}#price-zp .money{font-size:1rem}#price-zp .money small{font-size:.75rem}
  #price-zp .tier.total{margin:8px -12px -14px;padding:9px 12px!important;border-radius:0 0 16px 16px}#price-zp .tier.total .money{font-size:1.24rem}
- #price-zp .price-card:nth-child(3){display:grid;grid-column:1/-1;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;padding:13px 12px}
- #price-zp .price-card:nth-child(3)>h4,#price-zp .price-card:nth-child(3)>.ver{grid-column:1/-1}#price-zp .price-card:nth-child(3)>.ver{margin-bottom:7px}
- #price-zp .price-card:nth-child(3)>.tier{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;border:0;border-left:1px solid #dfedf6;padding:4px 2px;text-align:center}#price-zp .price-card:nth-child(3)>.tier:nth-of-type(2){border-left:0}#price-zp .price-card:nth-child(3) .money{font-size:1rem}
+ #price-zp .group-price-card{display:grid;grid-column:1/-1;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;padding:13px 12px}
+ #price-zp .group-price-card>h4,#price-zp .group-price-card>.ver{grid-column:1/-1}#price-zp .group-price-card>.ver{margin-bottom:7px}
+ #price-zp .group-price-card>.tier{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;border:0;border-left:1px solid #dfedf6;padding:4px 2px;text-align:center}#price-zp .group-price-card>.tier:nth-of-type(2){border-left:0}#price-zp .group-price-card .money{font-size:1rem}
  .extra-card{padding:14px 13px;border-radius:15px;margin-top:12px}.extra-card h4{font-size:.875rem}.extra-card ul{margin-top:8px;gap:5px}.extra-card li{font-size:.75rem;line-height:1.65;padding:5px 7px}
  .cz-price-grid{gap:10px}.cz-price-grid .price-card{padding:13px 10px;border-radius:16px}.cz-price-grid h4{font-size:.875rem;line-height:1.5;margin-bottom:7px;min-height:3em}.cz-price-grid .ver{font-size:.75rem;line-height:1.7;min-height:0;margin-bottom:9px}
  .cz-price-grid .tier{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:4px 6px;padding:10px 0;font-size:.75rem;line-height:1.6}.cz-price-grid .tier .name{font-size:.75rem;grid-column:1;grid-row:1}.cz-price-grid .tier .detail{font-size:.75rem;white-space:normal;grid-column:1/-1;grid-row:2;color:#486b83}

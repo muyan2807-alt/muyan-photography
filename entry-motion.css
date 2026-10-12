@@ -1,0 +1,37 @@
+/* Rem-blue petals and ribbon over a finite, gathering aurora. */
+.entry-veil{position:fixed;inset:0;z-index:2147483647;overflow:hidden;pointer-events:none;user-select:none;opacity:0}
+.entry-wash{position:absolute;inset:0;background:linear-gradient(155deg,#f5fbff,#edf6ff 58%,#f7f7ff)}
+.entry-mist{position:absolute;left:50%;top:46%;width:min(90vmax,1100px);height:min(80vmax,980px);border-radius:50%;pointer-events:none}
+.entry-mist-blue{background:radial-gradient(ellipse at 50% 50%,#9bd4fa9c 0%,#badff872 27%,#d8eeff30 49%,transparent 70%)}
+.entry-mist-lilac{background:radial-gradient(ellipse at 50% 50%,#bbc5f486 0%,#d7dbfb68 27%,#e5e6fb20 48%,transparent 70%)}
+.entry-mist-white{background:radial-gradient(ellipse at 50% 50%,#ffffffed 0%,#ffffffad 25%,#f4fbff36 49%,transparent 70%)}
+.entry-aura{position:absolute;left:50%;top:45%;width:min(78vmin,580px);aspect-ratio:1;background:radial-gradient(ellipse at center,#fff9 0%,#eef8ff80 20%,#bddffc42 42%,#dbeeff10 62%,transparent 72%);pointer-events:none}
+.entry-identity{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;padding:0 20px 9vh;text-align:center;color:#3c6d8b}
+.entry-bow{width:92px;height:70px;margin-bottom:7px;stroke:#8c9fc9;stroke-width:1.15;overflow:visible}
+.entry-title{font-size:clamp(1.4rem,5vw,2.15rem);font-weight:550;letter-spacing:.1em;line-height:1.6;color:#3d7092}
+.entry-subtitle{font-size:clamp(.64rem,1.9vw,.78rem);font-weight:400;letter-spacing:.04em;line-height:1.8;color:#7796ae}
+.entry-petal{position:absolute;left:0;top:0;z-index:1;width:28px;height:14px;border:1px solid #b9d4edb3;border-radius:80% 0 80% 0;background:linear-gradient(145deg,#fbfdff 8%,#d2e7fa 66%,#bed8f1);box-shadow:inset 0 1px 0 #fff,0 3px 9px #7199c31c;pointer-events:none}
+.entry-petal[data-tone=lilac]{border-color:#d4d0edb3;background:linear-gradient(145deg,#fefbff 8%,#e2ddf5 66%,#cdc7e9)}
+.entry-petal[data-tone=white]{border-color:#cfdfebb3;background:linear-gradient(145deg,#fff 8%,#f5faff 66%,#e4eff9)}
+.entry-photo-accent{position:absolute;inset:0;z-index:3;border-radius:inherit;overflow:hidden;pointer-events:none}
+.entry-photo-sheen{position:absolute;inset:-20%;background:linear-gradient(110deg,transparent 28%,#ffffff00 34%,#ffffff3d 49%,#ffffff00 64%,transparent 72%)}
+.entry-photo-frame{position:absolute;inset:9px;border:1px solid #ffffffb3;border-radius:inherit;box-shadow:inset 0 0 0 1px #d5eaf842}
+@media(prefers-reduced-motion:no-preference){
+  body:not(.qq-low-memory) :is(.work-tab,.cat-tab,.price-tab,.note-tab,.booking-button){transition:transform .16s cubic-bezier(.2,.75,.25,1),color .2s ease,box-shadow .2s ease}
+  body:not(.qq-low-memory) :is(.work-tab,.cat-tab,.price-tab,.note-tab,.booking-button):active{transform:scale(.975)}
+  body:not(.qq-low-memory) .quick-action .comfort-icon{transition:transform .18s cubic-bezier(.2,.75,.25,1)}
+  body:not(.qq-low-memory) .quick-action:active .comfort-icon{transform:translateY(-2px) scale(.96)}
+  body:not(.qq-low-memory) .card:active{box-shadow:0 0 0 2px #afd6ed,0 5px 15px #85acc71c}
+  body:not(.qq-low-memory) :is(.contact-fold,.section-fold,.faq) summary{transition:background-color .2s ease,color .2s ease}
+  body:not(.qq-low-memory) :is(.contact-fold,.section-fold,.faq) summary:active{background-color:#e1f1fc}
+  body:not(.qq-low-memory) .lb.show :is(.lb-close,.lb-prev,.lb-next){animation:motion-controls-arrive .18s cubic-bezier(.2,.75,.25,1)}
+}
+@media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
+  body:not(.qq-low-memory) .btn:hover>span[aria-hidden]{transform:translate(2px,-2px)}
+  body:not(.qq-low-memory) .btn>span[aria-hidden]{transition:transform .2s ease}
+  body:not(.qq-low-memory) .card img{transition:transform .4s cubic-bezier(.2,.75,.25,1)}
+  body:not(.qq-low-memory) .card:hover img{transform:scale(1.015)}
+}
+@keyframes motion-controls-arrive{from{transform:translateY(3px)}to{transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.entry-veil,.entry-photo-accent{display:none}}
+body.qq-low-memory .entry-veil,body.qq-low-memory .entry-photo-accent{display:none}

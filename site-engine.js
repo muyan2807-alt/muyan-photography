@@ -12,6 +12,7 @@ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&links.class
 // 固定快捷导航：显示当前浏览区域，方便随时切换例图、价格、联系方式与页面顶部
 const quickJumpLinks=[...document.querySelectorAll('.quick-action[data-jump]')];
 let quickNavLockUntil=0;
+let quickNavUnlockTimer=0;
 function setActiveQuickJump(id){
   quickJumpLinks.forEach(link=>{
     const active=link.dataset.jump===id;
@@ -22,15 +23,9 @@ function setActiveQuickJump(id){
 quickJumpLinks.forEach(link=>link.addEventListener('click',()=>{
   quickNavLockUntil=Date.now()+1000;
   setActiveQuickJump(link.dataset.jump);
+  clearTimeout(quickNavUnlockTimer);
+  quickNavUnlockTimer=setTimeout(()=>window.dispatchEvent(new Event('scroll')),1010);
 }));
-if('IntersectionObserver' in window){
-  const quickNavObserver=new IntersectionObserver(entries=>{
-    if(Date.now()<quickNavLockUntil)return;
-    const visible=entries.filter(entry=>entry.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
-    if(visible)setActiveQuickJump(visible.target.id);
-  },{rootMargin:'-22% 0px -58% 0px',threshold:[0,.1,.25,.5]});
-  ['top','works','price','contact'].forEach(id=>quickNavObserver.observe(document.getElementById(id)));
-}
 
 // 左侧蕾姆在作品展示区域完全离开屏幕后才淡入；主页及作品区域内始终隐藏。
 const worksSection=document.getElementById('works');
@@ -41,7 +36,9 @@ const syncWorksCompanion=()=>{
     const navBottom=document.querySelector('.nav')?.getBoundingClientRect().bottom||0;
     const rect=worksSection.getBoundingClientRect();
     document.body.classList.toggle('works-passed',rect.bottom<=navBottom+8);
-    document.body.classList.toggle('works-in-view',rect.top<innerHeight-90&&rect.bottom>navBottom+8);
+    const inWorks=rect.top<innerHeight-90&&rect.bottom>navBottom+8;
+    document.body.classList.toggle('works-in-view',inWorks);
+    if(!inWorks)document.querySelector('.quick-actions')?.classList.remove('is-reading');
   });
 };
 addEventListener('scroll',syncWorksCompanion,{passive:true});
@@ -476,7 +473,6 @@ function renderGallery(key,forceNew){
   hint.textContent='共 '+total+'张 ·已展示 '+Math.min(state.seen,total)+'张';
 }
 const worksSideRefreshButton=document.getElementById('worksSideRefresh');
-const worksDockRefreshButton=document.getElementById('worksDockRefresh');
 const galleryRefreshButtons=[...document.querySelectorAll('[data-gallery-refresh]')];
 const reduceGalleryMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let galleryTransition=null;
@@ -501,7 +497,7 @@ window.refreshGallery=function(key){
   const grid=document.getElementById('grid-'+key);
   if(!grid||key!==activeWorks||galleryTransition?.key===key)return;
   cancelGalleryTransition();releaseOriginalWarm();
-  const task={key,grid,triggers:[worksSideRefreshButton,worksDockRefreshButton,...galleryRefreshButtons.filter(button=>button.dataset.galleryRefresh===key)],timers:[],frames:[],htmlAnchor:document.documentElement.style.overflowAnchor,bodyAnchor:document.body.style.overflowAnchor};
+  const task={key,grid,triggers:[worksSideRefreshButton,...galleryRefreshButtons.filter(button=>button.dataset.galleryRefresh===key)],timers:[],frames:[],htmlAnchor:document.documentElement.style.overflowAnchor,bodyAnchor:document.body.style.overflowAnchor};
   galleryTransition=task;
   const later=(fn,ms)=>task.timers.push(setTimeout(()=>{if(galleryTransition===task)fn()},ms));
   const frame=fn=>task.frames.push(requestAnimationFrame(()=>{if(galleryTransition===task)fn()}));
@@ -534,7 +530,6 @@ function playRefreshTap(button){
   setTimeout(()=>button.classList.remove('refresh-tapped'),420);
 }
 worksSideRefreshButton.addEventListener('click',()=>{playRefreshTap(worksSideRefreshButton);window.refreshGallery(activeWorks)});
-worksDockRefreshButton.addEventListener('click',()=>{playRefreshTap(worksDockRefreshButton);window.refreshGallery(activeWorks)});
 galleryRefreshButtons.forEach(button=>button.addEventListener('click',()=>{playRefreshTap(button);window.refreshGallery(button.dataset.galleryRefresh)}));
 // 用户主动导航、滚动或打开大图时取消尚未完成的自动定位。
 document.querySelectorAll('a[href^="#"]').forEach(link=>link.addEventListener('click',cancelGalleryTransition));
@@ -629,9 +624,9 @@ document.querySelectorAll('.price-tab').forEach(btn=>{
 // 作品选项卡切换
 let activeWorks='zhengpian';
 const WORK_AUTHORSHIP={
-  zhengpian:'正片分类：所有图片均由本人拍摄并完成后期。',
-  changzhao:'场照分类：所有图片均由本人拍摄并完成后期。',
-  texiao:'特效分类：部分作品为承接的后期单。'
+  zhengpian:'正片分类：所有图片均由本人拍摄，特效／合成及后期均为本人制作，无他人后期参与！',
+  changzhao:'场照分类：所有图片均由本人拍摄，特效／合成及后期均为本人制作，无他人后期参与！',
+  texiao:'特效分类：大部分作品为本人拍摄并完成后期，小部分为他人拍摄、由本人完成后期。'
 };
 function switchWorks(w){
   cancelGalleryTransition();
@@ -645,7 +640,6 @@ function switchWorks(w){
   document.querySelectorAll('.work-panel').forEach(p=>p.classList.toggle('active',p.dataset.w===w));
   document.getElementById('worksAuthorship').textContent=WORK_AUTHORSHIP[w]||'';
   worksSideRefreshButton.setAttribute('aria-label','更换当前'+(w==='zhengpian'?'正片':w==='changzhao'?'场照':'特效')+'作品批次');
-  worksDockRefreshButton.setAttribute('aria-label',worksSideRefreshButton.getAttribute('aria-label'));
   syncSelected('.work-tab',w,'w');
   renderGallery(w);
 }
