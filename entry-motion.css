@@ -17,21 +17,21 @@
 .entry-photo-sheen{position:absolute;inset:-20%;background:linear-gradient(110deg,transparent 28%,#ffffff00 34%,#ffffff3d 49%,#ffffff00 64%,transparent 72%)}
 .entry-photo-frame{position:absolute;inset:9px;border:1px solid #ffffffb3;border-radius:inherit;box-shadow:inset 0 0 0 1px #d5eaf842}
 @media(prefers-reduced-motion:no-preference){
-  body:not(.qq-low-memory) :is(.work-tab,.cat-tab,.price-tab,.note-tab,.booking-button){transition:transform .16s cubic-bezier(.2,.75,.25,1),color .2s ease,box-shadow .2s ease}
-  body:not(.qq-low-memory) :is(.work-tab,.cat-tab,.price-tab,.note-tab,.booking-button):active{transform:scale(.975)}
-  body:not(.qq-low-memory) .quick-action .comfort-icon{transition:transform .18s cubic-bezier(.2,.75,.25,1)}
-  body:not(.qq-low-memory) .quick-action:active .comfort-icon{transform:translateY(-2px) scale(.96)}
-  body:not(.qq-low-memory) .card:active{box-shadow:0 0 0 2px #afd6ed,0 5px 15px #85acc71c}
-  body:not(.qq-low-memory) :is(.contact-fold,.section-fold,.faq) summary{transition:background-color .2s ease,color .2s ease}
-  body:not(.qq-low-memory) :is(.contact-fold,.section-fold,.faq) summary:active{background-color:#e1f1fc}
-  body:not(.qq-low-memory) .lb.show :is(.lb-close,.lb-prev,.lb-next){animation:motion-controls-arrive .18s cubic-bezier(.2,.75,.25,1)}
+  :is(.work-tab,.cat-tab,.price-tab,.note-tab,.booking-button){transition:transform .16s cubic-bezier(.2,.75,.25,1),color .2s ease,box-shadow .2s ease}
+  :is(.work-tab,.cat-tab,.price-tab,.note-tab,.booking-button):active{transform:scale(.975)}
+  .quick-action .comfort-icon{transition:transform .18s cubic-bezier(.2,.75,.25,1)}
+  .quick-action:active .comfort-icon{transform:translateY(-2px) scale(.96)}
+  .card:active{box-shadow:0 0 0 2px #afd6ed,0 5px 15px #85acc71c}
+  :is(.contact-fold,.section-fold,.faq) summary{transition:background-color .2s ease,color .2s ease}
+  :is(.contact-fold,.section-fold,.faq) summary:active{background-color:#e1f1fc}
+  .lb.show :is(.lb-close,.lb-prev,.lb-next){animation:motion-controls-arrive .18s cubic-bezier(.2,.75,.25,1)}
 }
 @media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
-  body:not(.qq-low-memory) .btn:hover>span[aria-hidden]{transform:translate(2px,-2px)}
-  body:not(.qq-low-memory) .btn>span[aria-hidden]{transition:transform .2s ease}
-  body:not(.qq-low-memory) .card img{transition:transform .4s cubic-bezier(.2,.75,.25,1)}
-  body:not(.qq-low-memory) .card:hover img{transform:scale(1.015)}
+  .btn:hover>span[aria-hidden]{transform:translate(2px,-2px)}
+  .btn>span[aria-hidden]{transition:transform .2s ease}
+  .card img{transition:transform .4s cubic-bezier(.2,.75,.25,1)}
+  .card:hover img{transform:scale(1.015)}
 }
+.interaction-bloom{position:fixed;z-index:2147483645;width:76px;height:76px;margin:-38px 0 0 -38px;border:1px solid #91c7e999;border-radius:50%;background:radial-gradient(circle,#ffffff90 0%,#bfe3fa45 35%,transparent 70%);pointer-events:none;user-select:none}
 @keyframes motion-controls-arrive{from{transform:translateY(3px)}to{transform:translateY(0)}}
-@media(prefers-reduced-motion:reduce){.entry-veil,.entry-photo-accent{display:none}}
-body.qq-low-memory .entry-veil,body.qq-low-memory .entry-photo-accent{display:none}
+@media(prefers-reduced-motion:reduce){.entry-veil,.entry-photo-accent,.interaction-bloom{display:none}}

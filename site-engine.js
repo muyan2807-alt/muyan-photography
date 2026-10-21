@@ -64,12 +64,35 @@ function showShareStatus(message){
   clearTimeout(shareStatusTimer);shareStatus.textContent=message;shareStatus.hidden=false;
   shareStatusTimer=setTimeout(()=>{shareStatus.hidden=true},2600);
 }
-async function copyPlainText(text){
-  if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);return}
-  const area=document.createElement('textarea');area.value=text;area.setAttribute('readonly','');area.style.position='fixed';area.style.opacity='0';
-  document.body.appendChild(area);
-  try{area.select();if(!document.execCommand('copy'))throw new Error('copy-failed')}
-  finally{area.remove()}
+function clearManualCopy(){document.querySelectorAll('.manual-copy').forEach(panel=>panel.remove())}
+function offerManualCopy(text,origin){
+  const modal=origin?.closest('[role="dialog"]');
+  if(modal&&(modal.hidden||modal.getAttribute('aria-hidden')==='true'))return;
+  const host=origin?.closest('.booking-panel,.contact-card,.contact-share-row')||contactSection;
+  const panel=document.createElement('div'),label=document.createElement('label'),input=document.createElement('input'),close=document.createElement('button');
+  panel.className='manual-copy';label.textContent='自动复制未成功，请长按或选中文字复制';
+  input.value=text;input.readOnly=true;input.setAttribute('aria-label','手动复制账号或网址');
+  close.type='button';close.textContent='收起';close.addEventListener('click',()=>{panel.remove();origin?.focus?.({preventScroll:true})});
+  label.appendChild(input);panel.append(label,close);host.appendChild(panel);
+  input.addEventListener('click',()=>input.select());input.focus({preventScroll:true});input.select();
+}
+async function copyPlainText(text,origin=document.activeElement,stillCurrent=()=>true){
+  clearManualCopy();
+  try{if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);return}}catch{}
+  if(!stillCurrent())throw new Error('copy-cancelled');
+  const active=document.activeElement,selection=window.getSelection(),ranges=[];
+  if(selection)for(let i=0;i<selection.rangeCount;i++)ranges.push(selection.getRangeAt(i).cloneRange());
+  const modal=origin?.closest('[role="dialog"]'),area=document.createElement('textarea');
+  area.value=text;area.readOnly=true;area.setAttribute('aria-label','复制辅助');
+  area.style.cssText='position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;font-size:16px';
+  (modal&&!modal.hidden?modal:document.body).appendChild(area);
+  let copied=false;
+  try{area.focus({preventScroll:true});area.select();area.setSelectionRange(0,text.length);copied=!!document.execCommand('copy')}
+  catch{}finally{
+    area.remove();active?.focus?.({preventScroll:true});
+    if(selection){selection.removeAllRanges();ranges.forEach(range=>{try{selection.addRange(range)}catch{}})}
+  }
+  if(!copied){offerManualCopy(text,origin);throw new Error('copy-failed')}
 }
 async function shareWebsite(){
   try{
@@ -84,7 +107,7 @@ async function shareWebsite(){
 document.getElementById('shareSiteFooter').addEventListener('click',shareWebsite);
 document.querySelectorAll('.copy-contact').forEach(button=>button.addEventListener('click',async()=>{
   const value=button.dataset.copyValue,label=button.dataset.copyLabel;
-  try{await copyPlainText(value);showShareStatus(`${label} ${value} 已复制`)}
+  try{await copyPlainText(value,button);showShareStatus(`${label} ${value} 已复制`)}
   catch{showShareStatus(`复制失败，请手动复制${label}`)}
 }));
 
@@ -99,7 +122,7 @@ const MOBILE_DEVICE=/(?:Android|iPhone|iPad|iPod|HarmonyOS|Mobile)/i.test(QQ_UA)
 if(QQ_LOW_MEMORY)document.body.classList.add('qq-low-memory');
 if(MOBILE_DEVICE)document.body.classList.add('mobile-device');
 const lb=document.getElementById('lb'),lbImg=document.getElementById('lbImg'),lbStatus=document.getElementById('lbStatus'),lbCount=document.getElementById('lbCount'),lbCloseBtn=document.getElementById('lbClose'),lbRetry=document.getElementById('lbRetry');
-let cur=[],curPreviewSources=[],idx=0,lbReleaseTimer=0,lbObjectUrl='',lbAbort=null,lbLoadToken=0;
+let cur=[],curPreviewSources=[],idx=0,lbReleaseTimer=0,lbObjectUrl='',lbAbort=null,lbLoadToken=0,lightboxSuspended=false;
 const lightboxDialog=createDialogController(lb,lbCloseBtn,closeLb);
 function releaseLightboxImage(){
   if(lbAbort){lbAbort.abort();lbAbort=null}
@@ -158,6 +181,7 @@ async function loadDesktopLightboxImage(src,previewSrc){
   }
 }
 function loadLightboxImage(src,previewSrc){
+  lightboxSuspended=false;
   releaseOriginalWarm();
   if(MOBILE_DEVICE||QQ_LOW_MEMORY)loadMobileLightboxImage(src);
   else loadDesktopLightboxImage(src,previewSrc);
@@ -173,6 +197,7 @@ function show(i){
   if(opening)lightboxDialog.open(opener);
 }
 function closeLb(){
+  lightboxSuspended=false;
   lb.classList.remove('show');lb.setAttribute('aria-hidden','true');
   lightboxDialog.close({resume:false});
   clearTimeout(lbReleaseTimer);
@@ -199,7 +224,7 @@ document.addEventListener('keydown',e=>{
 // ===== 画廊：首批固定首图、第二批优先副图，之后独立随机无重复轮播 =====
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function poolOf(g){return g.cat==='all'?g.images:g.images.filter(x=>x.cats.includes(g.cat))}
-function randomPoolOf(g){return poolOf(g).filter(image=>!image.c.startsWith('首图')&&!image.c.startsWith('副图'))}
+function randomPoolOf(g){return poolOf(g)}
 function thumbOf(src,mobile=window.innerWidth<=900){
   return src.replace(/^images\//,mobile?'images/thumbs-mobile/':'images/thumbs/').replace(/\.[^.]+$/,'.webp')
 }
@@ -217,6 +242,8 @@ function waitForImage(image,timeout=4000){
 }
 let qrAssetsPromise=null,originalWarmController=null,originalWarmTimer=0,originalWarmToken=0;
 const warmedOriginals=new Set();
+const ORIGINAL_WARM_LIMITS={images:2,batch:8*1024*1024,visit:12*1024*1024};
+const originalWarmUsage={bytes:0,attempts:0},batchWarmUsage=new WeakMap();
 function loadQrAssets(){
   if(qrAssetsPromise)return qrAssetsPromise;
   const images=[...document.querySelectorAll('.nav img,.hero img,img.qr,img.social-code-image')];
@@ -246,23 +273,38 @@ function scheduleOriginalWarm(batch){
   releaseOriginalWarm();
   if(!canWarmOriginals()||!foregroundImagesReady())return;
   const token=originalWarmToken;
+  let usage=batchWarmUsage.get(batch);
+  if(!usage){usage={bytes:0,attempts:0};batchWarmUsage.set(batch,usage)}
   const run=async()=>{
     // Sequentially cache this displayed batch only, regardless of network type.
     // Do not construct Images, object URLs or pixel buffers for background HD.
     for(const image of batch){
       if(token!==originalWarmToken||!canWarmOriginals())break;
+      if(usage.attempts>=ORIGINAL_WARM_LIMITS.images)break;
       if(warmedOriginals.has(image.s))continue;
+      const bytes=typeof ORIGINAL_IMAGE_BYTES==='undefined'?0:ORIGINAL_IMAGE_BYTES[image.s];
+      // Unknown/stale sizes are never guessed. Reserve the full payload before
+      // dispatch; aborted attempts keep their reservation to bound repeated work.
+      if(!Number.isSafeInteger(bytes)||bytes<=0||usage.bytes+bytes>ORIGINAL_WARM_LIMITS.batch||originalWarmUsage.bytes+bytes>ORIGINAL_WARM_LIMITS.visit)continue;
+      usage.attempts++;usage.bytes+=bytes;originalWarmUsage.attempts++;originalWarmUsage.bytes+=bytes;
       const controller=new AbortController();originalWarmController=controller;
       try{
         const response=await fetch(image.s,{cache:'force-cache',signal:controller.signal,priority:'low'});
         if(!response.ok)throw new Error('preload-http');
+        const declared=Number(response.headers.get('Content-Length'));
+        if(declared>0&&declared!==bytes){controller.abort();throw new Error('preload-size-changed')}
         if(response.body&&response.body.getReader){
           const reader=response.body.getReader();
-          try{while(!(await reader.read()).done){}}
+          let received=0;
+          try{
+            while(true){const part=await reader.read();if(part.done)break;received+=part.value.byteLength;if(received>bytes){controller.abort();throw new Error('preload-budget')}}
+            if(received!==bytes)throw new Error('preload-size-changed');
+          }
           finally{reader.releaseLock()}
-        }else await response.blob();
+        }else{controller.abort();throw new Error('preload-stream-unavailable')}
         if(token===originalWarmToken&&!controller.signal.aborted)warmedOriginals.add(image.s);
       }catch(error){
+        controller.abort();
         // A slow/failed background download must never stop the page or retry in a loop.
         if(token!==originalWarmToken)break;
       }finally{
@@ -280,9 +322,10 @@ function resumeCurrentOriginalWarm(){
   if(g&&g.shown.length&&foregroundImagesReady())scheduleOriginalWarm(g.shown);
 }
 document.addEventListener('visibilitychange',()=>{
-  if(document.hidden)releaseOriginalWarm();else resumeCurrentOriginalWarm();
+  if(document.hidden)releaseAllImageMemory();else restoreVisibleImages();
 });
-window.addEventListener('pageshow',()=>setTimeout(resumeCurrentOriginalWarm,0));
+window.addEventListener('pageshow',()=>setTimeout(restoreVisibleImages,0));
+document.addEventListener('resume',restoreVisibleImages);
 const warmConnection=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
 if(warmConnection&&warmConnection.addEventListener)warmConnection.addEventListener('change',()=>{
   releaseOriginalWarm();resumeCurrentOriginalWarm();
@@ -312,7 +355,7 @@ function structuredShape(pool,preferred){
   return shapes.find(([wide,tall])=>landscapes>=wide&&portraits>=tall)||null;
 }
 function pickStructured(queue,pool,preferred,previous){
-  const queueAfter=queue.slice(),chosen=[],used=new Set(),blocked=previous||new Set(),shape=structuredShape(queueAfter,preferred);
+  const queueAfter=queue.slice(),chosen=[],used=new Set(),blocked=previous||new Set(),shape=structuredShape(queueAfter,preferred)||structuredShape(pool,preferred);
   if(!shape)return{batch:[],queueAfter,newlySeen:0};
   let newlySeen=0;
   const add=image=>{if(!image||used.has(image.s))return false;chosen.push(image);used.add(image.s);return true};
@@ -329,11 +372,13 @@ function pickStructured(queue,pool,preferred,previous){
     let candidates=uniquePortraits(false);
     if(candidates.length<wanted)candidates=uniquePortraits(true);
     const sorted=candidates.slice().sort((a,b)=>(a.w/a.h)-(b.w/b.h)),groups=[];
-    const addGroup=group=>{const ratios=group.map(image=>image.w/image.h);groups.push({group,spread:Math.max(...ratios)-Math.min(...ratios),preferred:group.filter(image=>preferredPaths.has(image.s)).length,tie:Math.random()})};
+    const queuedPaths=new Set(queueAfter.map(image=>image.s));
+    const anchor=(preferred||[]).find(image=>candidates.some(candidate=>candidate.s===image.s))||queueAfter.find(image=>candidates.some(candidate=>candidate.s===image.s));
+    const addGroup=group=>{if(anchor&&!group.some(image=>image.s===anchor.s))return;const ratios=group.map(image=>image.w/image.h);groups.push({group,spread:Math.max(...ratios)-Math.min(...ratios),queued:group.filter(image=>queuedPaths.has(image.s)).length,preferred:group.filter(image=>preferredPaths.has(image.s)).length,tie:Math.random()})};
     if(wanted===2){for(let first=0;first<sorted.length;first++)for(let second=first+1;second<sorted.length;second++)addGroup([sorted[first],sorted[second]])}
     else for(let index=0;index+wanted<=sorted.length;index++)addGroup(sorted.slice(index,index+wanted));
-    const close=groups.filter(group=>group.spread<=PORTRAIT_RATIO_TOLERANCE),ranked=close.length?close:groups;
-    ranked.sort((a,b)=>close.length?(b.preferred-a.preferred||a.spread-b.spread||a.tie-b.tie):(a.spread-b.spread||b.preferred-a.preferred||a.tie-b.tie));
+    const ranked=groups;
+    ranked.sort((a,b)=>b.queued-a.queued||b.preferred-a.preferred||Number(a.spread>PORTRAIT_RATIO_TOLERANCE)-Number(b.spread>PORTRAIT_RATIO_TOLERANCE)||a.spread-b.spread||a.tie-b.tie);
     const selected=ranked[0]?ranked[0].group:[];
     selected.forEach(image=>{
       const queueIndex=queueAfter.findIndex(candidate=>candidate.s===image.s);
@@ -378,13 +423,14 @@ function secondaryBatchOf(g,queue){
   const preferred=shuffle(paths.map(path=>g.images.find(image=>image.s===path)).filter(image=>image&&allowed.has(image.s)));
   if(!preferred.length)return null;
   const picked=pickStructured(queue,pool,preferred,new Set());
-  return picked.batch.length?{...picked,newlySeen:picked.batch.length,crossed:false,secondary:true}:null;
+  return picked.batch.length?{...picked,crossed:false,secondary:true}:null;
 }
 function stateOf(g){
   if(!g.states[g.cat]){
     const pool=randomPoolOf(g),fixed=fixedBatchOf(g);
     const fixedReady=fixed.length===fixedBatchSize(g);
-    const state={queue:makeQueue(pool),shown:fixedReady?fixed:[],prepared:null,seen:fixedReady?fixed.length:0};
+    const shown=fixedReady?fixed:[],visited=new Set(shown.map(image=>image.s));
+    const state={queue:makeQueue(pool.filter(image=>!visited.has(image.s))),shown,prepared:null,visited,seen:visited.size};
     if(fixedReady)state.prepared=secondaryBatchOf(g,state.queue);
     g.states[g.cat]=state;
   }
@@ -394,19 +440,14 @@ function planBatch(g,state){
   const pool=randomPoolOf(g),previous=new Set(state.shown.map(x=>x.s));
   let queue=state.queue.slice(),crossed=false;
   if(!queue.length){queue=makeQueue(pool,previous);crossed=true}
-  let picked=pickStructured(queue,queue,[],previous);
-  if(!picked.batch.length){
-    const carry=queue.slice(),carryPaths=new Set(carry.map(image=>image.s));
-    queue=carry.concat(makeQueue(pool.filter(image=>!carryPaths.has(image.s)),previous));
-    picked=pickStructured(queue,queue,carry,previous);crossed=true;
-  }
+  const picked=pickStructured(queue,pool,[],previous);
   return{...picked,crossed};
 }
 function commitPlan(state,plan){
   state.queue=plan.queueAfter;
   state.shown=plan.batch;
-  if(plan.crossed)state.seen=0;
-  state.seen+=plan.newlySeen;
+  if(plan.crossed)state.visited.clear();
+  plan.batch.forEach(image=>state.visited.add(image.s));state.seen=state.visited.size;
 }
 function invalidateGalleryRender(g){g.renderToken++}
 function sizeGalleryBlock(block){
@@ -441,10 +482,19 @@ function renderGallery(key,forceNew){
       curPreviewSources=cards.map(item=>{const preview=item.querySelector('img');return preview?(preview.currentSrc||preview.src):''});
       show(i);
     };
-    card.addEventListener('click',openCard);
-    card.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();openCard()}});
+    card.addEventListener('click',event=>{if(event.target.closest('.thumb-retry'))return;if(!card.classList.contains('thumb-error'))openCard()});
+    card.addEventListener('keydown',event=>{if(event.target===card&&(event.key==='Enter'||event.key===' ')){event.preventDefault();openCard()}});
   });
   const renderToken=++g.renderToken,thumbs=next.map(img=>thumbOf(img.s));
+  function queueBatchWarm(){
+    if(renderToken!==g.renderToken||g.shown!==next||!cards.every(card=>{const image=card.querySelector('img');return image.complete&&image.naturalWidth>0}))return;
+    loadQrAssets().finally(()=>{
+      if(renderToken!==g.renderToken||g.shown!==next)return;
+      waitForImage(document.querySelector('.hero-photo'),0).then(()=>{
+        if(renderToken===g.renderToken&&g.shown===next&&activeWorks===key)scheduleOriginalWarm(next);
+      });
+    });
+  }
   grid.style.pointerEvents='none';
   cards.forEach((card,i)=>{
     const im=card.querySelector('img'),img=next[i];
@@ -453,22 +503,33 @@ function renderGallery(key,forceNew){
     im.dataset.original=img.s;im.width=img.w;im.height=img.h;
     im.alt='慕言·次元映像 COS摄影'+typeLabel+'作品，第 '+(i+1)+' 张';
     card.setAttribute('aria-label',im.alt+'，点击查看大图');
+    const state=document.createElement('div'),message=document.createElement('span'),retry=document.createElement('button');
+    state.className='thumb-state';state.hidden=true;message.setAttribute('role','status');
+    retry.type='button';retry.className='thumb-retry';retry.textContent='重试缩略图';
+    state.append(message,retry);card.appendChild(state);
+    im.addEventListener('load',()=>{
+      const restoreFocus=document.activeElement===retry;
+      state.hidden=true;card.classList.remove('thumb-error','thumb-loading');
+      card.setAttribute('role','button');card.tabIndex=0;card.setAttribute('aria-label',im.alt+'，点击查看大图');
+      if(restoreFocus)card.focus({preventScroll:true});
+      queueBatchWarm();
+    });
+    im.addEventListener('error',()=>{
+      if(!card.isConnected)return;
+      card.classList.add('thumb-error');card.classList.remove('thumb-loading');state.hidden=false;
+      message.textContent='图片加载失败';retry.hidden=false;retry.disabled=false;
+      card.setAttribute('role','group');card.tabIndex=-1;card.setAttribute('aria-label',im.alt+'，缩略图加载失败');
+    });
+    retry.addEventListener('click',event=>{
+      event.stopPropagation();if(!card.isConnected||retry.disabled)return;
+      card.classList.add('thumb-loading');message.textContent='缩略图加载中…';retry.disabled=true;
+      im.src=thumbs[i]+'?retry='+Date.now();
+    });
     im.src=thumbs[i];
   });
   requestAnimationFrame(()=>sizeGalleryBlock(block));
   grid.style.pointerEvents='';
-  Promise.all(cards.map(card=>waitForImage(card.querySelector('img'),0))).then(()=>{
-    if(renderToken!==g.renderToken||g.shown!==next)return;
-    loadQrAssets().finally(()=>{
-      if(renderToken!==g.renderToken||g.shown!==next)return;
-      // Current HD has priority over speculative thumbnails for a future batch.
-      waitForImage(document.querySelector('.hero-photo'),0).then(()=>{
-        if(renderToken===g.renderToken&&g.shown===next&&activeWorks===key){
-          scheduleOriginalWarm(next);
-        }
-      });
-    });
-  });
+  Promise.all(cards.map(card=>waitForImage(card.querySelector('img'),0))).then(queueBatchWarm);
   const total=poolOf(g).length,hint=document.getElementById('hint-'+key);
   hint.textContent='共 '+total+'张 ·已展示 '+Math.min(state.seen,total)+'张';
 }
@@ -595,9 +656,17 @@ GALLERIES.forEach(g=>{
   if(g.key==='zhengpian')renderGallery(g.key);
 });
 function releaseAllImageMemory(){
+  lightboxSuspended=lb.classList.contains('show')&&!!cur[idx];
   GALLERIES.forEach(g=>invalidateGalleryRender(g));
   releaseOriginalWarm();
   lbLoadToken++;releaseLightboxImage();
+}
+function restoreVisibleImages(){
+  if(document.hidden)return;
+  if(lightboxSuspended&&lb.classList.contains('show')){
+    lightboxSuspended=false;
+    if(cur[idx])loadLightboxImage(cur[idx].s,curPreviewSources[idx]);else closeLb();
+  }else resumeCurrentOriginalWarm();
 }
 window.addEventListener('pagehide',releaseAllImageMemory);
 document.addEventListener('freeze',releaseAllImageMemory);
@@ -655,9 +724,4 @@ document.documentElement.classList.add('interactive-ready');
 // 静态角色陪伴；不创建持续绘制的装饰画布或粒子。
 (()=>{
  const companion=document.createElement('div');companion.className='rem-side-companion';companion.setAttribute('aria-hidden','true');document.body.appendChild(companion);
- document.addEventListener('visibilitychange',()=>{
-  if(!QQ_LOW_MEMORY)return;
-  if(document.hidden)releaseAllImageMemory();
-  else{renderGallery(activeWorks);if(lb.classList.contains('show')&&cur.length)loadLightboxImage(cur[idx].s);}
- });
 })();

@@ -17,5 +17,5 @@
 .booking-select-label{display:block;text-align:left;margin-bottom:6px;font-size:.8rem}.booking-panel select{width:100%;min-height:46px;padding:9px;border:1px solid #bddcea;border-radius:12px;color:#365d78;background:#fff;font-size:.85rem}
 .booking-modal :focus-visible{outline:3px solid #3d8cb9;outline-offset:3px}
 @keyframes booking-arrive{from{opacity:.6;transform:translateY(7px)}to{opacity:1;transform:none}}
-@media(prefers-reduced-motion:no-preference){body:not(.qq-low-memory) .booking-panel{animation:booking-arrive .2s ease-out}}
+@media(prefers-reduced-motion:no-preference){.booking-panel{animation:booking-arrive .2s ease-out}}
 @media(max-width:420px){.booking-modal{padding:9px}.booking-panel{max-height:calc(100vh - 18px);max-height:calc(100dvh - 18px);padding:22px 16px 14px;border-radius:20px}.booking-panel h2{font-size:1.12rem}.booking-lead{font-size:.73rem}.booking-wechat-code{width:185px}.booking-button{font-size:.77rem;padding:9px 10px}}

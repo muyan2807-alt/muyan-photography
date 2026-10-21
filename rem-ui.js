@@ -36,10 +36,10 @@
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(schedule);
   schedule();
 })();
-// Finite entrance and tap transitions; disabled in QQ and for reduced-motion users.
+// Finite entrance and tap transitions; the same policy for every browser.
 (()=>{
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-  const quiet=()=>reduced.matches||document.body.classList.contains('qq-low-memory');
+  const quiet=()=>reduced.matches;
   if(quiet())return;
   if('IntersectionObserver'in window){
     const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{

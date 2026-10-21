@@ -45,7 +45,7 @@ body.social-code-is-open .rem-side-companion{visibility:hidden!important}
   #socialCodeLarge .social-code{padding:10px;border-radius:18px}
 }
 @media(prefers-reduced-motion:no-preference){
-  body:not(.qq-low-memory) .social-code-panel{animation:comfort-batch-in .2s ease-out}
+  .social-code-panel{animation:comfort-batch-in .2s ease-out}
 }
 
 /* REM STUDIO — a new, light-blue character photography design system. */
@@ -229,7 +229,7 @@ body.works-in-view .works-side-refresh{visibility:visible;opacity:1;pointer-even
 .rem-side-companion::after{content:'';position:absolute;inset:-5px;border:1px dashed rgba(160,201,229,.43);border-radius:25px}
 body.works-passed .rem-side-companion{opacity:.92;visibility:visible}
 .reveal{opacity:1}
-@media(prefers-reduced-motion:no-preference){body:not(.qq-low-memory) .reveal.in{animation:comfort-batch-in .5s var(--ease)}}
+@media(prefers-reduced-motion:no-preference){.reveal.in{animation:comfort-batch-in .5s var(--ease)}}
 .gallery-fallback{padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--blue-soft);font-size:.85rem}
 .gallery-fallback p+p{display:flex;flex-wrap:wrap;gap:16px;margin-top:10px}
 .gallery-fallback a{text-decoration:underline;text-underline-offset:4px;min-height:44px;display:inline-flex;align-items:center}
@@ -283,8 +283,6 @@ html:not(.interactive-ready) .price-panel,html:not(.interactive-ready) .note-pan
   .rem-side-companion{width:46px;height:87px;left:7px;bottom:95px;border-radius:16px}.rem-side-companion::after{border-radius:20px;inset:-4px}
 }
 @media(max-width:350px){.hero-intro{padding-left:16px;padding-right:16px}.btn{padding:10px 13px;font-size:.7rem}.hero-stage{height:248px}.hero-tail{padding-left:83px;gap:4px}.site-update{font-size:.49rem}.scroll-hint{font-size:.52rem}.work-tab,.price-tab{font-size:.7rem;gap:4px}.social-zoom-hint{font-size:.58rem}}
-body.qq-low-memory *,body.qq-low-memory *::before,body.qq-low-memory *::after{animation:none!important;transition:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
-body.qq-low-memory .reveal{opacity:1!important;transform:none!important}body.qq-low-memory .nav{background:#f4fbff}body.qq-low-memory .quick-actions{background:linear-gradient(130deg,#f9fdff,#e4f4fe)}
 @media(max-height:600px){.notes-overview{position:static}}
 /* Keep small text legible against pale-blue glass. */
 

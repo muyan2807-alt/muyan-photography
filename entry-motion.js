@@ -1,9 +1,8 @@
 // Finite, optional motion. Never gate content, images, focus or navigation.
 (()=>{
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-  const connection=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
   const boot=window.muyanEntryBoot;
-  const quiet=()=>reduced.matches||boot?.lowMemory||document.body.classList.contains('qq-low-memory')||connection?.saveData;
+  const quiet=()=>reduced.matches;
   if(!Element.prototype.animate||quiet()){boot?.release(false);document.getElementById('entryWelcome')?.remove();return}
   const contentReady=callback=>{
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',callback,{once:true});else callback();
@@ -27,9 +26,28 @@
     welcome.forEach(motion=>motion.cancel());welcome.clear();
     veil?.remove();veil=null;
     photoAccent?.remove();photoAccent=null;
-    boot?.release(false);
+    if(boot?.active)boot.release(false);
   }
   function stopAll(){stopWelcome();running.forEach(motion=>motion.cancel());running.clear()}
+  // A restrained glass-light response for touch, mouse and keyboard alike.
+  // One finite bloom at a time; never changes layout or delays the real action.
+  let bloom=null,bloomMotion=null;
+  function clearBloom(){bloomMotion?.cancel();bloom?.remove();bloom=null;bloomMotion=null}
+  document.addEventListener('click',event=>{
+    const target=event.target instanceof Element?event.target.closest('button,.btn,summary,.quick-action'):null;
+    if(!target||target.disabled||quiet()||document.hidden)return;
+    clearBloom();
+    const rect=target.getBoundingClientRect(),node=document.createElement('span');
+    node.className='interaction-bloom';node.setAttribute('aria-hidden','true');
+    node.style.left=(event.detail?event.clientX:rect.left+rect.width/2)+'px';
+    node.style.top=(event.detail?event.clientY:rect.top+rect.height/2)+'px';
+    document.body.appendChild(node);bloom=node;
+    bloomMotion=animate(node,[{opacity:.65,transform:'scale(.25)'},{opacity:0,transform:'scale(1.25)'}],{duration:460});
+    if(bloomMotion)bloomMotion.finished.then(()=>{if(bloom===node)clearBloom()},()=>node.remove());else clearBloom();
+  });
+  addEventListener('pagehide',clearBloom);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)clearBloom()});
+  reduced.addEventListener?.('change',()=>{if(quiet())clearBloom()});
   // Expand content immediately; animate only its appearance, not container height.
   contentReady(()=>document.querySelectorAll('details').forEach(details=>{
     details.addEventListener('toggle',()=>{
@@ -46,8 +64,12 @@
   document.addEventListener('visibilitychange',()=>{if(document.hidden)stopAll()});
   window.addEventListener('pagehide',stopAll);
   if(reduced.addEventListener)reduced.addEventListener('change',()=>{if(quiet())stopAll()});
-  if(connection?.addEventListener)connection.addEventListener('change',()=>{if(quiet())stopAll()});
-  if(!boot?.active||document.hidden||scrollY>32){boot?.release(false);document.getElementById('entryWelcome')?.remove();return}
+  // Install before checking visibility: a hidden QQ safety-page document can
+  // become visible later, or return from the browser's back/forward cache.
+  if(boot)boot.onStart=startWelcome;
+  if(boot?.active)startWelcome();
+  function startWelcome(){
+  if(!boot?.active||quiet()||document.hidden)return;
   if(!boot.startedAt)boot.startedAt=performance.now();
   boot.onStop=stopWelcome;
   // Blue-white light, a fine ribbon drawing and a diagonal stream of petals.
@@ -146,7 +168,7 @@
     animate(petal,frames,{delay,duration,fill:'both',easing:'linear'},true);
   }
   contentReady(()=>{
-  if(!boot.active)return;
+  if(!boot.active||scrollY>32)return;
   const stage=document.querySelector('.hero-stage');
   if(stage){
     photoAccent=document.createElement('div');photoAccent.className='entry-photo-accent';photoAccent.setAttribute('aria-hidden','true');
@@ -176,4 +198,5 @@
   enter('.hero-stage',800,1150,12,.98);
   enter('.hero-tail',1050,850);
   });
+  }
 })();
