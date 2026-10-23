@@ -1,4 +1,4 @@
-/* Rem-blue petals and ribbon over a finite, gathering aurora. */
+/* Rem-blue petals and ribbon over a finite, travelling wash of light. */
 .entry-veil{position:fixed;inset:0;z-index:2147483647;overflow:hidden;pointer-events:none;user-select:none;opacity:0}
 .entry-wash{position:absolute;inset:0;background:linear-gradient(155deg,#f5fbff,#edf6ff 58%,#f7f7ff)}
 .entry-mist{position:absolute;left:50%;top:46%;width:min(90vmax,1100px);height:min(80vmax,980px);border-radius:50%;pointer-events:none}
@@ -27,11 +27,8 @@
   .lb.show :is(.lb-close,.lb-prev,.lb-next){animation:motion-controls-arrive .18s cubic-bezier(.2,.75,.25,1)}
 }
 @media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
-  .btn:hover>span[aria-hidden]{transform:translate(2px,-2px)}
-  .btn>span[aria-hidden]{transition:transform .2s ease}
   .card img{transition:transform .4s cubic-bezier(.2,.75,.25,1)}
   .card:hover img{transform:scale(1.015)}
 }
-.interaction-bloom{position:fixed;z-index:2147483645;width:76px;height:76px;margin:-38px 0 0 -38px;border:1px solid #91c7e999;border-radius:50%;background:radial-gradient(circle,#ffffff90 0%,#bfe3fa45 35%,transparent 70%);pointer-events:none;user-select:none}
 @keyframes motion-controls-arrive{from{transform:translateY(3px)}to{transform:translateY(0)}}
-@media(prefers-reduced-motion:reduce){.entry-veil,.entry-photo-accent,.interaction-bloom{display:none}}
+@media(prefers-reduced-motion:reduce){.entry-veil,.entry-photo-accent{display:none}}

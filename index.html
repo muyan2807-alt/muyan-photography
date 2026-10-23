@@ -69,12 +69,12 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
   reduced.addEventListener?.('change',()=>{if(reduced.matches)cancel()});
 })();
 </script>
-<link rel="preload" as="script" href="entry-motion.js?v=2.4" fetchpriority="high">
-<link rel="stylesheet" href="entry-motion.css?v=2.4" fetchpriority="high">
+<link rel="preload" as="script" href="entry-motion.js?v=2.5" fetchpriority="high">
+<link rel="stylesheet" href="entry-motion.css?v=2.5" fetchpriority="high">
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "1a8183bf36274076bf25a117293b9989"}'></script><!-- End Cloudflare Web Analytics -->
 <title>慕言·次元映像 | 正片·场照·特效</title>
-<meta name="muyan-site-version" content="2.4">
-<meta name="muyan-design-revision" content="20261023-snow-stationary-refresh-2.4">
+<meta name="muyan-site-version" content="2.5">
+<meta name="muyan-design-revision" content="20261023-soft-glass-motion-2.5">
 <meta name="description" content="慕言·次元映像，重庆 COS 摄影。浏览正片、场照与特效作品，了解拍摄价格、拍摄须知，通过 QQ 或微信沟通约拍。">
 <link rel="canonical" href="https://muyancos.cn/">
 <meta property="og:type" content="website">
@@ -89,11 +89,12 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
 <meta property="og:image:alt" content="慕言的蕾姆主题 COS 摄影作品">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9D%84%EF%B8%8F%3C/text%3E%3C/svg%3E">
 <link rel="preload" as="image" href="images/rem-anime-hero-hq.webp" type="image/webp" fetchpriority="high">
-<link rel="stylesheet" href="rem-studio.css?v=2.4">
-<link rel="stylesheet" href="compact-layout.css?v=2.4">
-<link rel="stylesheet" href="glass-sections.css?v=2.4">
-<link rel="stylesheet" href="booking.css?v=2.4">
-<link rel="stylesheet" href="mobile-refinements.css?v=2.4">
+<link rel="stylesheet" href="rem-studio.css?v=2.5">
+<link rel="stylesheet" href="compact-layout.css?v=2.5">
+<link rel="stylesheet" href="glass-sections.css?v=2.5">
+<link rel="stylesheet" href="booking.css?v=2.5">
+<link rel="stylesheet" href="mobile-refinements.css?v=2.5">
+<link rel="stylesheet" href="glass-motion.css?v=2.5">
 </head>
 <body>
 <div class="entry-veil" id="entryWelcome" aria-hidden="true">
@@ -105,7 +106,7 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
     <span class="entry-title">慕言·次元映像</span><span class="entry-subtitle">提供优质服务，上乘质量，适中价格！</span>
   </div>
 </div>
-<script src="entry-motion.js?v=2.4" async fetchpriority="high"></script>
+<script src="entry-motion.js?v=2.5" async fetchpriority="high"></script>
 <div class="reading-progress" id="readingProgress" aria-hidden="true"></div>
 
 <!-- 导航 -->
@@ -127,7 +128,6 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
   <div class="hero-intro">
     <h1 class="art-title">慕言·次元映像</h1>
     <p class="hero-slogan">提供优质服务，上乘质量，适中价格！</p>
-    <div class="hero-cta"><a href="#works" class="btn primary">查看作品 <span aria-hidden="true">↗</span></a><a href="#price" class="btn ghost">拍摄价格</a><a href="#contact" class="btn ghost" data-booking-open aria-haspopup="dialog" aria-controls="bookingModal">立即约拍</a></div>
   </div>
   <div class="hero-stage">
     <img class="hero-photo" src="images/rem-anime-hero-hq.webp" width="2048" height="1152" fetchpriority="high" decoding="async" alt="蕾姆主题COS摄影作品">
@@ -139,7 +139,7 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
 <main>
   <div class="service-intro service-lead">
     <p class="sub">重庆摄影 · 正片 / 场照 / 后期 / 特效 / 远距离拍摄，可选包接包送</p>
-    <p class="snow-booking-notice"><strong>仙女山等各雪景拍摄地<br>我开车包车接送，当天来回</strong><span class="snow-booking-price">一口价<span class="snow-booking-amount">600</span></span><span class="snow-booking-included">无需额外付费（双人拼单）</span><a class="snow-booking-cta" href="#contact"><span class="snow-booking-cta-copy">欢迎各位添加联系方式确认细节<span>预约雪景拍摄</span></span><span aria-hidden="true">↗</span></a></p>
+    <p class="snow-booking-notice"><strong class="snow-booking-title">主城出发雪景摄影约拍｜仙女山等雪景地。</strong><span class="snow-booking-description"><strong>拍摄，接送都是我，带你轻松拍雪景</strong><span class="snow-booking-fee">一口价费用没有额外收费</span></span><span class="snow-booking-pricing"><span class="snow-booking-price">一口价<span class="snow-booking-amount">600</span></span><small class="snow-booking-included">（双人拼单）</small></span><a class="snow-booking-cta" href="#contact"><span class="snow-booking-cta-copy">点击查看联系方式<span>确认细节 · 预约雪景拍摄</span></span><span class="snow-booking-cta-arrow" aria-hidden="true">→</span></a></p>
   </div>
   <!-- 正片 -->
   <section id="works">
@@ -148,7 +148,6 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
       <h2>作品展示</h2>
       <p>点击选项，切换查看 正片 / 场照 / 特效 例图</p>
       <p class="works-authorship" id="worksAuthorship" aria-live="polite">正片分类：所有图片均由本人拍摄，特效／合成及后期均为本人制作，无他人后期参与！</p>
-      <div class="sec-divider"></div>
     </div>
     <div class="works-tabs reveal">
       <button type="button" class="work-tab active" data-w="zhengpian">📷 正片</button>
@@ -188,10 +187,8 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
   <section id="price">
 <header class="section-heading">
     <div class="sec-head reveal">
-      <span class="kicker">✦ 价格 ✦</span>
       <h2>拍摄价格</h2>
       <p>点击选项查看 正片 / 场照 / 特效 价格</p>
-      <div class="sec-divider"></div>
     </div>
     <div class="price-tabs reveal">
       <button type="button" class="price-tab active" data-p="zp">📸 正片价格</button>
@@ -201,20 +198,21 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
 </header>
     <div class="price-panel active" id="price-zp">
       <div class="price-grid">
-        <div class="price-card reveal">
+        <div class="price-card portrait-price-card reveal" aria-describedby="portraitDelivery">
           <h4>🧍 单人正片</h4>
-          <div class="ver">含拍摄基础后期 · 正片不限制时间和张数但<strong>最少15张成片或满四小时可视为拍摄结束</strong> · 拍摄所需杂费另计</div>
-          <div class="tier"><span><span class="name">定金</span></span><span class="money">129 <small>元</small></span></div>
-          <div class="tier"><span><span class="name">尾款</span></span><span class="money">200 <small>元</small></span></div>
-          <div class="tier total"><span><span class="name">合计</span></span><span class="money">329 <small>元</small></span></div>
+          <p class="portrait-total"><span>合计</span><strong>329 <small>元</small></strong></p>
+          <dl class="portrait-payment"><div><dt>定金</dt><dd>130 <small>元</small></dd></div><div><dt>尾款</dt><dd>199 <small>元</small></dd></div></dl>
         </div>
-        <div class="price-card reveal">
+        <div class="price-card portrait-price-card reveal" aria-describedby="portraitDelivery">
           <h4>👥 双人正片</h4>
-          <div class="ver">含拍摄基础后期 · 正片不限制时间和张数但<strong>最少15张成片或满四小时可视为拍摄结束</strong> · 拍摄所需杂费另计</div>
-          <div class="tier"><span><span class="name">定金</span></span><span class="money">180 <small>元</small></span></div>
-          <div class="tier"><span><span class="name">尾款</span></span><span class="money">249 <small>元</small></span></div>
-          <div class="tier total"><span><span class="name">合计</span></span><span class="money">429 <small>元</small></span></div>
+          <p class="portrait-total"><span>合计</span><strong>429 <small>元</small></strong></p>
+          <dl class="portrait-payment"><div><dt>定金</dt><dd>180 <small>元</small></dd></div><div><dt>尾款</dt><dd>249 <small>元</small></dd></div></dl>
         </div>
+        <aside class="portrait-terms" id="portraitDelivery" aria-labelledby="portraitDeliveryTitle">
+          <h4 id="portraitDeliveryTitle">单人 / 双人正片 · 共同拍摄说明</h4>
+          <p>含拍摄基础后期 · 拍摄所需杂费另计</p>
+          <p>正片不限制时间和张数，但<strong>最少15张成片或满四小时可视为拍摄结束</strong></p>
+        </aside>
         <div class="price-card retouch-addon reveal">
           <h4>💎 推荐增购</h4>
           <div class="tier"><span class="name">9 张精修后期</span><span class="money">100 <small>元</small></span></div>
@@ -310,7 +308,6 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
     <div class="sec-head reveal">
       <h2>拍摄须知 &amp; 常见问题</h2>
       <p>以下是一些问得多的问题，统一解答！还有其它问题可以群里或者私聊找我，看到了都会回！</p>
-      <div class="sec-divider"></div>
     </div>
   </header>
   <div class="notes-layout"><div class="notes-overview">
@@ -710,10 +707,11 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
   <button class="lb-next" id="lbNext" aria-label="下一张">›</button>
 </div>
 
-<script src="ui-primitives.js?v=2.4"></script>
-<script src="image-sizes.js?v=2.4"></script>
-<script src="site-engine.js?v=2.4"></script>
-<script src="rem-ui.js?v=2.4"></script>
-<script src="booking.js?v=2.4"></script>
+<script src="ui-primitives.js?v=2.5"></script>
+<script src="image-sizes.js?v=2.5"></script>
+<script src="site-engine.js?v=2.5"></script>
+<script src="rem-ui.js?v=2.5"></script>
+<script src="booking.js?v=2.5"></script>
+<script src="glass-motion.js?v=2.5"></script>
 </body>
 </html>

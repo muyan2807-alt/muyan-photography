@@ -8,7 +8,7 @@
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',callback,{once:true});else callback();
   };
   const ease='cubic-bezier(.2,.75,.25,1)';
-  const running=new Set(),welcome=new Set(),detailsMotions=new WeakMap();
+  const running=new Set(),welcome=new Set();
   let veil=null,photoAccent=null;
   function animate(element,frames,options,isWelcome=false){
     if(!element||quiet()||document.hidden)return null;
@@ -29,38 +29,6 @@
     if(boot?.active)boot.release(false);
   }
   function stopAll(){stopWelcome();running.forEach(motion=>motion.cancel());running.clear()}
-  // A restrained glass-light response for touch, mouse and keyboard alike.
-  // One finite bloom at a time; never changes layout or delays the real action.
-  let bloom=null,bloomMotion=null;
-  function clearBloom(){bloomMotion?.cancel();bloom?.remove();bloom=null;bloomMotion=null}
-  document.addEventListener('click',event=>{
-    const target=event.target instanceof Element?event.target.closest('button,.btn,summary,.quick-action'):null;
-    if(!target||target.disabled||quiet()||document.hidden)return;
-    clearBloom();
-    const rect=target.getBoundingClientRect(),node=document.createElement('span');
-    node.className='interaction-bloom';node.setAttribute('aria-hidden','true');
-    node.style.left=(event.detail?event.clientX:rect.left+rect.width/2)+'px';
-    node.style.top=(event.detail?event.clientY:rect.top+rect.height/2)+'px';
-    document.body.appendChild(node);bloom=node;
-    bloomMotion=animate(node,[{opacity:.65,transform:'scale(.25)'},{opacity:0,transform:'scale(1.25)'}],{duration:460});
-    if(bloomMotion)bloomMotion.finished.then(()=>{if(bloom===node)clearBloom()},()=>node.remove());else clearBloom();
-  });
-  addEventListener('pagehide',clearBloom);
-  document.addEventListener('visibilitychange',()=>{if(document.hidden)clearBloom()});
-  reduced.addEventListener?.('change',()=>{if(quiet())clearBloom()});
-  // Expand content immediately; animate only its appearance, not container height.
-  contentReady(()=>document.querySelectorAll('details').forEach(details=>{
-    details.addEventListener('toggle',()=>{
-      detailsMotions.get(details)?.forEach(motion=>motion.cancel());
-      if(!details.open||quiet())return;
-      const children=[...details.children].filter(child=>child.tagName!=='SUMMARY');
-      const motions=children.slice(0,4).map(child=>animate(child,
-        [{opacity:.75,transform:'translateY(4px)'},{opacity:1,transform:'translateY(0)'}],
-        {duration:190}
-      )).filter(Boolean);
-      detailsMotions.set(details,motions);
-    });
-  }));
   document.addEventListener('visibilitychange',()=>{if(document.hidden)stopAll()});
   window.addEventListener('pagehide',stopAll);
   if(reduced.addEventListener)reduced.addEventListener('change',()=>{if(quiet())stopAll()});
@@ -72,11 +40,11 @@
   if(!boot?.active||quiet()||document.hidden)return;
   if(!boot.startedAt)boot.startedAt=performance.now();
   boot.onStop=stopWelcome;
-  // Blue-white light, a fine ribbon drawing and a diagonal stream of petals.
+  // Broad blue-white light travels with the wind; it never collapses to a point.
   // Generated shapes only: no photographs, fonts or other network dependencies.
   veil=document.getElementById('entryWelcome');
   if(!veil){stopWelcome();return}
-  animate(veil,[{opacity:1,offset:0},{opacity:1,offset:.58},{opacity:0,offset:1}],{duration:2000},true);
+  animate(veil,[{opacity:1,offset:0},{opacity:1,offset:.52},{opacity:0,offset:1}],{duration:2000},true);
   document.documentElement.classList.add('entry-playing');
   const flow=(x,y,rotation,scale)=>'translate(-50%,-50%) translate('+x+'px,'+y+'px) rotate('+rotation+'deg) scale('+scale+')';
   const streams=[
@@ -85,20 +53,20 @@
     {selector:'.entry-mist-white',x:innerWidth*.18,y:-innerHeight*.1,rotation:0}
   ];
   streams.forEach(stream=>animate(veil.querySelector(stream.selector),[
-    {opacity:.75,transform:flow(stream.x,stream.y,stream.rotation,1.25),offset:0},
-    {opacity:.9,transform:flow(stream.x*.55,stream.y*.5,stream.rotation+18,1.08),offset:.47},
-    {opacity:.5,transform:flow(0,-innerHeight*.04,stream.rotation+35,.62),offset:.78},
-    {opacity:0,transform:flow(0,-innerHeight*.04,stream.rotation+45,.22),offset:1}
+    {opacity:.4,transform:flow(stream.x+innerWidth*.16,stream.y+innerHeight*.12,stream.rotation,1.08),offset:0},
+    {opacity:.85,transform:flow(stream.x,stream.y,stream.rotation+4,1.16),offset:.42},
+    {opacity:.6,transform:flow(stream.x-innerWidth*.14,stream.y-innerHeight*.1,stream.rotation+7,1.25),offset:.7},
+    {opacity:0,transform:flow(stream.x-innerWidth*.3,stream.y-innerHeight*.22,stream.rotation+10,1.34),offset:1}
   ],{duration:1950},true));
   animate(veil.querySelector('.entry-aura'),[
-    {opacity:0,transform:'translate(-50%,-50%) scale(1.2)',offset:0},
-    {opacity:.8,transform:'translate(-50%,-50%) scale(1)',offset:.4},
-    {opacity:.75,transform:'translate(-50%,-50%) scale(.62)',offset:.72},
-    {opacity:0,transform:'translate(-50%,-50%) scale(.3)',offset:1}
+    {opacity:0,transform:'translate(-43%,-43%) scale(.95)',offset:0},
+    {opacity:.7,transform:'translate(-49%,-48%) scale(1.12)',offset:.4},
+    {opacity:.55,transform:'translate(-56%,-53%) scale(1.3)',offset:.72},
+    {opacity:0,transform:'translate(-62%,-58%) scale(1.45)',offset:1}
   ],{duration:2000},true);
   animate(veil.querySelector('.entry-identity'),[
-    {opacity:0,transform:'translateY(12px)',offset:0},
-    {opacity:1,transform:'translateY(0)',offset:.25},
+    {opacity:0,transform:'translateY(8px) scale(.985)',offset:0},
+    {opacity:1,transform:'translateY(0) scale(1)',offset:.25},
     {opacity:1,transform:'translateY(0)',offset:.67},
     {opacity:0,transform:'translateY(-8px)',offset:1}
   ],{delay:100,duration:1550,fill:'both'},true);
@@ -194,7 +162,6 @@
   enter('.nav-inner',800,800);
   enter('.hero h1',900,950,12);
   enter('.hero-slogan',1000,850,8);
-  enter('.hero-cta',1100,750); // Buttons never move away from initial hit targets.
   enter('.hero-stage',800,1150,12,.98);
   enter('.hero-tail',1050,850);
   });

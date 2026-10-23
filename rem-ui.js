@@ -36,32 +36,6 @@
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(schedule);
   schedule();
 })();
-// Finite entrance and tap transitions; the same policy for every browser.
-(()=>{
-  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-  const quiet=()=>reduced.matches;
-  if(quiet())return;
-  if('IntersectionObserver'in window){
-    const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
-      if(!entry.isIntersecting)return;
-      if(!quiet())entry.target.classList.add('soft-entered');
-      observer.unobserve(entry.target);
-    }),{threshold:.12});
-    document.querySelectorAll('.contact-channel,.backup-notice,.retouch-guide,.price-example').forEach(el=>observer.observe(el));
-  }
-  let panelAnimation=null;
-  document.querySelectorAll('.price-tab,.note-tab').forEach(button=>button.addEventListener('click',()=>{
-    if(panelAnimation)panelAnimation.cancel();
-    if(quiet())return;
-    const panel=document.getElementById(button.dataset.p?'price-'+button.dataset.p:'note-'+button.dataset.note);
-    if(panel&&panel.animate)panelAnimation=panel.animate(
-      [{opacity:.8,transform:'translateY(6px)'},{opacity:1,transform:'translateY(0)'}],
-      {duration:240,easing:'cubic-bezier(.2,.75,.25,1)'}
-    );
-  }));
-  const stop=()=>{if(reduced.matches&&panelAnimation)panelAnimation.cancel()};
-  if(reduced.addEventListener)reduced.addEventListener('change',stop);
-})();
 /* Progressive visual enhancement only; gallery selection and navigation remain native. */
 (()=>{
   const drawings={
@@ -89,14 +63,14 @@
     button.textContent=label;
     const holder=document.createElement('span');holder.setAttribute('aria-hidden','true');holder.innerHTML=icon(key);button.prepend(holder);
   });
-  document.querySelectorAll('.works-tabs,.price-tabs,.note-tabs,.cat-tabs').forEach(group=>{
+  document.querySelectorAll('.works-tabs,.price-tabs,.note-tabs,.cat-tabs,.quick-actions').forEach(group=>{
     const indicator=document.createElement('span');
     indicator.className='selection-track';indicator.setAttribute('aria-hidden','true');
     group.appendChild(indicator);group.classList.add('has-selection-track');
     let frame=0;
     const sync=()=>{
       frame=0;
-      const active=group.querySelector('button.active');
+      const active=group.querySelector('button.active,.quick-action.is-active');
       if(!active||!active.offsetWidth){indicator.style.visibility='hidden';return;}
       indicator.style.visibility='visible';
       indicator.style.width=active.offsetWidth+'px';indicator.style.height=active.offsetHeight+'px';
@@ -107,7 +81,7 @@
     new MutationObserver(schedule).observe(group,{subtree:true,attributes:true,attributeFilter:['class']});
     if('ResizeObserver'in window){
       const resize=new ResizeObserver(schedule);resize.observe(group);
-      group.querySelectorAll('button').forEach(button=>resize.observe(button));
+      group.querySelectorAll('button,.quick-action').forEach(button=>resize.observe(button));
     }else window.addEventListener('resize',schedule,{passive:true});
     if(document.fonts&&document.fonts.ready)document.fonts.ready.then(schedule);
     window.addEventListener('pageshow',schedule);sync();

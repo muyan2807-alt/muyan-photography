@@ -31,11 +31,9 @@ main>section{padding:30px 25px 25px;margin:0 0 26px;border:1px solid rgba(255,25
 .qq-code-frame::before{content:"";display:block;padding-top:100%}
 .contact-card .qq-code-frame .qr{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;height:auto;max-width:none;padding:0;margin:0;border:0;border-radius:0;box-shadow:none;clip-path:inset(2%);-webkit-clip-path:inset(2%)}
 .contact-share-row #shareSiteFooter{width:min(100%,420px);min-height:50px;font-size:.85rem}
-@keyframes soft-section-arrive{from{opacity:.65;transform:translateY(9px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:no-preference){
- .soft-entered{animation:soft-section-arrive .5s cubic-bezier(.2,.7,.2,1) both}
  .contact-copy{transition:transform .16s ease,background-color .2s ease,box-shadow .2s ease}
- .contact-copy:active,.btn:active{transform:scale(.97)}
+ .contact-copy:active{transform:scale(.97)}
 }
 @media(hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
  .contact-copy:hover{transform:translateY(-2px);box-shadow:0 0 0 1px #b8d9ef,0 8px 18px #84adcb24}
