@@ -16,6 +16,28 @@
 #works .cat-tabs{padding:4px;gap:2px;border:1px solid #fff;border-radius:99px;background:linear-gradient(120deg,#e3f2fc,#f7fcff);box-shadow:0 0 0 1px #d7eaf6,inset 0 1px 0 #fff}
 #works .cat-tabs .selection-track{background:linear-gradient(120deg,#c6e5f8,#e1f1fb);border-color:#fff;box-shadow:inset 0 1px 0 #fff,0 3px 8px rgba(136,176,201,.1)}
 
+.snow-booking-notice{display:grid;gap:6px;margin:12px 0 0;padding:16px 20px;border:1px solid #b5d9ef;border-radius:15px;background:linear-gradient(120deg,#deeffd,#f5fbff);box-shadow:inset 0 1px 0 #fff;color:#285f84;line-height:1.7;text-wrap:pretty}
+.snow-booking-notice strong{font-size:clamp(16px,1.6vw,22px);font-weight:750}
+.snow-booking-price{display:inline-flex;align-items:baseline;justify-content:center;gap:7px;margin:4px 0;color:#1c5c8b;font-size:clamp(22px,3vw,32px);font-weight:750;line-height:1.3;white-space:nowrap}
+.snow-booking-amount{font-size:clamp(38px,4.4vw,56px);font-weight:800;line-height:1.1;letter-spacing:-.03em}
+.snow-booking-included{font-size:clamp(14px,1.2vw,17px);font-weight:650}
+.snow-booking-cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;justify-self:center;max-width:100%;min-height:44px;margin-top:6px;padding:9px 13px;border:1px solid #b6d7ec;border-radius:12px;background:#f5fbff;color:#285f84;font-size:clamp(14px,1.2vw,17px);font-weight:650;line-height:1.7;text-decoration:none}
+.snow-booking-cta:hover{background:#e5f3fe;border-color:#8bbbd9}
+.snow-booking-cta:focus-visible{outline:2px solid #326f9b;outline-offset:3px}
+.snow-booking-cta-copy>span{display:block}
+.notice-fold .common-deposit{margin-bottom:20px}
+.notice-fold .note-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%}
+.notice-fold .note-tab{min-width:0;white-space:normal;line-height:1.5}
+.group-notice{color:#456b85;font-size:.85rem;line-height:1.9;overflow-wrap:anywhere}
+.group-notice h3{margin:0 0 16px;color:#356787;font-size:1.05rem}
+.group-notice-rules{margin:0;padding-left:1.6em}
+.group-notice-rules li{padding-left:.3em;margin-bottom:14px}
+.group-notice-rules li::marker{color:#447a9e;font-weight:700}
+.group-notice-duties{margin-top:24px;padding:18px;border:1px solid #c6e2f4;border-radius:16px;background:linear-gradient(125deg,#e4f3fd,#f7fcff)}
+.group-notice-duties h4{margin:0 0 10px;color:#356787;font-size:.95rem}
+.group-notice-duties ul{margin:0;padding-left:1.4em}
+.group-notice-duties li+li{margin-top:10px}
+
 @media(max-width:720px){
   footer#contact{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
   html{scroll-padding-bottom:calc(90px + env(safe-area-inset-bottom))}
