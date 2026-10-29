@@ -13,8 +13,32 @@
     {
       "source": "/images/*",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=3600" }
+        { "key": "Cache-Control", "value": "public, max-age=604800" }
       ]
+    },
+    {
+      "source": "/*.css",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/*.js",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/images/works/*",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/images/thumbs/*",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/images/thumbs-mobile/*",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+    },
+    {
+      "source": "/images/responsive/*",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
     },
     {
       "source": "/",
@@ -32,6 +56,8 @@
   "caches": [
     { "source": "/", "cacheTtl": 0 },
     { "source": "/index.html", "cacheTtl": 0 },
-    { "source": "/images/*", "cacheTtl": 3600 }
+    { "source": "/*.css", "cacheTtl": 31536000 },
+    { "source": "/*.js", "cacheTtl": 31536000 },
+    { "source": "/images/*", "cacheTtl": 604800 }
   ]
 }

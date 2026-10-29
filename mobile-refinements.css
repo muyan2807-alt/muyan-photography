@@ -33,13 +33,15 @@
 
 .snow-booking-notice{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:3px;max-width:660px;margin:7px auto 0;padding:9px 12px;border:1px solid #b5d9ef;border-radius:12px;background:linear-gradient(120deg,#deeffd,#f5fbff);box-shadow:inset 0 1px 0 #fff;color:#285f84;line-height:1.6;text-align:left;text-wrap:pretty}
 .snow-booking-notice strong{font-size:clamp(13px,1.2vw,16px);font-weight:700}
-.snow-booking-title{grid-column:1/-1}
-.snow-booking-description{display:flex;flex-direction:column;gap:2px;min-width:0}
+.snow-booking-title{grid-column:1}
+.snow-booking-place{display:inline-block;white-space:nowrap}
+.snow-booking-description{display:flex;grid-column:1;flex-direction:column;gap:2px;min-width:0}
 .snow-booking-fee{font-size:clamp(12px,1vw,14px);font-weight:650;line-height:1.5}
-.snow-booking-pricing{display:flex;grid-column:2;grid-row:2;flex-direction:column;align-items:flex-end;align-self:end;justify-self:end;gap:2px;width:128px;max-width:100%}
+.snow-booking-pricing{display:flex;grid-column:2;grid-row:1 / span 2;flex-direction:column;align-items:flex-end;align-self:start;justify-self:end;gap:2px;width:128px;max-width:100%}
 .snow-booking-price{display:inline-flex;align-items:baseline;justify-content:center;gap:4px;margin:0;color:#1c5c8b;font-size:clamp(16px,1.8vw,22px);font-weight:750;line-height:1.3;white-space:nowrap}
 .snow-booking-amount{font-size:clamp(28px,3vw,36px);font-weight:800;line-height:1.1;letter-spacing:-.03em}
 .snow-booking-included{max-width:100%;color:#5c7488;font-size:11px;font-weight:400;line-height:1.5;text-align:right}
+.snow-booking-solo{color:#648096;font-size:12px;font-weight:400;line-height:1.5;white-space:nowrap}
 .snow-booking-cta{display:inline-flex;grid-column:1/-1;align-items:center;justify-content:center;gap:12px;justify-self:stretch;max-width:100%;min-height:44px;margin-top:2px;padding:3px 10px;border:1px solid #93c5e4;border-radius:11px;background:linear-gradient(115deg,#cce8fa,#e3f4ff);box-shadow:inset 0 1px 0 #fff,0 3px 8px rgba(64,127,167,.1);color:#245b7d;font-size:14px;font-weight:750;line-height:1.3;text-align:center;text-decoration:none;cursor:pointer;transition:background .16s ease,box-shadow .16s ease,transform .12s ease}
 .snow-booking-cta:hover{background:linear-gradient(115deg,#bcdff5,#d6edfd);border-color:#71acd2;box-shadow:inset 0 1px 0 #fff,0 4px 12px rgba(64,127,167,.16)}
 .snow-booking-cta:active{transform:scale(.985);box-shadow:inset 0 1px 3px rgba(64,127,167,.16)}
@@ -47,6 +49,13 @@
 .snow-booking-cta-copy>span{display:block;color:#416a86;font-size:11.5px;font-weight:500;line-height:1.45}
 .snow-booking-cta-arrow{display:grid;place-items:center;flex:0 0 24px;width:24px;height:24px;border:1px solid #b1d3e9;border-radius:50%;background:rgba(255,255,255,.65);font-size:16px;line-height:1}
 .notice-fold .common-deposit{margin-bottom:20px}
+.snow-booking-unit{font-size:13px;font-weight:650;letter-spacing:0}
+.booking-arrangements{margin-bottom:18px;padding:17px 18px;border:1px solid #cce3f2;border-radius:18px;background:linear-gradient(125deg,#f4fbff,#eaf6ff);color:#466780}
+.booking-arrangements h3{margin-bottom:8px;font-size:16px;color:#356787}
+.booking-arrangements p{font-size:14px;line-height:1.8;overflow-wrap:anywhere}
+.booking-arrangements p+p{margin-top:9px}
+.booking-arrangements .shooting-process{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.6);color:#386480}
+.site-interpretation{margin:12px 0 0;text-align:center;color:#648096;font-size:11px;line-height:1.6;font-weight:400}
 .notice-fold .note-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%}
 .notice-fold .note-tab{min-width:0;white-space:normal;line-height:1.5}
 .group-notice{color:#456b85;font-size:.85rem;line-height:1.9;overflow-wrap:anywhere}

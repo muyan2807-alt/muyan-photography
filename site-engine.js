@@ -122,30 +122,49 @@ const MOBILE_DEVICE=/(?:Android|iPhone|iPad|iPod|HarmonyOS|Mobile)/i.test(QQ_UA)
 if(QQ_LOW_MEMORY)document.body.classList.add('qq-low-memory');
 if(MOBILE_DEVICE)document.body.classList.add('mobile-device');
 const lb=document.getElementById('lb'),lbImg=document.getElementById('lbImg'),lbStatus=document.getElementById('lbStatus'),lbCount=document.getElementById('lbCount'),lbCloseBtn=document.getElementById('lbClose'),lbRetry=document.getElementById('lbRetry');
-let cur=[],curPreviewSources=[],idx=0,lbReleaseTimer=0,lbObjectUrl='',lbAbort=null,lbLoadToken=0,lightboxSuspended=false;
+let cur=[],curPreviewSources=[],idx=0,lbReleaseTimer=0,lbObjectUrl='',lbAbort=null,lbPendingImage=null,lbLoadToken=0,lightboxSuspended=false;
 const lightboxDialog=createDialogController(lb,lbCloseBtn,closeLb);
 function releaseLightboxImage(){
   if(lbAbort){lbAbort.abort();lbAbort=null}
+  if(lbPendingImage){lbPendingImage.onload=null;lbPendingImage.onerror=null;lbPendingImage.removeAttribute('src');lbPendingImage=null}
   lbImg.onload=null;lbImg.onerror=null;
   lbImg.removeAttribute('src');
   if(lbObjectUrl){URL.revokeObjectURL(lbObjectUrl);lbObjectUrl=''}
   lb.classList.remove('is-loading','has-error');lbRetry.hidden=true;
 }
-function loadMobileLightboxImage(src){
+function loadMobileLightboxImage(src,previewSrc){
   const token=++lbLoadToken;
   releaseLightboxImage();
   const current=cur[idx];
   if(current){lbImg.width=current.w;lbImg.height=current.h}
-  lbStatus.textContent='高清展示图加载中…';lb.classList.add('is-loading');
-  lbImg.onload=()=>{
-    if(token!==lbLoadToken||!lb.classList.contains('show'))return;
-    lb.classList.remove('is-loading','has-error');lbRetry.hidden=true;
+  const preview=previewSrc||thumbOf(src,true);
+  const currentRequest=()=>token===lbLoadToken&&lb.classList.contains('show');
+  const failed=()=>{
+    if(!currentRequest())return;
+    lbImg.onload=null;lbImg.onerror=null;lbImg.src=preview;
+    lb.classList.remove('is-loading');lb.classList.add('has-error');
+    lbStatus.textContent='当前显示预览图，高清图加载失败';lbRetry.hidden=false;
   };
-  lbImg.onerror=()=>{
-    if(token!==lbLoadToken||!lb.classList.contains('show'))return;
-    lb.classList.remove('is-loading');lb.classList.add('has-error');lbStatus.textContent='高清展示图加载失败';lbRetry.hidden=false;
+  // Reuse the selected thumbnail immediately. Keep QQ/mobile off the Blob path.
+  lbImg.src=preview;
+  lbStatus.textContent='当前显示预览图，高清图加载中…';lb.classList.add('is-loading');
+  const full=new Image();lbPendingImage=full;
+  full.decoding='async';full.fetchPriority='high';
+  full.onload=()=>{
+    if(!currentRequest())return;
+    full.onload=null;full.onerror=null;if(lbPendingImage===full)lbPendingImage=null;
+    lbImg.onload=()=>{
+      if(!currentRequest())return;
+      lbImg.onload=null;lbImg.onerror=null;
+      lb.classList.remove('is-loading','has-error');lbRetry.hidden=true;
+    };
+    lbImg.onerror=failed;lbImg.src=src;
   };
-  lbImg.fetchPriority='high';lbImg.src=src;
+  full.onerror=()=>{
+    full.onload=null;full.onerror=null;if(lbPendingImage===full)lbPendingImage=null;
+    failed();
+  };
+  full.src=src;
 }
 async function loadDesktopLightboxImage(src,previewSrc){
   releaseLightboxImage();
@@ -183,7 +202,7 @@ async function loadDesktopLightboxImage(src,previewSrc){
 function loadLightboxImage(src,previewSrc){
   lightboxSuspended=false;
   releaseOriginalWarm();
-  if(MOBILE_DEVICE||QQ_LOW_MEMORY)loadMobileLightboxImage(src);
+  if(MOBILE_DEVICE||QQ_LOW_MEMORY)loadMobileLightboxImage(src,previewSrc);
   else loadDesktopLightboxImage(src,previewSrc);
 }
 function show(i){

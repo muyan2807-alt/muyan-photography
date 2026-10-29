@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#edf8ff">
 <!-- Critical first-paint guard: no dependency on the site bundle or images. -->
 <style id="entry-critical">
 #entryWelcome{display:none}
@@ -19,18 +20,22 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
 <script>
 (()=>{
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-  const allowed=()=>!reduced.matches&&!!Element.prototype.animate;
+  const seenKey='muyan:entry-seen';
+  let seen=false;
+  try{seen=sessionStorage.getItem(seenKey)==='1'}catch{}
+  const allowed=()=>!seen&&!reduced.matches&&!!Element.prototype.animate;
   const boot=window.muyanEntryBoot={active:false,pending:allowed(),startedAt:0,onStart:null,onStop:null,timer:0};
   const events=['wheel','touchstart','pointerdown','keydown'];
   let template=null;
-  boot.release=(notify=true)=>{
+  boot.release=(notify=true,completed=false)=>{
+    if(completed){seen=true;try{sessionStorage.setItem(seenKey,'1')}catch{}}
     boot.pending=false;boot.active=false;clearTimeout(boot.timer);
     document.documentElement.classList.remove('entry-boot','entry-playing');
     events.forEach(name=>removeEventListener(name,cancel));
     if(notify)boot.onStop?.();
     document.getElementById('entryWelcome')?.remove();
   };
-  function cancel(){boot.release()}
+  function cancel(){boot.release(true,true)}
   // QQ may prepare the document behind its safety prompt. Count visible time,
   // not time spent behind that prompt; no browser-brand or hash exclusions.
   boot.start=()=>{
@@ -69,12 +74,12 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
   reduced.addEventListener?.('change',()=>{if(reduced.matches)cancel()});
 })();
 </script>
-<link rel="preload" as="script" href="entry-motion.js?v=2.5" fetchpriority="high">
-<link rel="stylesheet" href="entry-motion.css?v=2.5" fetchpriority="high">
+<link rel="preload" as="script" href="entry-motion.js?v=2.5.4" fetchpriority="high">
+<link rel="stylesheet" href="entry-motion.css?v=2.5.4" fetchpriority="high">
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "1a8183bf36274076bf25a117293b9989"}'></script><!-- End Cloudflare Web Analytics -->
 <title>慕言·次元映像 | 正片·场照·特效</title>
-<meta name="muyan-site-version" content="2.5">
-<meta name="muyan-design-revision" content="20261023-soft-glass-motion-2.5">
+<meta name="muyan-site-version" content="2.5.4">
+<meta name="muyan-design-revision" content="20261029-snow-top-alignment-2.5.4">
 <meta name="description" content="慕言·次元映像，重庆 COS 摄影。浏览正片、场照与特效作品，了解拍摄价格、拍摄须知，通过 QQ 或微信沟通约拍。">
 <link rel="canonical" href="https://muyancos.cn/">
 <meta property="og:type" content="website">
@@ -88,13 +93,16 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
 <meta property="og:image:height" content="1152">
 <meta property="og:image:alt" content="慕言的蕾姆主题 COS 摄影作品">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9D%84%EF%B8%8F%3C/text%3E%3C/svg%3E">
-<link rel="preload" as="image" href="images/rem-anime-hero-hq.webp" type="image/webp" fetchpriority="high">
-<link rel="stylesheet" href="rem-studio.css?v=2.5">
-<link rel="stylesheet" href="compact-layout.css?v=2.5">
-<link rel="stylesheet" href="glass-sections.css?v=2.5">
-<link rel="stylesheet" href="booking.css?v=2.5">
-<link rel="stylesheet" href="mobile-refinements.css?v=2.5">
-<link rel="stylesheet" href="glass-motion.css?v=2.5">
+<link rel="preload" as="image" href="images/rem-anime-hero-hq.webp" imagesrcset="images/responsive/hero-768-0c8b187f6b83.webp 768w, images/responsive/hero-1280-6da5c670e85c.webp 1280w, images/rem-anime-hero-hq.webp 2048w" imagesizes="(max-width: 350px) and (max-height: 700px) 208px, (max-width: 720px) and (max-height: 700px) 240px, (max-width: 720px) calc(100vw - 32px), (max-width: 1240px) calc(100vw - 80px), 1160px" type="image/webp" fetchpriority="high">
+<link rel="stylesheet" href="rem-studio.css?v=2.5.4">
+<link rel="stylesheet" href="compact-layout.css?v=2.5.4">
+<link rel="stylesheet" href="glass-sections.css?v=2.5.4">
+<link rel="stylesheet" href="booking.css?v=2.5.4">
+<link rel="stylesheet" href="mobile-refinements.css?v=2.5.4">
+<link rel="stylesheet" href="glass-motion.css?v=2.5.4">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://muyancos.cn/#website","url":"https://muyancos.cn/","name":"慕言·次元映像","inLanguage":"zh-CN","publisher":{"@id":"https://muyancos.cn/#photographer"}},{"@type":"Person","@id":"https://muyancos.cn/#photographer","name":"慕言","url":"https://muyancos.cn/","jobTitle":"COS摄影师"},{"@type":"Service","@id":"https://muyancos.cn/#photography-service","name":"重庆COS摄影与后期服务","url":"https://muyancos.cn/#price","serviceType":["正片摄影","漫展场照","特效与合成后期"],"provider":{"@id":"https://muyancos.cn/#photographer"},"areaServed":{"@type":"City","name":"重庆"},"description":"提供正片、漫展场照、特效与合成后期服务，具体拍摄地点与档期以每次通知及双方沟通确认为准。"}]}
+</script>
 </head>
 <body>
 <div class="entry-veil" id="entryWelcome" aria-hidden="true">
@@ -106,7 +114,7 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
     <span class="entry-title">慕言·次元映像</span><span class="entry-subtitle">提供优质服务，上乘质量，适中价格！</span>
   </div>
 </div>
-<script src="entry-motion.js?v=2.5" async fetchpriority="high"></script>
+<script src="entry-motion.js?v=2.5.4" async fetchpriority="high"></script>
 <div class="reading-progress" id="readingProgress" aria-hidden="true"></div>
 
 <!-- 导航 -->
@@ -130,16 +138,16 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
     <p class="hero-slogan">提供优质服务，上乘质量，适中价格！</p>
   </div>
   <div class="hero-stage">
-    <img class="hero-photo" src="images/rem-anime-hero-hq.webp" width="2048" height="1152" fetchpriority="high" decoding="async" alt="蕾姆主题COS摄影作品">
+    <img class="hero-photo" src="images/rem-anime-hero-hq.webp" srcset="images/responsive/hero-768-0c8b187f6b83.webp 768w, images/responsive/hero-1280-6da5c670e85c.webp 1280w, images/rem-anime-hero-hq.webp 2048w" sizes="(max-width: 350px) and (max-height: 700px) 208px, (max-width: 720px) and (max-height: 700px) 240px, (max-width: 720px) calc(100vw - 32px), (max-width: 1240px) calc(100vw - 80px), 1160px" width="2048" height="1152" fetchpriority="high" decoding="async" alt="蕾姆主题COS摄影作品">
     <span class="hero-rem" aria-hidden="true"><img src="images/rem-brand-avatar.webp" width="512" height="512" alt=""><i class="rem-bow"></i></span>
     <span class="hero-star star-one" aria-hidden="true">✧</span><span class="hero-star star-two" aria-hidden="true">✧</span>
   </div>
-  <div class="hero-tail"><p class="site-update">网站更新于 <time datetime="2026-10-23">2026年10月23日</time></p><a href="#works" class="scroll-hint">向下滚动 <span aria-hidden="true">↓</span></a></div>
+  <div class="hero-tail"><p class="site-update">网站更新于 <time datetime="2026-10-29">2026年10月29日</time></p><a href="#works" class="scroll-hint">向下滚动 <span aria-hidden="true">↓</span></a></div>
 </header>
 <main>
   <div class="service-intro service-lead">
     <p class="sub">重庆摄影 · 正片 / 场照 / 后期 / 特效 / 远距离拍摄，可选包接包送</p>
-    <p class="snow-booking-notice"><strong class="snow-booking-title">主城出发雪景摄影约拍｜仙女山等雪景地。</strong><span class="snow-booking-description"><strong>拍摄，接送都是我，带你轻松拍雪景</strong><span class="snow-booking-fee">一口价费用没有额外收费</span></span><span class="snow-booking-pricing"><span class="snow-booking-price">一口价<span class="snow-booking-amount">600</span></span><small class="snow-booking-included">（双人拼单）</small></span><a class="snow-booking-cta" href="#contact"><span class="snow-booking-cta-copy">点击查看联系方式<span>确认细节 · 预约雪景拍摄</span></span><span class="snow-booking-cta-arrow" aria-hidden="true">→</span></a></p>
+    <p class="snow-booking-notice"><strong class="snow-booking-title">主城出发雪景摄影约拍｜<span class="snow-booking-place">仙女山等雪景地。</span></strong><span class="snow-booking-description"><strong>拍摄，接送都是我，带你轻松拍雪景</strong><span class="snow-booking-fee">当天来回 · 一口价无额外收费</span></span><span class="snow-booking-pricing"><span class="snow-booking-price"><span class="snow-booking-amount">650</span><span class="snow-booking-unit">元／人</span></span><small class="snow-booking-included">双人拼单价</small><small class="snow-booking-solo">单人 1200 元／人</small></span><a class="snow-booking-cta" href="#contact"><span class="snow-booking-cta-copy">点击查看联系方式<span>确认细节 · 预约雪景拍摄</span></span><span class="snow-booking-cta-arrow" aria-hidden="true">→</span></a></p>
   </div>
   <!-- 正片 -->
   <section id="works">
@@ -210,13 +218,13 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
         </div>
         <aside class="portrait-terms" id="portraitDelivery" aria-labelledby="portraitDeliveryTitle">
           <h4 id="portraitDeliveryTitle">单人 / 双人正片 · 共同拍摄说明</h4>
-          <p>含拍摄基础后期 · 拍摄所需杂费另计</p>
-          <p>正片不限制时间和张数，但<strong>最少15张成片或满四小时可视为拍摄结束</strong></p>
+          <p>含拍摄基础后期；拍摄所需杂费另计，具体项目及金额预约前私聊确认。</p>
+          <p>正片不限制张数，并保底<strong>单人15张、双人20张</strong>，但<strong>总拍摄时长不超过4小时</strong>。</p>
         </aside>
         <div class="price-card retouch-addon reveal">
           <h4>💎 推荐增购</h4>
           <div class="tier"><span class="name">9 张精修后期</span><span class="money">100 <small>元</small></span></div>
-          <div class="ver">约后期可以免拍摄所需杂费</div>
+          <div class="ver">精修自愿增购，可减免当次拍摄杂费（具体私聊）。</div>
         </div>
         <div class="price-card group-price-card reveal">
           <h4>👨‍👩‍👧 团片（6 人及以下）</h4>
@@ -327,6 +335,7 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
       </ol>
     </aside>
 
+    <aside class="booking-arrangements" aria-labelledby="booking-arrangements-title"><h3 id="booking-arrangements-title">预约与拍摄安排</h3><p>可约档期、具体拍摄地点及返图时间，以慕言每次通知及双方沟通确认为准。</p><p class="shooting-process">咨询需求 → 确认费用与时间 → 付定金排单 → 拍摄及现场审片 → 确认后付尾款 → 返图</p></aside>
     <aside class="backup-notice" aria-labelledby="backup-title"><h3 id="backup-title">照片备份服务</h3><p><strong>底片至少保留 1 个月<br>普修后的一次后期至少保留 1 年<br>返图给我的成片永久保存</strong></p><p>接收文件过期或需要重新获取时，可以联系我获取备份。底片和普修后的一次后期超过上述最低保存期限，也可以联系我确认是否仍有留存。</p></aside>
 </div><div class="notes-content">    <!-- 可折叠的正片 / 场照 / 团片详细须知 -->
     <details class="section-fold notice-fold reveal">
@@ -341,9 +350,9 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
       <summary><span class="q">💰</span><span class="txt">定金规则（正片 / 场照 / 团片通用）</span><span class="plus">+</span></summary>
       <div class="faq-body">
         <ul>
-          <li><b>不可抗力</b>（中暑、生病、家里有事等）：每人每年一次机会，<b>定金有效期半年</b>；机会用完后，后续不可抗力定金一次性作废。</li>
-          <li><b>改期：</b>漫展开始前<b>至少提前 7 天</b>说明；少于 7 天则定金无效，需重新付定金。</li>
-          <li><b>正片</b>同理，提前 7 天说明改时间和地点。</li>
+          <li><b>突发情况与改期：</b>因突发身体不适或家庭紧急情况需要改期，请及时联系说明。原则上每人每年可保留定金并免费改期一次，<b>定金有效期半年</b>；超出次数或遇到特殊情况，可再协商安排。</li>
+          <li><b>常规改期：</b>漫展开始前<b>至少提前 7 天</b>说明；少于 7 天则定金无效，需重新付定金。</li>
+          <li><b>正片常规改期</b>同理，提前 7 天说明改时间和地点。</li>
           <li>迟到安排：正片按下方时间与费用调整规则执行；场照迟到需等待空档安排拍摄，不另收迟到费用。</li>
         </ul>
       </div>
@@ -356,7 +365,7 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
         <h3>✅ 拍摄完成标准</h3>
         <details class="faq">
           <summary><span class="q">📷</span><span class="txt">拍多少张？什么时候视为完成？</span><span class="plus">+</span></summary>
-          <div class="faq-body">单人和双人正片均不限制时间和张数，但<b>最少15张成片或满四小时可视为拍摄结束</b>。达成后也可以继续拍摄，是否继续及具体安排视现场实际情况沟通确定。</div>
+          <div class="faq-body">正片不限制张数，并保底<b>单人15张、双人20张</b>，但<b>总拍摄时长不超过4小时</b>。</div>
         </details>
       </div>
       <div class="faq-group reveal">
@@ -374,7 +383,7 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
         <h3>💰 定金与付款</h3>
         <details class="faq">
           <summary><span class="q">💳</span><span class="txt">定金规则？</span><span class="plus">+</span></summary>
-          <div class="faq-body">与<b>场照相同</b>：不可抗力（中暑、生病、家里有事等）每人每年一次机会，定金有效期半年；改期需提前 <b>至少 7 天</b>说明，少于 7 天定金无效（详见场照须知）。</div>
+          <div class="faq-body">正片、场照、团片均适用上方的<b>定金规则</b>。突发情况原则上每人每年可保留定金并免费改期一次，定金有效期半年；超出次数或遇到特殊情况，可再协商安排。常规改期请<b>至少提前 7 天</b>说明。</div>
         </details>
 
       </div>
@@ -502,7 +511,7 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
           <li>团片拍摄以整体效果为主，并非针对个人的精拍，不接受因某部分个人不满意而提出的退款，请理解团片的协作属性。</li>
           <li>如无特殊情况，拍摄全程由团长与摄影对接。</li>
           <li>现场秩序与效率：请各位尽量保持良好的拍摄氛围，避免在现场长时间打闹或争论。若因现场人员问题严重影响拍摄进度，摄影不承担相关责任。</li>
-          <li>拍摄结束后就仔细确认图片，如果没问题支付尾款，并且不接受后续扯皮。</li>
+          <li>拍摄结束后，请在现场确认照片与拍摄效果，确认无误后支付尾款。后期按双方事先确认的需求完成，如有交付问题，请及时联系沟通；现场已确认的前期拍摄问题，后续不再受理。</li>
         </ol>
         <section class="group-notice-duties" aria-labelledby="group-duties-title">
           <h4 id="group-duties-title">我将负责以下事项：</h4>
@@ -539,7 +548,7 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
           <li><b>集齐 3 张：</b>兑换钥匙扣。</li>
           <li><b>集齐 6 张：</b>赠送相册，同时可兑换一次免费单人场照 A 套餐，两项一起送，不是二选一。</li>
           <li><b>六张场照兑换：</b>在同一场漫展的 D1/D2（第 1–2 天）或 D3/D4（第 3–4 天）中选择一个时段，兑换一次拍摄。选 D1/D2 需付定金、免尾款；选 D3/D4 定金和尾款全免。</li>
-          <li><b>集齐 12 张：</b>免费一套单人正片，抵扣 299 元。</li>
+          <li><b>集齐 12 张：</b>兑换一次单人正片，拍摄费用全免，另补 <b>30 元车费</b>。</li>
           <li><b>其它礼物：</b>9/12 张对应礼物暂定。</li>
           <li>请好好保管色纸，兑换时<b>只认实体</b>；兑换优惠会让色纸失效，需要重新集齐；兑换礼物不会失效</li>
         </ul>
@@ -547,12 +556,13 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
     </div>
       </div>
     </details>
-  </div></div></section>
+  </div></div>
+</section>
 
   <!-- 心里话 -->
     <div class="quote reveal">
       <span class="q-mark">💙</span>
-      <p>一点心里话：我希望成为<b>服务最用心的重庆摄影之一</b>，也会持续精进拍摄与后期，把除去成本后的一部分收入投入到拍摄体验与单主福利中——准备零食与较齐全的 coser 应急小物、人多时安排后勤带路、给再次约拍的单主赠送 6 寸打印相片；约单或推荐朋友约拍还可以领取色纸（一张价值 25 元，集齐 12 张可兑换一次免费单人正片，抵扣 299 元）。希望你来这里不仅能得到喜欢的作品，也能拥有轻松、安心的拍摄体验。</p>
+      <p>一点心里话：我希望成为<b>服务最用心的重庆摄影之一</b>，也会持续精进拍摄与后期，把除去成本后的一部分收入投入到拍摄体验与单主福利中——准备零食与较齐全的 coser 应急小物、人多时安排后勤带路、给再次约拍的单主赠送 6 寸打印相片；约单或推荐朋友约拍还可以领取色纸（一张价值 25 元，集齐 12 张可兑换一次单人正片，拍摄费用全免，另补 30 元车费）。希望你来这里不仅能得到喜欢的作品，也能拥有轻松、安心的拍摄体验。</p>
     </div>
 </main>
 
@@ -640,6 +650,7 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
       <button type="button" class="contact-copy" id="shareSiteFooter">分享网页</button>
     </div>
     <p style="margin-top:20px">© 2026 慕言·次元映像 · 正片 / 场照 / 特效</p>
+    <p class="site-interpretation">最终解释权归慕言所有。</p>
   </div>
 </footer>
 
@@ -707,11 +718,11 @@ html.entry-boot:not(.entry-playing) #entryWelcome .entry-identity{animation:entr
   <button class="lb-next" id="lbNext" aria-label="下一张">›</button>
 </div>
 
-<script src="ui-primitives.js?v=2.5"></script>
-<script src="image-sizes.js?v=2.5"></script>
-<script src="site-engine.js?v=2.5"></script>
-<script src="rem-ui.js?v=2.5"></script>
-<script src="booking.js?v=2.5"></script>
-<script src="glass-motion.js?v=2.5"></script>
+<script src="ui-primitives.js?v=2.5.4" defer></script>
+<script src="image-sizes.js?v=2.5.4" defer></script>
+<script src="site-engine.js?v=2.5.4" defer></script>
+<script src="rem-ui.js?v=2.5.4" defer></script>
+<script src="booking.js?v=2.5.4" defer></script>
+<script src="glass-motion.js?v=2.5.4" defer></script>
 </body>
 </html>

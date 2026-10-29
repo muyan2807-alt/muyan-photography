@@ -212,7 +212,6 @@ body.works-in-view .works-side-refresh{visibility:visible;opacity:1;pointer-even
 .lb button{position:absolute;width:46px;height:46px;border-radius:50%;border:1px solid #fff;box-shadow:0 0 0 1px #c8e1f2;background:#e0f2ff;color:#5f8fac;font-size:1.7rem;display:grid;place-items:center;z-index:1}
 .lb-close{right:20px;top:20px;font-size:1.1rem!important}.lb-prev{left:20px;top:50%;transform:translateY(-50%)}.lb-next{right:20px;top:50%;transform:translateY(-50%)}
 .lb .count{position:absolute;top:25px;left:30px;font-size:.82rem;color:#7495ac}.lb-status{position:absolute;bottom:25px;text-align:center;font-size:.78rem;color:#7396b0;display:none}.lb.is-loading .lb-status,.lb.has-error .lb-status{display:block}.lb.has-error .lb-status{color:#63798c}
-.mobile-device .lb.is-loading #lbImg{visibility:hidden}
 .rem-side-companion{position:fixed;left:10px;bottom:100px;width:58px;height:109px;z-index:119;pointer-events:none;border:1px solid #fff;border-radius:21px;background:url('images/rem-chibi-card.webp') 100% 0/300% 100% no-repeat;box-shadow:0 0 0 1px #d7eaf5,0 7px 22px rgba(123,164,195,.12);opacity:0;visibility:hidden;transition:opacity .8s}
 .rem-side-companion::after{content:'';position:absolute;inset:-5px;border:1px dashed rgba(160,201,229,.43);border-radius:25px}
 body.works-passed .rem-side-companion{opacity:.92;visibility:visible}
