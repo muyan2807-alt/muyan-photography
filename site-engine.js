@@ -279,13 +279,13 @@ function releaseOriginalWarm(){
   if(originalWarmController){originalWarmController.abort();originalWarmController=null}
 }
 function canWarmOriginals(){
-  if(document.hidden||lb.classList.contains('show')||document.body.classList.contains('dialog-is-open')||!window.fetch||!window.AbortController)return false;
+  if(!thumbnailWarmReady||thumbnailWarmRun||document.hidden||lb.classList.contains('show')||document.body.classList.contains('dialog-is-open')||!window.fetch||!window.AbortController)return false;
   return true;
 }
 function foregroundImagesReady(){
   const cards=[...document.querySelectorAll('.work-panel.active .card img')];
   const supporting=[...document.querySelectorAll('.nav img,.hero img,img.qr,img.social-code-image')];
-  return cards.length>0&&cards.every(image=>image.complete&&image.naturalWidth>0)&&supporting.every(image=>image.complete);
+  return cards.length>0&&cards.every(image=>image.complete&&image.naturalWidth>0)&&supporting.every(image=>image.complete&&image.naturalWidth>0);
 }
 function scheduleOriginalWarm(batch){
   releaseOriginalWarm();
@@ -496,6 +496,76 @@ function commitPlan(state,plan){
   if(plan.crossed)state.visited.clear();
   plan.batch.forEach(image=>state.visited.add(image.s));state.seen=state.visited.size;
 }
+// Warm current thumbnails first, then exactly one planned batch per filter.
+// Planning never advances a queue: the refresh button consumes this same plan.
+const thumbnailCache=new Map(),thumbnailJobs=[];
+let thumbnailRequests=0,thumbnailWarmRun=null,thumbnailWarmRevision=0,thumbnailWarmReady=false;
+function pumpThumbnailJobs(){
+  if(document.hidden)return;
+  while(thumbnailRequests<3&&thumbnailJobs.length){
+    const job=thumbnailJobs.shift(),image=new Image();
+    thumbnailRequests++;
+    const finish=ok=>{
+      image.onload=image.onerror=null;
+      thumbnailRequests--;
+      if(!ok)thumbnailCache.delete(job.src);
+      job.resolve(ok);pumpThumbnailJobs();
+    };
+    image.decoding='async';image.fetchPriority='low';
+    image.onload=()=>finish(true);image.onerror=()=>finish(false);
+    image.src=job.src;
+  }
+}
+function warmThumbnail(src){
+  if(thumbnailCache.has(src))return thumbnailCache.get(src);
+  const promise=new Promise(resolve=>thumbnailJobs.push({src,resolve}));
+  thumbnailCache.set(src,promise);pumpThumbnailJobs();
+  return promise;
+}
+function thumbnailStates(){
+  return GALLERIES.flatMap(g=>{
+    const filters=['all',...[...document.querySelectorAll('#tabs-'+g.key+' .cat-tab')].map(button=>button.dataset.cat).filter(cat=>cat!=='all')];
+    return filters.map(cat=>{
+      const view={...g,cat},state=stateOf(view);
+      if(!state.shown.length){const plan=state.prepared||planBatch(view,state);state.prepared=null;commitPlan(state,plan)}
+      return {view,state,batch:state.shown};
+    });
+  });
+}
+function queueThumbnailWarm(){
+  thumbnailWarmRevision++;thumbnailWarmReady=false;releaseOriginalWarm();startThumbnailWarm();
+}
+function startThumbnailWarm(){
+  if(thumbnailWarmRun||document.hidden)return;
+  const revision=thumbnailWarmRevision,mobile=window.innerWidth<=900;
+  const current=()=>revision===thumbnailWarmRevision&&!document.hidden;
+  thumbnailWarmRun=Promise.resolve().then(async()=>{
+    // Browser discovers the visible cards in DOM order before hidden filters.
+    const visible=[...document.querySelectorAll('.work-panel.active .card img')];
+    await Promise.all(visible.map(image=>waitForImage(image,0)));
+    if(!current()||!visible.length||!visible.every(image=>image.complete&&image.naturalWidth>0))return false;
+    await loadQrAssets();
+    // Responsive hero sources can change after the initial QR promise settled.
+    await Promise.all([...document.querySelectorAll('.nav img,.hero img,img.qr,img.social-code-image')].map(image=>waitForImage(image,0)));
+    if(!current()||!foregroundImagesReady())return false;
+    const records=thumbnailStates();
+    const loaded=await Promise.all(records.flatMap(record=>record.batch.map(image=>warmThumbnail(thumbOf(image.s,mobile)))));
+    if(!current()||!loaded.every(Boolean)||records.some(record=>record.state.shown!==record.batch))return false;
+    // This is the only lookahead. A completed prefetch never plans another one.
+    const next=records.flatMap(({view,state})=>{
+      const plan=state.prepared||(state.prepared=planBatch(view,state));
+      return plan.batch.map(image=>warmThumbnail(thumbOf(image.s,mobile)));
+    });
+    const ready=await Promise.all(next);
+    return current()&&ready.every(Boolean);
+  }).catch(()=>false).then(ready=>{
+    thumbnailWarmRun=null;
+    if(revision!==thumbnailWarmRevision)startThumbnailWarm();
+    else if(ready){thumbnailWarmReady=true;resumeCurrentOriginalWarm()}
+  });
+}
+const thumbnailViewport=window.matchMedia('(max-width: 900px)');
+thumbnailViewport.addEventListener('change',queueThumbnailWarm);
 function invalidateGalleryRender(g){g.renderToken++}
 function sizeGalleryBlock(block){
   if(!block)return;
@@ -532,15 +602,11 @@ function renderGallery(key,forceNew){
     card.addEventListener('click',event=>{if(event.target.closest('.thumb-retry'))return;if(!card.classList.contains('thumb-error'))openCard()});
     card.addEventListener('keydown',event=>{if(event.target===card&&(event.key==='Enter'||event.key===' ')){event.preventDefault();openCard()}});
   });
-  const renderToken=++g.renderToken,thumbs=next.map(img=>thumbOf(img.s));
+  g.renderToken++;
+  const thumbs=next.map(img=>thumbOf(img.s));
   function queueBatchWarm(){
-    if(renderToken!==g.renderToken||g.shown!==next||!cards.every(card=>{const image=card.querySelector('img');return image.complete&&image.naturalWidth>0}))return;
-    loadQrAssets().finally(()=>{
-      if(renderToken!==g.renderToken||g.shown!==next)return;
-      waitForImage(document.querySelector('.hero-photo'),0).then(()=>{
-        if(renderToken===g.renderToken&&g.shown===next&&activeWorks===key)scheduleOriginalWarm(next);
-      });
-    });
+    if(!block.isConnected||g.shown!==next||!cards.every(card=>{const image=card.querySelector('img');return image.complete&&image.naturalWidth>0}))return;
+    queueThumbnailWarm();
   }
   grid.style.pointerEvents='none';
   cards.forEach((card,i)=>{
@@ -572,11 +638,11 @@ function renderGallery(key,forceNew){
       card.classList.add('thumb-loading');message.textContent='缩略图加载中…';retry.disabled=true;
       im.src=thumbs[i]+'?retry='+Date.now();
     });
-    im.src=thumbs[i];
+    im.fetchPriority=i===0?'high':'auto';im.src=thumbs[i];
   });
   requestAnimationFrame(()=>sizeGalleryBlock(block));
   grid.style.pointerEvents='';
-  Promise.all(cards.map(card=>waitForImage(card.querySelector('img'),0))).then(queueBatchWarm);
+  queueThumbnailWarm();
   const total=poolOf(g).length,hint=document.getElementById('hint-'+key);
   hint.textContent='共 '+total+'张 ·已展示 '+Math.min(state.seen,total)+'张';
 }
@@ -702,6 +768,7 @@ function releaseAllImageMemory(){
 }
 function restoreVisibleImages(){
   if(document.hidden)return;
+  pumpThumbnailJobs();queueThumbnailWarm();
   if(lightboxSuspended&&lb.classList.contains('show')){
     lightboxSuspended=false;
     if(cur[idx])loadLightboxImage(cur[idx].s,curPreviewSources[idx]);else closeLb();
