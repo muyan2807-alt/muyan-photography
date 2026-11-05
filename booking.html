@@ -1,72 +1,35 @@
 <!doctype html>
 <html lang="zh-CN">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#eef7fc">
-  <meta name="robots" content="noindex">
-  <meta name="muyan-site-version" content="2.5.12">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9D%84%EF%B8%8F%3C/text%3E%3C/svg%3E">
-  <title>预约意向 · 慕言</title>
-  <link rel="stylesheet" href="booking-app.css?v=2.5.12">
-  <script src="booking-config.js?v=2.5.12" defer></script>
-  <script src="booking-app.js?v=2.5.12" defer></script>
-</head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f1f7fa"><meta name="robots" content="noindex,nofollow"><meta name="muyan-site-version" content="2.5.13"><title>这一次，拍什么？ · 慕言预约</title><link rel="icon" href="images/rem-brand-avatar.webp" type="image/webp"><link rel="stylesheet" href="booking-app.css?v=2.5.13"><script src="booking-config.js?v=2.5.13" defer></script><script src="booking-app.js?v=2.5.13" defer></script></head>
 <body>
-<div class="ambient" aria-hidden="true"></div>
-<header class="topbar">
-  <a class="brand" href="./#top">慕言<span>次元映像 / PHOTOGRAPHY</span></a>
-  <a class="back" href="./#works" data-booking-return>返回官网 ↗</a>
-</header>
-<main class="layout">
-  <section class="form-card" aria-labelledby="formTitle">
-    <div class="section-head"><span class="eyebrow">登记拍摄想法</span><span class="pill">待确认</span></div>
-    <h1 id="formTitle">拍摄预约意向</h1>
-    <p class="muted">提交后由慕言联系确认档期。带 * 的项目为必填，其余可以之后慢慢聊。</p>
-    <a class="booking-contact-hint" href="./#contact">日期未定或想先咨询？联系慕言 ↗</a>
-    <div id="serviceStatus" class="service-status" role="status">正在连接预约服务…</div>
-    <div class="draft-tools" id="draftTools">
-      <p class="draft-status" id="draftStatus" role="status">草稿仅保存在此浏览器，24小时后失效，提交成功后清除。</p>
-      <button type="button" id="clearDraft" class="draft-clear" hidden>清除草稿</button>
-    </div>
-    <form id="bookingForm">
-      <fieldset id="formFields">
-        <legend class="sr-only">拍摄预约意向</legend>
-        <div class="field-grid">
-          <label>怎么称呼你 *<input name="nickname" required maxlength="40" autocomplete="nickname" placeholder="昵称 / CN"></label>
-          <label>拍摄类型 *<select name="shoot_type" required><option value="portrait">正片</option><option value="event">场照</option><option value="snow">雪景</option><option value="effects">后期 / 特效</option></select></label>
-          <label>联系方式 *<select name="contact_type"><option value="qq">QQ</option><option value="wechat">微信</option></select></label>
-          <label><span id="contactLabel">QQ 号码 *</span><input name="contact" required maxlength="100" autocomplete="off" inputmode="numeric" placeholder="方便与你联系的账号"></label>
-          <label>期望日期 *<input name="preferred_date" type="date" required></label>
-          <label>期望时间<select name="preferred_time"><option value="待沟通">待沟通</option><option>上午</option><option>下午</option><option>晚上</option><option>全天均可</option></select></label>
-          <label>拍摄人数 *<input name="people" type="number" min="1" max="20" value="1" required inputmode="numeric"></label>
-          <label>角色 / 作品<input name="character" maxlength="100" placeholder="想拍的角色或风格"></label>
-          <label class="wide">期望地点<input name="location" maxlength="150" placeholder="城市、棚名、漫展或外景地点"></label>
-          <label class="wide">想补充的事<textarea name="notes" maxlength="1000" rows="4" placeholder="拍摄想法、时间限制、想提前沟通的细节…"></textarea></label>
-        </div>
-        <div class="availability" id="availability" aria-live="polite"></div>
-        <div class="honeypot" aria-hidden="true"><label>个人网站<input name="website" tabindex="-1" autocomplete="off"></label></div>
-        <label class="consent"><input name="consent" type="checkbox" required><span>我同意慕言仅为本次预约沟通、拍摄安排与后续服务使用这些信息。需要更正或删除时，可通过 QQ / 微信联系。</span></label>
-        <button class="primary submit" id="submitBooking" type="submit" disabled>提交预约意向 <span aria-hidden="true">↗</span></button>
-        <p id="formMessage" class="message" role="status" aria-live="polite"></p>
-      </fieldset>
-    </form>
-    <section id="success" class="success" hidden tabindex="-1">
-      <div class="success-mark" aria-hidden="true">✓</div><h2>预约意向已收到。</h2>
-      <p>慕言会通过你留下的 QQ 或微信与你沟通。<br>档期将在沟通后确认。</p>
-      <p class="receipt">预约编号 <strong id="receiptId"></strong></p><p class="fine">可以截图保存此页。请勿重复提交。</p>
-      <a class="primary" href="./#works">继续看作品 ↗</a>
-    </section>
-    <noscript><p>请开启浏览器 JavaScript，或通过 QQ / 微信直接联系慕言。</p></noscript>
-  </section>
-  <aside class="intro">
-    <span class="eyebrow">LET’S MAKE A MEMORY</span><h2 class="intro-title">把喜欢的角色，<br>留在光里。</h2>
-    <p class="intro-text">告诉我你的拍摄想法。<br>从一份小小的期待，开始准备下一次相遇。</p>
-    <div class="steps"><div><b>01</b><span>留下拍摄意向<small>日期、角色和联系方式</small></span></div><div><b>02</b><span>一起沟通细节<small>慕言通过 QQ 或微信与你联系</small></span></div><div><b>03</b><span>确认专属档期<small>沟通确认后，再安排拍摄</small></span></div></div>
-    <div class="contact-card"><span class="eyebrow">也可以直接聊聊</span><p>QQ：2745867337<br>微信：mi20180709</p><a href="./#contact">查看联系方式 ↗</a></div>
-    <p class="fine">提交意向不代表档期已锁定。拍摄安排及费用以双方沟通确认为准。</p>
-  </aside>
-</main>
-<footer>慕言 · 次元映像 <span>让每一次喜欢，都有回响。</span></footer>
-</body>
-</html>
+<header class="header wrap"><a class="brand" href="./#top"><span class="brand-mark"><img src="images/rem-brand-avatar.webp" width="512" height="512" alt="慕言官网同款蕾姆头像"></span><span>慕言的 COS 摄影<span class="brand-small">次元映像 / PHOTOGRAPHY</span></span></a><span class="header-note">让每一次喜欢，都有回响。<span class="tiny-star">✧</span></span></header>
+<main class="wrap">
+<section class="hero"><div><span class="eyebrow">A LITTLE PLAN, A LOVELY MEMORY</span><h1>这一次，<span>拍什么？</span></h1><p>把喜欢的角色和拍摄想法告诉我。<br>从一份小小的期待，开始准备这次相遇。</p></div><div class="hero-note"><span class="note-star">✧</span><span>先留下意向，<br>再一起把细节安排好。</span><small>每一份期待，都值得认真对待。</small></div></section>
+<ol class="steps" aria-label="预约步骤"><li class="current"><b>01</b>选择拍摄</li><li><b>02</b>填写意向</li><li><b>03</b>联系慕言</li></ol>
+<div class="booking-layout"><div class="form-column">
+<section class="section service-section"><div class="section-heading"><span class="section-no">01</span><div><h2>想留下哪一种回忆？</h2><p>选一个分类，展开这次的拍摄安排。</p></div></div>
+<div class="service-choices" aria-label="拍摄大分类"><button class="service-card selected" type="button" id="choosePortrait" aria-pressed="true" aria-controls="portraitDetails"><span class="service-top"><span class="service-icon">✧</span><span class="choice-dot"></span></span><strong>正片</strong><span class="service-english">YOUR OWN STORY</span><span class="service-description">为喜欢的角色，<br>留一组专属的光影。</span><span class="service-link">安排一次专属拍摄 <span>↗</span></span></button><button class="service-card" type="button" id="chooseEvent" aria-pressed="false" aria-controls="eventDetails"><span class="service-top"><span class="service-icon event-icon">▦</span><span class="choice-dot"></span></span><strong>场照</strong><span class="service-english">MEET YOU AT THE CON</span><span class="service-description">在热闹的漫展，<br>记录这一次的相遇。</span><span class="service-link">查看漫展与时间表 <span>↗</span></span></button></div>
+<details id="specialServices" class="special-services"><summary><span>雪景 / 后期与特效</span><small>展开查看服务与登记</small></summary><input type="hidden" id="subCategory" value=""><div class="special-choices"><button id="chooseSnow" type="button" aria-pressed="false"><strong>雪景拍摄</strong><small>主城出发 · 拍摄与接送一起安排</small><span>查看雪景服务 ↗</span></button><button id="chooseEffects" type="button" aria-pressed="false"><strong>后期 / 特效</strong><small>普通特效 · 半合成 · 全合成</small><span>留下后期想法 ↗</span></button></div><div id="specialInfo" class="special-info" hidden aria-live="polite"></div></details>
+<div id="serviceStatus" class="connection" role="status">正在连接预约服务…</div>
+<div id="eventDetails" class="event-panel" hidden><div id="eventOptionChoices" class="session-choices" aria-label="选择漫展" hidden></div><button id="openExhibition" class="exhibition-button" type="button" aria-expanded="false" aria-controls="exhibitionContent"><span><small>本次可选活动</small><strong id="eventOptionTitle">正在读取本场活动</strong></span><span class="expand-icon">＋</span></button><div id="exhibitionContent" hidden><div class="event-intro"><p>选择场次和时段。这里只展示占用情况，不公开预约人的信息。</p></div><div id="sessionChoices" class="session-choices" aria-label="漫展场次"></div><div class="table-heading"><h3 id="tableTitle">选择一场，看看时间安排</h3><button id="refreshTable" type="button" class="text-button">刷新时段 ↻</button></div><div class="legend"><span><i class="available"></i>可提交意向</span><span><i class="occupied"></i>已占用</span><span><i class="unavailable"></i>暂不开放</span></div><div id="timeTable" class="time-table" aria-live="polite"></div><p class="table-note">提交意向暂不锁定时段。沟通后人工确认，才会显示占用。</p></div></div></section>
+<form id="bookingForm">
+<fieldset id="formFields"><legend class="sr-only">单主预约与制作需求</legend>
+<section class="section"><div class="section-heading"><span class="section-no">02</span><div><h2>先认识一下你</h2><p>由预约单主填写；切换拍摄分类时，这些信息会保留。</p></div></div><div class="field-grid"><label>CN / 昵称 <span class="required">*</span><input id="nickname" required maxlength="40" autocomplete="nickname" placeholder="怎么称呼你"></label><label id="commonCharacterField">角色 <span class="required">*</span><input id="character" required maxlength="100" placeholder="这次想拍的角色"></label><label>联系方式 <span class="required">*</span><select id="contactType"><option value="qq">QQ</option><option value="wechat">微信</option></select></label><label><span id="contactLabel">QQ 号码</span> <span class="required">*</span><input id="contact" required maxlength="100" inputmode="numeric" placeholder="方便与你联系的账号" autocomplete="off"></label></div></section>
+<section class="section"><div class="section-heading"><span class="section-no">03</span><div><h2 id="detailHeading">聊聊这次的拍摄</h2><p id="detailIntro">不必一次想好所有细节，我们可以慢慢沟通。</p></div></div>
+<div id="portraitDetails">
+<label class="field-title">拍摄形式 <span class="required">*</span></label><div class="segmented" id="portraitParty" aria-label="正片拍摄形式"><button type="button" data-party="single" class="active" aria-pressed="true">单人</button><button type="button" data-party="double" aria-pressed="false">双人</button><button type="button" data-party="multiple" aria-pressed="false">多人</button><button type="button" data-party="group" aria-pressed="false">团片</button></div><p id="portraitPartyHelp" class="field-help" hidden>多人适合 3 人及以上共同约拍；团片由团长补充单人照、合照及组合需求。</p>
+<div class="field-grid"><label>期望日期 <span class="required">*</span><input id="portraitDate" type="date" required></label><label>期望时间<select id="portraitTime"><option value="待沟通">时间待沟通</option><option>上午</option><option>下午</option><option>晚上</option><option>全天均可</option></select></label><label id="portraitPeopleField" hidden>拍摄人数 <span class="required">*</span><input id="portraitPeople" type="number" value="3" min="3" max="20" disabled required inputmode="numeric"></label><label>外景 / 棚拍 <span class="required">*</span><select id="venueType"><option value="outdoor">外景</option><option value="studio">棚拍</option></select></label><label class="wide">拍摄地点<input id="location" maxlength="150" placeholder="城市、外景地点或心仪的摄影棚"></label><label class="wide">是否需要接送<select id="pickup"><option value="no">不需要接送</option><option value="yes">需要，想提前沟通</option></select></label></div>
+<div id="addonsPanel" class="addons-panel"><h3>其他拍摄需求 <small>可多选</small></h3><p class="field-help">沿用官网正片附加项目，选择后一起沟通安排。</p><div id="portraitAddons" class="addon-choices"></div><p class="field-help">“起步”和“私聊沟通”项目不视为固定总价。</p></div>
+<div id="groupDetails" class="group-panel" hidden><h3>团片补充</h3><p>请由团长统一填写。上方 CN 和联系方式填写团长信息即可。</p><div class="group-checks"><label class="check-label"><input type="checkbox" id="soloShots" checked>需要成员单人照</label><label class="check-label"><input type="checkbox" id="groupShots" checked>需要合照</label></div><label>特殊组合安排<textarea id="combinations" rows="3" maxlength="1000" placeholder="例如全员合照、角色 CP 或希望单独拍摄的组合"></textarea></label></div>
+</div>
+<div id="snowDetails" hidden><label class="field-title">拍摄形式 <span class="required">*</span></label><div class="segmented" id="snowParty" aria-label="雪景拍摄形式"><button type="button" data-party="single" class="active" aria-pressed="true">单人</button><button type="button" data-party="double" aria-pressed="false">双人</button></div><label>期望日期 <span class="required">*</span><input id="snowDate" type="date" required></label></div>
+<div id="effectsDetails" class="effects-fields" hidden><label>后期效果 <span class="required">*</span><textarea id="effectsBrief" required rows="4" maxlength="1000" placeholder="描述你希望呈现的后期效果、合成想法或参考方向"></textarea></label><div class="field-grid"><label>所属作品 / IP <span class="required">*</span><input id="effectsIP" required maxlength="100" placeholder="角色来自哪部作品"></label><label>角色 <span class="required">*</span><input id="effectsCharacter" required maxlength="100" placeholder="需要制作后期的角色"></label></div></div>
+<div id="eventRegistration" hidden><label class="field-title">拍摄形式 <span class="required">*</span></label><div class="segmented" id="eventParty" aria-label="场照拍摄形式"><button type="button" data-party="single" class="active" aria-pressed="true">单人</button><button type="button" data-party="double" aria-pressed="false">双人</button></div><div class="field-grid"><label id="packageField" class="wide">本场套餐 <span id="packageRequired" class="required">*</span><select id="package"><option value="">请先选择场次</option></select></label></div><p id="packageHint" class="field-help">套餐与价格按官网同步，双人精修另外计算后期费用。</p><div id="packagePricing" class="package-pricing" hidden aria-live="polite"></div><div id="selectedTimeHint" class="selected-time">请先展开上方漫展，选择一个可提交意向的时段。</div></div>
+<label id="notesField" class="notes-label"><span id="notesLabel">拍摄想法 / 想补充的事</span><textarea id="notes" rows="4" maxlength="1000" placeholder="想拍的氛围、动作参考、时间限制，或想提前沟通的小细节…"></textarea></label>
+</section>
+<section class="submission"><label class="consent"><input type="checkbox" id="consent" required><span>我同意以上信息仅用于本次需求沟通、安排与后续服务。</span></label><button id="submit" type="submit" class="primary" disabled><span id="submitText">提交正片拍摄意向</span><span>↗</span></button><p id="formMessage" class="form-message" role="status" aria-live="polite"></p><p class="submission-note">提交后可查看慕言的 QQ / 微信联系方式，再一起确认拍摄细节。</p></section>
+</fieldset></form></div>
+<aside class="summary-column"><div class="summary-card"><span class="eyebrow">YOUR LITTLE PLAN</span><h2>这次的小计划</h2><div class="summary-divider"></div><dl><div id="summaryWorkRow" hidden><dt>所属作品 / IP</dt><dd id="summaryWork">等待填写作品</dd></div><div><dt id="summaryTypeLabel">拍摄类型</dt><dd id="summaryType">正片 · 单人</dd></div><div><dt>角色</dt><dd id="summaryRole">等待你的灵感</dd></div><div id="summaryTimeRow"><dt id="summaryTimeLabel">期望时间</dt><dd id="summaryTime">还可以慢慢安排</dd></div><div id="summaryLocationRow"><dt>拍摄地点</dt><dd id="summaryLocation">一起选个喜欢的地方</dd></div></dl><div class="summary-foot"><span>✧</span><p id="summaryFoot">意向先收好，<br>档期沟通后再确认。</p></div></div><div class="aside-help"><span>一点小提醒</span><p>不用把所有想法一次写完。<br>留好联系方式，我们一起补全。</p></div></aside></div>
+</main><footer class="wrap footer"><span>慕言 · 次元映像</span><a class="booking-return" data-booking-return href="./#works">返回官网 ↗</a><span>每一份喜欢，都有被好好记录的理由。</span></footer>
+<dialog id="contactDialog" aria-labelledby="successTitle"><button id="closeContact" class="dialog-close" type="button" aria-label="关闭联系方式">×</button><div class="success-icon">✓</div><span class="eyebrow">LET'S MAKE IT HAPPEN</span><h2 id="successTitle">拍摄意向已收到。</h2><p class="dialog-intro">下一步，联系慕言，<br>一起把这次拍摄安排好。</p><p class="receipt">预约编号 <span id="receiptId"></span><small>意向已登记，具体安排请联系慕言确认。</small></p><div class="contact-tabs" aria-label="选择联系渠道"><button id="contactQQ" type="button" class="active" aria-pressed="true">QQ 联系</button><button id="contactWechat" type="button" aria-pressed="false">微信联系</button></div><div class="contact-content"><div class="qr-frame"><img id="contactQR" width="220" height="220" alt="慕言的 QQ 二维码"></div><p id="contactKind" class="contact-kind">QQ 大号</p><button id="copyNumber" class="contact-number" type="button" title="点击复制号码">2745867337<span>点击复制 ↗</span></button><p id="copyStatus" role="status" class="copy-status"></p><button id="copyButton" class="primary copy-button" type="button">复制 QQ 号</button><p id="contactHelp" class="contact-help">复制号码后打开 QQ 搜索，或用 QQ 扫码添加。</p></div><p id="contactFooter" class="dialog-foot">提交意向不代表档期已确认，具体安排以沟通结果为准。</p></dialog>
+</body></html>
