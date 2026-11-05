@@ -19,3 +19,5 @@
 @keyframes booking-arrive{from{opacity:.6;transform:translateY(7px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:no-preference){.booking-panel{animation:booking-arrive .2s ease-out}}
 @media(max-width:420px){.booking-modal{padding:9px}.booking-panel{max-height:calc(100vh - 18px);max-height:calc(100dvh - 18px);padding:22px 16px 14px;border-radius:20px}.booking-panel h2{font-size:1.12rem}.booking-lead{font-size:.73rem}.booking-wechat-code{width:185px}.booking-button{font-size:.77rem;padding:9px 10px}}
+
+.booking-online-entry{margin:0 0 18px;padding:0 0 16px;border-bottom:1px solid #cce1ef}.booking-online-entry .booking-button{width:100%}.booking-online-entry .booking-help{margin:9px 0 0}
