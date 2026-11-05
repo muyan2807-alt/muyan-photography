@@ -1,5 +1,5 @@
 /* 手机端导航、相册和次要联系方式。 */
-.quick-notes,.contact-fold>summary{display:none}
+.contact-fold>summary{display:none}
 .contact-fold{min-width:0}
 .thumb-state{position:absolute;inset:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:8px;border-radius:12px;background:linear-gradient(140deg,#f6fbff,#e5f3fd);color:#456b85;font-size:.75rem;text-align:center;cursor:default}
 .thumb-state[hidden]{display:none}
@@ -96,10 +96,7 @@
   footer#contact{padding-bottom:calc(112px + env(safe-area-inset-bottom))}
   html{scroll-padding-bottom:calc(90px + env(safe-area-inset-bottom))}
   .nav .burger,.nav-links,.nav-links.open{display:none}
-  .quick-booking{display:none}
-  .quick-notes{display:flex}
-  .quick-actions,body.works-in-view .quick-actions{grid-template-columns:repeat(5,minmax(44px,1fr));transition:transform .2s ease,opacity .2s ease}
-  body.works-in-view .quick-actions.is-reading{transform:translateY(calc(100% + 24px + env(safe-area-inset-bottom)));opacity:0;pointer-events:none}
+  .quick-actions{grid-template-columns:repeat(5,minmax(44px,1fr))}
   #price-zp .retouch-addon{order:0}
   .quick-action{font-size:.7rem;color:#476e88}
   .quick-action:hover:not(.is-active){background:none;color:#476e88}
@@ -122,13 +119,18 @@
 }
 
 @media(max-width:720px) and (max-height:700px){
-  .hero{padding-top:72px}
-  .hero-intro{padding-bottom:10px}
+  .hero{padding-top:66px}
+  .hero-intro{padding-bottom:6px}
   .hero-stage{width:min(calc(100% - 32px),240px)}
+  .hero-tail{padding-top:3px;padding-bottom:4px}
+  .service-lead{margin-top:6px;margin-bottom:10px}
 }
 @media(max-width:350px) and (max-height:700px){
-  .hero-stage{width:min(calc(100% - 32px),208px)}
-  .service-lead{margin-bottom:6px}
+  .hero-stage{width:min(calc(100% - 32px),200px)}
+  .hero-slogan{font-size:13px;line-height:1.5}
+  .service-lead{padding:6px 10px;margin-bottom:6px}
+  .service-lead .sub{line-height:1.35}
+  #works{padding-top:17px}
 }
 
 @media(prefers-reduced-motion:reduce){

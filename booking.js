@@ -2,6 +2,17 @@
   const modal=document.getElementById('bookingModal'),closeButton=document.getElementById('bookingClose');
   const status=document.getElementById('bookingStatus'),select=document.getElementById('bookingQQAccount');
   const tabs=[...modal.querySelectorAll('[data-booking-tab]')];
+  // Keep the caller's section when returning from the intent form.
+  const bookingPath=new URL('booking.html',location.href).pathname;
+  document.querySelectorAll('a[href]').forEach(link=>{
+    const url=new URL(link.getAttribute('href'),location.href);
+    if(url.origin!==location.origin||url.pathname!==bookingPath)return;
+    const explicitSource=url.searchParams.get('from');
+    link.addEventListener('click',()=>{
+      url.searchParams.set('from',explicitSource||document.querySelector('.quick-action.is-active')?.dataset.jump||'top');
+      link.href=url.pathname+url.search+url.hash;
+    });
+  });
   let generation=0;
   const dialog=createDialogController(modal,closeButton,close);
   const mobile=/Android|iPhone|iPad|iPod|HarmonyOS|Mobile/i.test(navigator.userAgent)||navigator.maxTouchPoints>0;

@@ -38,7 +38,6 @@ const syncWorksCompanion=()=>{
     document.body.classList.toggle('works-passed',rect.bottom<=navBottom+8);
     const inWorks=rect.top<innerHeight-90&&rect.bottom>navBottom+8;
     document.body.classList.toggle('works-in-view',inWorks);
-    if(!inWorks)document.querySelector('.quick-actions')?.classList.remove('is-reading');
   });
 };
 addEventListener('scroll',syncWorksCompanion,{passive:true});

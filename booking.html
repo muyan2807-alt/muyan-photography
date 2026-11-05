@@ -1,23 +1,72 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#eef7fc"><meta name="robots" content="noindex"><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9D%84%EF%B8%8F%3C/text%3E%3C/svg%3E"><title>预约拍摄 · 慕言</title><link rel="stylesheet" href="booking-app.css?v=2.5.6"><script src="booking-config.js?v=2.5.6" defer></script><script src="booking-app.js?v=2.5.6" defer></script></head>
-<body><div class="ambient" aria-hidden="true"></div><header class="topbar"><a class="brand" href="https://muyancos.cn/">慕言<span>次元映像 / PHOTOGRAPHY</span></a><a class="back" href="https://muyancos.cn/">返回作品网站 ↗</a></header>
-<main class="layout"><aside class="intro"><span class="eyebrow">LET’S MAKE A MEMORY</span><h1>把喜欢的角色，<br>留在光里。</h1><p class="intro-text">告诉我你的拍摄想法。<br>从一份小小的期待，开始准备下一次相遇。</p><div class="steps"><div><b>01</b><span>留下拍摄意向<small>日期、角色和联系方式</small></span></div><div><b>02</b><span>一起沟通细节<small>慕言通过 QQ 或微信与你联系</small></span></div><div><b>03</b><span>确认专属档期<small>沟通确认后，再安排拍摄</small></span></div></div><div class="contact-card"><span class="eyebrow">也可以直接聊聊</span><p>QQ：2745867337<br>微信：mi20180709</p><a href="https://muyancos.cn/#contact">查看联系方式 ↗</a></div><p class="fine">提交意向不代表档期已锁定。拍摄安排及费用以双方沟通确认为准。</p></aside>
-<section class="form-card" aria-labelledby="formTitle"><div class="section-head"><span class="eyebrow">BOOK A SHOOT</span><span class="pill">预约意向</span></div><h2 id="formTitle">下一次，拍什么？</h2><p class="muted">带 * 的项目为必填，其余可以之后慢慢聊。</p>
-<div id="serviceStatus" class="service-status" role="status">正在连接预约服务…</div>
-<form id="bookingForm"><fieldset id="formFields"><legend class="sr-only">拍摄预约信息</legend><div class="field-grid">
-<label>怎么称呼你 *<input name="nickname" required maxlength="40" autocomplete="nickname" placeholder="昵称 / CN"></label>
-<label>拍摄类型 *<select name="shoot_type" required><option value="portrait">正片</option><option value="event">场照</option><option value="snow">雪景</option><option value="effects">后期 / 特效</option></select></label>
-<label>联系方式 *<select name="contact_type"><option value="qq">QQ</option><option value="wechat">微信</option></select></label>
-<label><span id="contactLabel">QQ 号码 *</span><input name="contact" required maxlength="100" autocomplete="off" inputmode="numeric" placeholder="方便与你联系的账号"></label>
-<label>期望日期 *<input name="preferred_date" type="date" required></label>
-<label>期望时间<select name="preferred_time"><option value="待沟通">待沟通</option><option>上午</option><option>下午</option><option>晚上</option><option>全天均可</option></select></label>
-<label>拍摄人数 *<input name="people" type="number" min="1" max="20" value="1" required inputmode="numeric"></label>
-<label>角色 / 作品<input name="character" maxlength="100" placeholder="想拍的角色或风格"></label>
-<label class="wide">期望地点<input name="location" maxlength="150" placeholder="城市、棚名、漫展或外景地点"></label>
-<label class="wide">想补充的事<textarea name="notes" maxlength="1000" rows="4" placeholder="拍摄想法、时间限制、想提前沟通的细节…"></textarea></label>
-</div><div class="availability" id="availability" aria-live="polite"></div>
-<div class="honeypot" aria-hidden="true"><label>个人网站<input name="website" tabindex="-1" autocomplete="off"></label></div>
-<label class="consent"><input name="consent" type="checkbox" required><span>我同意慕言仅为本次预约沟通、拍摄安排与后续服务使用这些信息。需要更正或删除时，可通过 QQ / 微信联系。</span></label>
-<button class="primary submit" id="submitBooking" type="submit" disabled>提交预约意向 <span aria-hidden="true">↗</span></button><p id="formMessage" class="message" role="status" aria-live="polite"></p></fieldset></form>
-<section id="success" class="success" hidden tabindex="-1"><div class="success-mark" aria-hidden="true">✓</div><h2>期待已收到。</h2><p>慕言会通过你留下的 QQ 或微信与你沟通。<br>档期将在沟通后确认。</p><p class="receipt">预约编号 <strong id="receiptId"></strong></p><p class="fine">可以截图保存此页。请勿重复提交。</p><a class="primary" href="https://muyancos.cn/">继续看作品 ↗</a></section>
-<noscript><p>请开启浏览器 JavaScript，或通过 QQ / 微信直接联系慕言。</p></noscript></section></main><footer>慕言 · 次元映像 <span>让每一次喜欢，都有回响。</span></footer></body></html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#eef7fc">
+  <meta name="robots" content="noindex">
+  <meta name="muyan-site-version" content="2.5.12">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9D%84%EF%B8%8F%3C/text%3E%3C/svg%3E">
+  <title>预约意向 · 慕言</title>
+  <link rel="stylesheet" href="booking-app.css?v=2.5.12">
+  <script src="booking-config.js?v=2.5.12" defer></script>
+  <script src="booking-app.js?v=2.5.12" defer></script>
+</head>
+<body>
+<div class="ambient" aria-hidden="true"></div>
+<header class="topbar">
+  <a class="brand" href="./#top">慕言<span>次元映像 / PHOTOGRAPHY</span></a>
+  <a class="back" href="./#works" data-booking-return>返回官网 ↗</a>
+</header>
+<main class="layout">
+  <section class="form-card" aria-labelledby="formTitle">
+    <div class="section-head"><span class="eyebrow">登记拍摄想法</span><span class="pill">待确认</span></div>
+    <h1 id="formTitle">拍摄预约意向</h1>
+    <p class="muted">提交后由慕言联系确认档期。带 * 的项目为必填，其余可以之后慢慢聊。</p>
+    <a class="booking-contact-hint" href="./#contact">日期未定或想先咨询？联系慕言 ↗</a>
+    <div id="serviceStatus" class="service-status" role="status">正在连接预约服务…</div>
+    <div class="draft-tools" id="draftTools">
+      <p class="draft-status" id="draftStatus" role="status">草稿仅保存在此浏览器，24小时后失效，提交成功后清除。</p>
+      <button type="button" id="clearDraft" class="draft-clear" hidden>清除草稿</button>
+    </div>
+    <form id="bookingForm">
+      <fieldset id="formFields">
+        <legend class="sr-only">拍摄预约意向</legend>
+        <div class="field-grid">
+          <label>怎么称呼你 *<input name="nickname" required maxlength="40" autocomplete="nickname" placeholder="昵称 / CN"></label>
+          <label>拍摄类型 *<select name="shoot_type" required><option value="portrait">正片</option><option value="event">场照</option><option value="snow">雪景</option><option value="effects">后期 / 特效</option></select></label>
+          <label>联系方式 *<select name="contact_type"><option value="qq">QQ</option><option value="wechat">微信</option></select></label>
+          <label><span id="contactLabel">QQ 号码 *</span><input name="contact" required maxlength="100" autocomplete="off" inputmode="numeric" placeholder="方便与你联系的账号"></label>
+          <label>期望日期 *<input name="preferred_date" type="date" required></label>
+          <label>期望时间<select name="preferred_time"><option value="待沟通">待沟通</option><option>上午</option><option>下午</option><option>晚上</option><option>全天均可</option></select></label>
+          <label>拍摄人数 *<input name="people" type="number" min="1" max="20" value="1" required inputmode="numeric"></label>
+          <label>角色 / 作品<input name="character" maxlength="100" placeholder="想拍的角色或风格"></label>
+          <label class="wide">期望地点<input name="location" maxlength="150" placeholder="城市、棚名、漫展或外景地点"></label>
+          <label class="wide">想补充的事<textarea name="notes" maxlength="1000" rows="4" placeholder="拍摄想法、时间限制、想提前沟通的细节…"></textarea></label>
+        </div>
+        <div class="availability" id="availability" aria-live="polite"></div>
+        <div class="honeypot" aria-hidden="true"><label>个人网站<input name="website" tabindex="-1" autocomplete="off"></label></div>
+        <label class="consent"><input name="consent" type="checkbox" required><span>我同意慕言仅为本次预约沟通、拍摄安排与后续服务使用这些信息。需要更正或删除时，可通过 QQ / 微信联系。</span></label>
+        <button class="primary submit" id="submitBooking" type="submit" disabled>提交预约意向 <span aria-hidden="true">↗</span></button>
+        <p id="formMessage" class="message" role="status" aria-live="polite"></p>
+      </fieldset>
+    </form>
+    <section id="success" class="success" hidden tabindex="-1">
+      <div class="success-mark" aria-hidden="true">✓</div><h2>预约意向已收到。</h2>
+      <p>慕言会通过你留下的 QQ 或微信与你沟通。<br>档期将在沟通后确认。</p>
+      <p class="receipt">预约编号 <strong id="receiptId"></strong></p><p class="fine">可以截图保存此页。请勿重复提交。</p>
+      <a class="primary" href="./#works">继续看作品 ↗</a>
+    </section>
+    <noscript><p>请开启浏览器 JavaScript，或通过 QQ / 微信直接联系慕言。</p></noscript>
+  </section>
+  <aside class="intro">
+    <span class="eyebrow">LET’S MAKE A MEMORY</span><h2 class="intro-title">把喜欢的角色，<br>留在光里。</h2>
+    <p class="intro-text">告诉我你的拍摄想法。<br>从一份小小的期待，开始准备下一次相遇。</p>
+    <div class="steps"><div><b>01</b><span>留下拍摄意向<small>日期、角色和联系方式</small></span></div><div><b>02</b><span>一起沟通细节<small>慕言通过 QQ 或微信与你联系</small></span></div><div><b>03</b><span>确认专属档期<small>沟通确认后，再安排拍摄</small></span></div></div>
+    <div class="contact-card"><span class="eyebrow">也可以直接聊聊</span><p>QQ：2745867337<br>微信：mi20180709</p><a href="./#contact">查看联系方式 ↗</a></div>
+    <p class="fine">提交意向不代表档期已锁定。拍摄安排及费用以双方沟通确认为准。</p>
+  </aside>
+</main>
+<footer>慕言 · 次元映像 <span>让每一次喜欢，都有回响。</span></footer>
+</body>
+</html>

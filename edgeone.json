@@ -47,6 +47,10 @@
       ]
     },
     {
+      "source": "/booking.html",
+      "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+    },
+    {
       "source": "/index.html",
       "headers": [
         { "key": "Cache-Control", "value": "no-cache" }
@@ -56,6 +60,7 @@
   "caches": [
     { "source": "/", "cacheTtl": 0 },
     { "source": "/index.html", "cacheTtl": 0 },
+    { "source": "/booking.html", "cacheTtl": 0 },
     { "source": "/*.css", "cacheTtl": 31536000 },
     { "source": "/*.js", "cacheTtl": 31536000 },
     { "source": "/images/*", "cacheTtl": 604800 }

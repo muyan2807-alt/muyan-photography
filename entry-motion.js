@@ -37,6 +37,8 @@
   if(boot)boot.onStart=startWelcome;
   if(boot?.active)startWelcome();
   function startWelcome(){
+  const viewportWidth=document.documentElement.clientWidth||window.innerWidth;
+  const viewportHeight=document.documentElement.clientHeight||window.innerHeight;
   if(!boot?.active||quiet()||document.hidden)return;
   if(!boot.startedAt)boot.startedAt=performance.now();
   boot.onStop=stopWelcome;
@@ -48,15 +50,15 @@
   document.documentElement.classList.add('entry-playing');
   const flow=(x,y,rotation,scale)=>'translate(-50%,-50%) translate('+x+'px,'+y+'px) rotate('+rotation+'deg) scale('+scale+')';
   const streams=[
-    {selector:'.entry-mist-blue',x:-innerWidth*.33,y:-innerHeight*.22,rotation:-22},
-    {selector:'.entry-mist-lilac',x:innerWidth*.34,y:innerHeight*.21,rotation:24},
-    {selector:'.entry-mist-white',x:innerWidth*.18,y:-innerHeight*.1,rotation:0}
+    {selector:'.entry-mist-blue',x:-viewportWidth*.33,y:-viewportHeight*.22,rotation:-22},
+    {selector:'.entry-mist-lilac',x:viewportWidth*.34,y:viewportHeight*.21,rotation:24},
+    {selector:'.entry-mist-white',x:viewportWidth*.18,y:-viewportHeight*.1,rotation:0}
   ];
   streams.forEach(stream=>animate(veil.querySelector(stream.selector),[
-    {opacity:.4,transform:flow(stream.x+innerWidth*.16,stream.y+innerHeight*.12,stream.rotation,1.08),offset:0},
+    {opacity:.4,transform:flow(stream.x+viewportWidth*.16,stream.y+viewportHeight*.12,stream.rotation,1.08),offset:0},
     {opacity:.85,transform:flow(stream.x,stream.y,stream.rotation+4,1.16),offset:.42},
-    {opacity:.6,transform:flow(stream.x-innerWidth*.14,stream.y-innerHeight*.1,stream.rotation+7,1.25),offset:.7},
-    {opacity:0,transform:flow(stream.x-innerWidth*.3,stream.y-innerHeight*.22,stream.rotation+10,1.34),offset:1}
+    {opacity:.6,transform:flow(stream.x-viewportWidth*.14,stream.y-viewportHeight*.1,stream.rotation+7,1.25),offset:.7},
+    {opacity:0,transform:flow(stream.x-viewportWidth*.3,stream.y-viewportHeight*.22,stream.rotation+10,1.34),offset:1}
   ],{duration:1950},true));
   animate(veil.querySelector('.entry-aura'),[
     {opacity:0,transform:'translate(-43%,-43%) scale(.95)',offset:0},
@@ -76,9 +78,9 @@
   });
   // Precompute a brief wind flight: inertia, aerodynamic drag, gravity and
   // spatial gusts. Playback uses finite compositor animations, not a JS loop.
-  const petalCount=innerWidth<=720?56:72;
+  const petalCount=viewportWidth<=720?56:72;
   const suspendedCount=Math.floor(petalCount*.72);
-  const columns=Math.ceil(Math.sqrt(suspendedCount*innerWidth/innerHeight));
+  const columns=Math.ceil(Math.sqrt(suspendedCount*viewportWidth/viewportHeight));
   const rows=Math.ceil(suspendedCount/columns);
   const variation=(index,salt)=>{
     const value=Math.sin((index+1)*127.1+salt*311.7)*43758.5453;
@@ -95,17 +97,17 @@
     const phase=index*2.399963,drag=7.5-size*.12;
     let x,y;
     if(suspended){
-      x=innerWidth*((index%columns)+.1+.8*variation(index,1))/columns;
-      y=innerHeight*(Math.floor(index/columns)+.1+.8*variation(index,2))/rows;
+      x=viewportWidth*((index%columns)+.1+.8*variation(index,1))/columns;
+      y=viewportHeight*(Math.floor(index/columns)+.1+.8*variation(index,2))/rows;
     }else if(index%2){
-      x=innerWidth*(1.02+variation(index,1)*.16);
-      y=innerHeight*(.06+variation(index,2)*.98);
+      x=viewportWidth*(1.02+variation(index,1)*.16);
+      y=viewportHeight*(.06+variation(index,2)*.98);
     }else{
-      x=innerWidth*(.06+variation(index,1)*.98);
-      y=innerHeight*(1.02+variation(index,2)*.16);
+      x=viewportWidth*(.06+variation(index,1)*.98);
+      y=viewportHeight*(1.02+variation(index,2)*.16);
     }
     const directionX=.68+variation(index,6)*.46,directionY=.67+variation(index,7)*.48;
-    let vx=-innerWidth*.5*speed*directionX,vy=-innerHeight*.48*speed*directionY;
+    let vx=-viewportWidth*.5*speed*directionX,vy=-viewportHeight*.48*speed*directionY;
     let angle=(index*137.5)%360,spin=(index%2?1:-1)*(22+index%60);
     const petal=document.createElement('span');petal.className='entry-petal';petal.dataset.tone=['blue','lilac','white'][index%3];
     petal.style.width=size+'px';petal.style.height=Math.round(size*.46)+'px';
@@ -115,11 +117,11 @@
       const time=step*dt,progress=step/steps;
       if(step){
         const gust=1+.18*Math.sin(time*3.7+.4)+.08*Math.sin(time*7.5+phase*.15);
-        const eddy=Math.sin(x/innerWidth*3+y/innerHeight*2.2-time*4.4+phase*.25);
-        const windX=innerWidth*speed*(-.72*directionX*gust+.17*eddy);
-        const windY=innerHeight*speed*(-.74*directionY*gust-.12*eddy);
+        const eddy=Math.sin(x/viewportWidth*3+y/viewportHeight*2.2-time*4.4+phase*.25);
+        const windX=viewportWidth*speed*(-.72*directionX*gust+.17*eddy);
+        const windY=viewportHeight*speed*(-.74*directionY*gust-.12*eddy);
         vx+=(windX-vx)*drag*dt;
-        vy+=((windY-vy)*drag+innerHeight*.07)*dt;
+        vy+=((windY-vy)*drag+viewportHeight*.07)*dt;
         x+=vx*dt;y+=vy*dt;
         spin+=(35*eddy+18*Math.sin(time*5+phase)-spin*.7)*dt;
         angle+=spin*dt;
