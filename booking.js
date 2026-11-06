@@ -2,15 +2,42 @@
   const modal=document.getElementById('bookingModal'),closeButton=document.getElementById('bookingClose');
   const status=document.getElementById('bookingStatus'),select=document.getElementById('bookingQQAccount');
   const tabs=[...modal.querySelectorAll('[data-booking-tab]')];
-  // Keep the caller's section when returning from the intent form.
+  // Main site <-> booking links share a small, validated service context.
+  const serviceKeys=['portrait','event','snow','effects'];
+  const contextParams=new URLSearchParams(location.search);
+  const incomingService=serviceKeys.includes(contextParams.get('service'))?contextParams.get('service'):null;
+  const workServices={zhengpian:'portrait',changzhao:'event',texiao:'effects'},priceServices={zp:'portrait',cz:'event',tx:'effects'};
+  let lastService=incomingService||'portrait';
+  document.querySelectorAll('.work-tab').forEach(button=>button.addEventListener('click',()=>{lastService=workServices[button.dataset.w]||lastService;}));
+  document.querySelectorAll('.price-tab').forEach(button=>button.addEventListener('click',()=>{lastService=priceServices[button.dataset.p]||lastService;}));
+  document.querySelectorAll('.note-tab').forEach(button=>button.addEventListener('click',()=>{lastService=button.dataset.note==='cz'?'event':'portrait';}));
+  function currentService(section){
+    if(section==='works')return workServices[document.querySelector('.work-tab.active')?.dataset.w]||lastService;
+    if(section==='price')return priceServices[document.querySelector('.price-tab.active')?.dataset.p]||lastService;
+    if(section==='notes')return document.querySelector('.note-tab.active')?.dataset.note==='cz'?'event':lastService==='effects'?'effects':'portrait';
+    return lastService;
+  }
+  if(incomingService){
+    const section=location.hash.slice(1);
+    if(section==='works')document.querySelector('.work-tab[data-w="'+({portrait:'zhengpian',snow:'zhengpian',event:'changzhao',effects:'texiao'}[incomingService])+'"]').click();
+    if(section==='price')document.querySelector('.price-tab[data-p="'+({portrait:'zp',snow:'zp',event:'cz',effects:'tx'}[incomingService])+'"]').click();
+    if(section==='notes'){
+      const requested=contextParams.get('notes');
+      const note=['zp','cz','group'].includes(requested)?requested:incomingService==='event'?'cz':incomingService==='effects'?null:'zp';
+      if(note){const fold=document.querySelector('.notice-fold');if(fold)fold.open=true;document.querySelector('.note-tab[data-note="'+note+'"]').click();}
+    }
+    lastService=incomingService;
+  }
   const bookingPath=new URL('booking.html',location.href).pathname;
   document.querySelectorAll('a[href]').forEach(link=>{
-    const url=new URL(link.getAttribute('href'),location.href);
-    if(url.origin!==location.origin||url.pathname!==bookingPath)return;
-    const explicitSource=url.searchParams.get('from');
+    const original=new URL(link.getAttribute('href'),location.href);
+    if(original.origin!==location.origin||original.pathname!==bookingPath)return;
+    const explicitSource=original.searchParams.get('from'),explicitType=original.searchParams.get('type');
     link.addEventListener('click',()=>{
-      url.searchParams.set('from',explicitSource||document.querySelector('.quick-action.is-active')?.dataset.jump||'top');
-      link.href=url.pathname+url.search+url.hash;
+      const section=explicitSource||document.querySelector('.quick-action.is-active')?.dataset.jump||'top';
+      const next=new URL(original.href);next.searchParams.set('from',section);
+      next.searchParams.set('type',serviceKeys.includes(explicitType)?explicitType:currentService(section));
+      link.href=next.pathname+next.search+next.hash;
     });
   });
   let generation=0;
