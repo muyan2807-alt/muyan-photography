@@ -14,7 +14,12 @@
   let planAsset=null,planAssetJob=null,planGeneration=0,celebrationTimer=0;
   let booted=false,restoringDraft=false,draftDirty=false,pendingSubmission=false,draftSaveTimer=0,savedExpiryTimer=0,pendingAddonIds=null,pendingEventRestore=null,requestedScheduleId='';
   // Only a display template. No synthetic IDs can be submitted to the live API.
-  const meng22Template={id:'chongqing-meng22',days:[{session:'D1',date:'2027-02-13'},{session:'D2',date:'2027-02-14'}],times:Array.from({length:22},(_,i)=>{const minutes=570+i*20;return String(Math.floor(minutes/60)).padStart(2,'0')+':'+String(minutes%60).padStart(2,'0');})};
+  const eventTemplateTimes=Array.from({length:22},(_,i)=>{const minutes=570+i*20;return String(Math.floor(minutes/60)).padStart(2,'0')+':'+String(minutes%60).padStart(2,'0');});
+  const eventTemplates=[
+    {id:'chongqing-meng22',title:'重庆梦二十二动漫展（2.13-2.14）',days:[{session:'D1',date:'2027-02-13'},{session:'D2',date:'2027-02-14'}]},
+    {id:'shijiexian-202701',title:'世界线（1.23—25）',days:[{session:'D1',date:'2027-01-23'},{session:'D2',date:'2027-01-24'},{session:'D3',date:'2027-01-25'}]}
+  ];
+  const selectedTemplate=()=>eventTemplates.find(item=>item.id===selectedOption?.id);
   const service=()=>mode==='event'?'event':$('subCategory').value||'portrait';
   const say=(message,error=false)=>{$('formMessage').textContent=message;$('formMessage').classList.toggle('error',error);};
   function step(index){document.querySelectorAll('.steps li').forEach((item,i)=>item.classList.toggle('current',i===index));}
@@ -93,7 +98,7 @@
     $('summaryPackage').textContent=$('package').value?$('package').selectedOptions[0].textContent:'等待选择套餐';
     $('summaryStyle').textContent={bright:'亮灰',dark:'暗调'}[$('eventStyle').value]||'等待选择风格';
     const selectedAddons=Array.from($('portraitAddons').querySelectorAll('input:checked')).map(input=>catalog?.portrait_addons.find(item=>item.id===input.value)).filter(Boolean);$('summaryAddonsRow').hidden=kind!=='portrait'||!selectedAddons.length;$('summaryAddons').textContent=selectedAddons.map(item=>item.label).join('；');
-    if(event&&!schedule&&selectedOption?.id===meng22Template.id){const day=meng22Template.days[templateDay];$('summaryTime').textContent=day.session+' · '+day.date+' · 时段待开放';}
+    if(event&&!schedule&&selectedTemplate()){const days=selectedTemplate().days,day=days[templateDay]||days[0];$('summaryTime').textContent=day.session+' · '+day.date+' · 时段待开放';}
     balanceSummary(document.querySelector('.submission .summary-card dl'));
 
   }
@@ -105,10 +110,10 @@
   }
   $('eventNew').addEventListener('click',()=>selectEventFlow('new'));$('eventFriend').addEventListener('click',()=>selectEventFlow('friend'));
   function renderTemplate(){
-    const day=meng22Template.days[templateDay];$('tableTitle').textContent=day.session+' · '+day.date;
+    const template=selectedTemplate();if(!template)return;const day=template.days[templateDay]||template.days[0];$('tableTitle').textContent=day.session+' · '+day.date;
     const root=$('timeTable'),table=document.createElement('table');table.setAttribute('aria-label',day.session+' 场照时间表，时段待开放');
     const head=document.createElement('thead'),heading=document.createElement('tr');['拍摄时段','状态','选择'].forEach(text=>{const th=document.createElement('th');th.scope='col';th.textContent=text;heading.append(th);});head.append(heading);table.append(head);
-    const body=document.createElement('tbody');meng22Template.times.forEach(time=>{const row=document.createElement('tr'),label=document.createElement('td'),state=document.createElement('td'),action=document.createElement('td'),button=document.createElement('button');label.className='time';label.textContent=time;state.className='slot-status unavailable';state.textContent='待开放';button.type='button';button.disabled=true;button.textContent='暂未开放';action.append(button);row.append(label,state,action);body.append(row);});table.append(body);root.replaceChildren(table);
+    const body=document.createElement('tbody');eventTemplateTimes.forEach(time=>{const row=document.createElement('tr'),label=document.createElement('td'),state=document.createElement('td'),action=document.createElement('td'),button=document.createElement('button');label.className='time';label.textContent=time;state.className='slot-status unavailable';state.textContent='待开放';button.type='button';button.disabled=true;button.textContent='暂未开放';action.append(button);row.append(label,state,action);body.append(row);});table.append(body);root.replaceChildren(table);
     $('sessionChoices').querySelectorAll('button').forEach((button,i)=>{button.classList.toggle('active',i===templateDay);button.setAttribute('aria-pressed',String(i===templateDay));});
     $('selectedTimeHint').textContent='本场时间表待开放，请稍后再来选择时段。';updateSummary();
   }
@@ -139,19 +144,21 @@
   $('refreshTable').addEventListener('click',()=>{if(!sending)start();});
   async function chooseEventOption(option,keep=false){
     const previous=keep?schedule?.id:null,previousSlot=keep?selectedSlot?.id:null,previousPackage=keep?$('package').value:'';
+    if(selectedOption?.id!==option?.id)templateDay=0;
     selectedOption=option;requestedScheduleId='';tableGeneration++;schedule=null;selectedSlot=null;tableLoading=false;
     $('eventOptionTitle').textContent=option?.title||'场照活动暂未开放';
     $('openExhibition').disabled=!option;
     $('sessionChoices').replaceChildren();$('timeTable').replaceChildren();
     $('tableTitle').textContent='选择一场，看看时间安排';$('refreshTable').disabled=!option;
-    renderPackages(false);updateSummary();submitState();
-    $('eventOptionChoices').querySelectorAll('button').forEach(button=>button.classList.toggle('active',button.dataset.id===option?.id));
+    renderPackages(keep);updateSummary();submitState();
+    $('eventOptionChoices').querySelectorAll('button').forEach(button=>{const active=button.dataset.id===option?.id;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
     const sessions=option?.sessions||[];
     if(!sessions.length){
       const text=option?.message||'本场时间表待开放，请稍后再来查看。';
       $('tableTitle').textContent=(option?.title||'场照')+' · 时间表待开放';$('timeTable').textContent=text;$('selectedTimeHint').textContent=text;
-      if(option?.id===meng22Template.id){
-        meng22Template.days.forEach((day,i)=>{const button=document.createElement('button');button.type='button';const name=document.createElement('strong'),date=document.createElement('small');name.textContent=day.session;date.textContent=day.date;button.append(name,date);button.addEventListener('click',()=>{if(sending)return;templateDay=i;renderTemplate();});$('sessionChoices').append(button);});renderTemplate();
+      const template=selectedTemplate();
+      if(template){
+        template.days.forEach((day,i)=>{const button=document.createElement('button');button.type='button';const name=document.createElement('strong'),date=document.createElement('small');name.textContent=day.session;date.textContent=day.date;button.append(name,date);button.addEventListener('click',()=>{if(sending)return;templateDay=i;renderTemplate();edited();});$('sessionChoices').append(button);});renderTemplate();
       }
       if(!option)$('exhibitionContent').hidden=false;
       return;
@@ -170,9 +177,13 @@
     }
   }
   async function loadEventOptions(){
-    const data=await api('/api/public/event-options');eventOptions=data.items||[];
+    const data=await api('/api/public/event-options');eventOptions=(data.items||[]).map(option=>({...option,title:eventTemplates.find(item=>item.id===option.id)?.title||option.title}));
+    // Announce this exhibition before backend setup. These are display-only days,
+    // never schedule/slot IDs; only real public API sessions can be submitted.
+    const worldline=eventTemplates.find(item=>item.id==='shijiexian-202701');
+    if(!eventOptions.some(item=>item.id===worldline.id))eventOptions=[...eventOptions,{id:worldline.id,title:worldline.title,state:'awaiting_schedule',sessions:[]}];
     const choices=$('eventOptionChoices');choices.replaceChildren();choices.hidden=eventOptions.length<=1;
-    eventOptions.forEach(option=>{const button=document.createElement('button');button.type='button';button.dataset.id=option.id;button.textContent=option.title;button.addEventListener('click',()=>{if(!sending)chooseEventOption(option)});choices.append(button)});
+    eventOptions.forEach(option=>{const button=document.createElement('button');button.type='button';button.dataset.id=option.id;button.textContent=option.title;button.addEventListener('click',async()=>{if(!sending){await chooseEventOption(option);edited();}});choices.append(button)});
     await chooseEventOption(eventOptions.find(option=>option.id===selectedOption?.id)||eventOptions[0]||null,true);
   }
   async function start(){
@@ -390,6 +401,11 @@
     const option=eventOptions.find(item=>item.id===remembered.optionId);
     if(!option){selectedSlot=null;renderTable();updateSummary();submitState();return '原活动暂不可选，请重新选择漫展和时段。';}
     await chooseEventOption(option,false);
+    if(!option.sessions?.length&&selectedTemplate()){
+      templateDay=selectedTemplate().days[remembered.templateDay]?remembered.templateDay:0;
+      if(Array.from($('package').options).some(item=>item.value===remembered.packageId))$('package').value=remembered.packageId;
+      renderPackagePrice();renderTemplate();return '原场次尚未开放，已恢复所选日期；开放后才能选择时段。';
+    }
     const session=option.sessions?.find(item=>item.id===remembered.sessionId);
     if(!session){selectedSlot=null;renderTable();updateSummary();submitState();return '原场次尚未开放或已变更，请重新选择时段。';}
     if(schedule?.id!==session.id)await loadSchedule(session.id,false);
@@ -409,12 +425,12 @@
       noteKinds.forEach(name=>drafts[name]=typeof data.notesByService[name]==='string'?data.notesByService[name].slice(0,name==='event'?700:1000):'');
       if(kind!=='effects')$('notes').value=drafts[kind];$('consent').checked=false;
       pendingAddonIds=Array.isArray(data.addonIds)?data.addonIds.filter(id=>typeof id==='string').slice(0,20):[];applySavedAddons();
-      selectEventFlow(data.eventFlow==='friend'?'friend':'new');templateDay=data.templateDay===1?1:0;
+      selectEventFlow(data.eventFlow==='friend'?'friend':'new');templateDay=Number.isInteger(data.templateDay)&&data.templateDay>=0&&data.templateDay<=2?data.templateDay:0;
       contactType();renderForm();step(1);
       const retry=data.retry||{};requestId=typeof retry.requestId==='string'&&/^[\w-]{1,100}$/.test(retry.requestId)?retry.requestId:'';signature=typeof retry.signature==='string'&&retry.signature.length<20000?retry.signature:'';pendingSubmission=Boolean(retry.uncertain&&requestId&&signature);
       let note='草稿已恢复，请核对信息，并重新勾选拍摄注意事项。';
       if(kind==='event'){
-        const value=data.event||{};pendingEventRestore={optionId:String(value.optionId||''),sessionId:String(value.sessionId||''),slotId:String(value.slotId||''),packageId:String(value.packageId||'')};
+        const value=data.event||{};pendingEventRestore={optionId:String(value.optionId||''),sessionId:String(value.sessionId||''),slotId:String(value.slotId||''),packageId:String(value.packageId||''),templateDay};
         if(ready&&!initializing){await loadEventOptions();const warning=await reconcileRestoredEvent();if(warning)note=warning;}
         else note+=' 时段联网后会重新核对。';
       }
