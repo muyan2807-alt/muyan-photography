@@ -105,7 +105,7 @@
   function selectEventFlow(value){
     if(sending)return;eventFlow=value;['new','friend'].forEach(flow=>{const button=$(flow==='new'?'eventNew':'eventFriend'),active=value===flow;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
     $('eventFlowHint').textContent=value==='friend'?'提交排单后，请复制 CN，并保存或截图“这次的小计划”，发到与慕言的现有聊天中确认。':'提交排单后，请复制 CN，并保存或截图“这次的小计划”；添加慕言后，将 CN 和图片一起发来。';
-    document.querySelector('.steps li:nth-child(2)').lastChild.textContent=value==='friend'?'填写排单':'填写意向';
+    document.querySelector('.steps li:nth-child(2) .step-label').textContent=value==='friend'?'填写排单':'填写提交';
     edited();if(value==='friend'){$('exhibitionContent').hidden=false;$('openExhibition').setAttribute('aria-expanded','true');$('openExhibition').querySelector('.expand-icon').textContent='−';}
   }
   $('eventNew').addEventListener('click',()=>selectEventFlow('new'));$('eventFriend').addEventListener('click',()=>selectEventFlow('friend'));
