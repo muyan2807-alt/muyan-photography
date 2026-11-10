@@ -60,10 +60,6 @@ body:has(dialog[open]){overflow:hidden}dialog{overscroll-behavior:contain}.dialo
 .plan-next{padding:18px 17px;border:1px solid #d5e7f2;border-radius:14px;background:#f6fbffb3;text-align:left;margin-bottom:23px}
 .plan-next h3{font-size:15px;line-height:1.6;font-weight:600;margin:0 0 7px}
 .plan-next>p{font-size:12px;line-height:1.9;color:#5d7f96;margin:0 0 13px}
-.plan-actions{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:9px}
-.plan-actions button{min-width:0;width:100%;min-height:45px;margin:0;padding:10px 8px;font-size:12px}
-.result-actions-bar .plan-save-status{font-size:12px;color:#497b6a;margin:0 0 8px}.plan-save-status:empty{display:none}
-.plan-open{display:inline-flex;align-items:center;min-height:40px;font-size:11px;color:#477c9e;text-decoration:underline;text-underline-offset:4px}
 .plan-image-fallback{margin:12px 0 0}.plan-image-fallback img{display:block;width:100%;height:auto;border-radius:12px;border:1px solid #d5e5f0}
 .plan-image-fallback figcaption{font-size:11px;color:#60849a;margin-top:8px;text-align:center}
 .contact-account-label{text-align:left;font-size:12px;margin-bottom:17px}.contact-account-label select{font-size:13px;min-height:45px;margin-top:6px;background:#fff}
@@ -148,14 +144,10 @@ input[type=checkbox].field-invalid{outline:2px solid #bd6c68;outline-offset:2px;
 #contactDialog .contact-help,#contactDialog .contact-callout,#contactDialog .contact-notification,#contactDialog .receipt small,#contactDialog .copy-status,#contactDialog .contact-account-label,#contactDialog .contact-number span,#contactDialog .dialog-foot,#contactDialog .receipt-plan dt,#contactDialog .receipt-plan .summary-foot{font-size:12px;line-height:1.8}
 #contactDialog .receipt-plan dd{font-size:13px}.saved-actions button{font-size:12px}.completion-skip{font-size:12px}.header .home-link{font-size:13px}
 #contactResultBody{display:flex;flex-direction:column;min-height:100%}
-.result-actions-bar{position:sticky;bottom:0;z-index:4;flex:none;margin-top:16px;padding:10px;border:1px solid #fffffff2;border-radius:14px;background:linear-gradient(120deg,#fafdfff5,#e8f4fff5);box-shadow:0 -5px 22px #6f9ab31f,inset 0 1px #fff;backdrop-filter:blur(12px) saturate(110%);-webkit-backdrop-filter:blur(12px) saturate(110%)}
-.result-actions-bar .plan-actions button{font-size:14px;min-height:46px}
-.result-actions-bar .plan-open{display:flex;align-items:center;justify-content:center;min-height:32px;margin-top:3px;font-size:12px}
 #contactDialog .result-heading{display:flex;align-items:center;justify-content:center;gap:10px;padding-right:20px;margin-bottom:10px}
 #contactDialog .result-heading .success-icon{flex:none;margin:0}
 #contactDialog .result-heading h2{margin:0}
 #contactDialog .receipt{font-size:12px}
-@media(prefers-reduced-transparency:reduce){.result-actions-bar{background:#f2f9ff;backdrop-filter:none;-webkit-backdrop-filter:none}}
 
 /* Compact guidance follows the existing form; it adds no extra screen. */
 .steps.booking-guide{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 18px;padding:13px 14px;border:1px solid #d6e7f1;border-radius:15px;background:linear-gradient(115deg,#ffffffb3,#eaf5fc99)}
@@ -165,4 +157,12 @@ input[type=checkbox].field-invalid{outline:2px solid #bd6c68;outline-offset:2px;
 .steps.booking-guide strong{display:block;color:#466e87;font-size:13px;line-height:1.7;font-weight:600}
 .steps.booking-guide small{display:block;grid-column:1/-1;margin:0;color:#637f92;font-size:11px;line-height:1.65}
 .steps.booking-guide .current b{background:#d7ebf8;border-color:#a6cce2;color:#376d8d}
+#contactDialog{width:min(680px,calc(100% - 18px));max-width:calc(100% - 18px)}
+#contactDialog .plan-next{padding:0;border:0;background:transparent;margin-top:20px}
+#contactDialog .plan-next h3{font-size:18px;margin-bottom:9px}
+#contactDialog .plan-image-fallback{margin:10px 0 0}
+#contactDialog .plan-image-fallback img{width:100%;max-width:none;height:auto;border-radius:14px}
+#contactDialog .plan-image-fallback figcaption,.plan-save-status{font-size:12px;line-height:1.8;color:#5d7f96}
+.plan-save-status:empty{display:none}
+@media(max-width:700px){#contactDialog{padding:20px 12px}.plan-next>p{font-size:13px}}
 @media(max-width:375px){.steps.booking-guide{gap:6px;padding:11px 10px}.steps.booking-guide li{grid-template-columns:20px minmax(0,1fr);gap:6px}.steps.booking-guide b{width:20px;height:20px}.steps.booking-guide strong{font-size:12px}.steps.booking-guide small{font-size:10.5px}}

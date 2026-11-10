@@ -22,11 +22,14 @@
   function renderOptions(){
     body.replaceChildren();let group='';
     for(const option of source.options){
-      if(option.disabled||option.parentElement.disabled||!option.value)continue;
+      const disabled=option.disabled||option.parentElement.disabled,showUnavailable=source.dataset.showUnavailable==='true';
+      if(!option.value||disabled&&!showUnavailable)continue;
       const next=option.parentElement.tagName==='OPTGROUP'?option.parentElement.label:'';
       if(next&&next!==group){const h=document.createElement('h3');h.className='picker-group';h.textContent=next;body.append(h);}group=next;
-      const button=document.createElement('button');button.type='button';button.className='picker-option';button.textContent=option.textContent;
-      button.setAttribute('aria-pressed',String(option.selected));button.addEventListener('click',()=>choose(option.value));body.append(button);
+      const button=document.createElement('button');button.type='button';button.className='picker-option';button.disabled=disabled;
+      if(showUnavailable){const time=document.createElement('span'),state=document.createElement('span');button.classList.add('picker-slot-option');button.dataset.status=option.dataset.slotStatus||'';time.textContent=option.textContent.split(' · ')[0];state.className='picker-slot-state';state.textContent=option.dataset.statusLabel||'';button.append(time,state);button.setAttribute('aria-label',option.textContent);}
+      else button.textContent=option.textContent;
+      button.setAttribute('aria-pressed',String(option.selected));if(!disabled)button.addEventListener('click',()=>choose(option.value));body.append(button);
     }
     if(!body.children.length){const text=document.createElement('p');text.textContent='当前没有可选项目，请稍后重试。';body.append(text);}
   }

@@ -73,7 +73,7 @@
   }
   function close(){
     if(modal.hidden)return;
-    generation++;clearManualCopy();modal.hidden=true;document.body.classList.remove('booking-is-open');dialog.close();
+    generation++;clearManualCopy();modal.hidden=true;modal.classList.remove('is-contact-assist');document.body.classList.remove('booking-is-open');dialog.close();
   }
   document.querySelectorAll('[data-booking-open]').forEach(button=>button.addEventListener('click',event=>{
     event.preventDefault();event.stopImmediatePropagation();open(button);
@@ -101,4 +101,7 @@
   });
   closeButton.addEventListener('click',close);
   modal.addEventListener('click',event=>{if(event.target===modal)close()});
+  if(contextParams.get('assist')==='contact'&&location.hash==='#contact'){
+    requestAnimationFrame(()=>{modal.classList.add('is-contact-assist');document.getElementById('contact').scrollIntoView({block:'start',behavior:'auto'});open(document.getElementById('bookingQuickOpen'));requestAnimationFrame(()=>document.getElementById('bookingQQLabel').scrollIntoView({block:'start',behavior:'auto'}));});
+  }
 })();

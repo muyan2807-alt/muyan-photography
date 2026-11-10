@@ -118,7 +118,7 @@
   }
   function selectEventFlow(value){
     if(sending)return;eventFlow=value;['new','friend'].forEach(flow=>{const button=$(flow==='new'?'eventNew':'eventFriend'),active=value===flow;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
-    $('eventFlowHint').textContent=value==='friend'?'提交排单后，请复制 CN，并保存或截图“这次的小计划”，发到与慕言的现有聊天中确认。':'提交排单后，请复制 CN，并保存或截图“这次的小计划”；添加慕言后，将 CN 和图片一起发来。';
+    $('eventFlowHint').textContent=value==='friend'?'提交排单后，请截图保存“这次的小计划”，发到与慕言的现有聊天中确认。':'提交排单后，请截图保存“这次的小计划”；添加慕言后，将计划图发来确认。';
     document.querySelector('.steps li:nth-child(2) .step-label').textContent=value==='friend'?'填写排单':'填写提交';
     edited();if(value==='friend'){$('exhibitionContent').hidden=false;$('openExhibition').setAttribute('aria-expanded','true');$('openExhibition').querySelector('.expand-icon').textContent='−';}
   }
@@ -312,22 +312,14 @@
     if(planAssetReceipt===receipt&&planAssetJob)return planAssetJob;
     const current=receipt,generation=++planGeneration;planAssetReceipt=current;
     if(planAsset)URL.revokeObjectURL(planAsset.url);planAsset=null;
-    $('openPlanImage').hidden=true;$('openPlanImage').removeAttribute('href');$('planImageFallback').hidden=true;$('planImagePreview').removeAttribute('src');$('planSaveStatus').textContent='';$('savePlan').disabled=true;
+    $('planImageFallback').hidden=true;$('planImagePreview').removeAttribute('src');$('receiptPlan').hidden=true;$('planSaveStatus').textContent='正在准备计划图…';
     planAssetJob=new Promise((resolve,reject)=>{
       try{window.MuyanPlanImage.render(current.plan).toBlob(blob=>blob?resolve(blob):reject(Error('图片暂未生成')),'image/png');}catch(error){reject(error);}
     }).then(blob=>{
       if(generation!==planGeneration||receipt!==current)return null;
-      const asset={blob,url:URL.createObjectURL(blob),name:window.MuyanPlanImage.filename(current.plan)};planAsset=asset;$('openPlanImage').href=asset.url;$('planImagePreview').src=asset.url;$('savePlan').disabled=false;return asset;
-    }).catch(()=>{if(generation===planGeneration){$('planSaveStatus').textContent='图片暂时无法生成，可以先截图上方小计划，和 CN 一起发给慕言。';$('savePlan').disabled=false;planAssetJob=null;}return null;});
+      const asset={blob,url:URL.createObjectURL(blob)};planAsset=asset;$('planImagePreview').src=asset.url;$('planImageFallback').hidden=false;$('planSaveStatus').textContent='可直接截图；计划较长时，可用长截图或长按图片保存。';return asset;
+    }).catch(()=>{if(generation===planGeneration){$('receiptPlan').hidden=false;$('planSaveStatus').textContent='计划图暂未生成，可先截图下方的文字计划，发给慕言确认。';planAssetJob=null;}return null;});
     return planAssetJob;
-  }
-  async function savePlanImage(){
-    const current=receipt,asset=await preparePlanImage();if(!asset||current!==receipt)return;
-    const embedded=/MicroMessenger|MQQBrowser|QQ\/|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    $('openPlanImage').hidden=false;
-    if(embedded){$('planImageFallback').hidden=false;$('planSaveStatus').textContent='长按小计划图片保存，再发给慕言。';requestAnimationFrame(()=>$('planImageFallback').scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'}));return;}
-    const link=document.createElement('a');link.href=asset.url;link.download=asset.name;document.body.append(link);link.click();link.remove();
-    $('planSaveStatus').textContent='已发起图片保存；若未弹出下载，请点击“打开图片”，长按或另存为。';
   }
   function finishCompletion(focus=true){
     clearTimeout(celebrationTimer);$('contactDialog').classList.remove('is-celebrating');if($('successCelebration').open)$('successCelebration').close();$('successCelebration').hidden=true;$('completionPetals').replaceChildren();$('contactResultBody').inert=false;
@@ -345,9 +337,9 @@
   function openContacts(celebrate=false){
     channel='qq';qqAccount='main';$('contactQQAccount').value='main';const effects=receipt.service==='effects';
     $('successTitle').textContent=effects?'后期需求已收到':receipt.service==='event'&&receipt.registrationFlow==='friend'?'场照排单已收到':'拍摄意向已收到';
-    document.querySelector('.dialog-intro').textContent=receipt.registrationFlow==='friend'&&receipt.service==='event'?'已有好友：复制 CN、保存小计划，发到现有聊天中确认。':'复制 CN、保存小计划，再添加慕言确认安排。';
+    document.querySelector('.dialog-intro').textContent=receipt.registrationFlow==='friend'&&receipt.service==='event'?'已有好友：截图保存计划图，发到现有聊天中确认。':'截图保存计划图，再添加慕言确认安排。';
     $('contactFooter').textContent=effects?'制作效果、费用和交付安排，以双方沟通确认为准。':receipt.service==='event'?'提交意向不代表档期已确认。确认预约后，由慕言拉你进拍摄群；具体安排以群聊通知为准。':'提交意向不代表档期已确认，具体安排以沟通结果为准。';
-    if(receipt.preview){$('successTitle').textContent='预览填写完成';document.querySelector('.dialog-intro').textContent='仅作本地预览，未发送或占用档期，可试用保存图片与复制 CN。';}
+    if(receipt.preview){$('successTitle').textContent='预览填写完成';document.querySelector('.dialog-intro').textContent='仅作本地预览，未发送或占用档期，可截图核对计划。';}
     $('contactFooter').textContent+=' 如需更正本次信息，请联系慕言调整原预约，无需重复提交。';document.querySelector('.result-home-link').href=siteURL(receipt.service,from);
     $('receiptId').textContent=displayIntentNumber(receipt);renderReceiptPlan();preparePlanImage();renderContact();renderCredential();step(2);
     if(!$('contactDialog').open)$('contactDialog').showModal();$('contactDialog').scrollTop=0;if(celebrate)celebrateCompletion();
@@ -363,11 +355,9 @@
     $('contactQR').src=item.qr_url||new URL('images/'+(qq?'qq.png':'wechat.png'),location.href).href;$('contactQR').alt=qq?'慕言 QQ '+(small?'小号':'大号')+'二维码':'慕言微信二维码';$('contactKind').textContent=qq?'QQ '+(small?'小号':'大号'):'微信号';
     $('copyNumber').replaceChildren(document.createTextNode(item.number));const hint=document.createElement('span');hint.textContent='点击复制 ↗';$('copyNumber').append(hint);$('copyButton').textContent=item.copy_label||('复制'+(qq?' QQ 号':'微信号'));
     $('contactHelp').textContent=qq?'复制所选 QQ 号后，在 QQ 搜索添加，或使用 QQ 扫码。':'复制微信号后，在微信搜索添加，或使用微信扫码。';$('copyStatus').textContent='';
-    $('planSendHint').textContent='添加慕言'+(qq?' QQ':'微信')+'后，请将 CN 和小计划图片发给他。慕言看到后，也会主动联系你。'+(receipt.registrationFlow==='friend'&&receipt.service==='event'?'已有好友，直接发到现有聊天即可。':'');
+    $('planSendHint').textContent='添加慕言'+(qq?' QQ':'微信')+'后，请将计划图截图发给他。慕言看到后，也会主动联系你。'+(receipt.registrationFlow==='friend'&&receipt.service==='event'?'已有好友，直接发到现有聊天即可。':'');
   }
   async function copyContact(){const item=currentContact(),qq=channel==='qq';try{await navigator.clipboard.writeText(item.copy_value||item.number);$('copyStatus').textContent=(qq?'QQ 号':'微信号')+'已复制。';}catch{$('copyStatus').textContent='暂时无法自动复制，请手动复制上方号码。';}}
-  $('copyCN').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(receipt.nickname);$('planSaveStatus').textContent='CN 已复制，保存图片后一起发送。';}catch{$('planSaveStatus').textContent='请手动复制 CN：'+receipt.nickname+'，和小计划图片一起发给慕言。';}});
-  $('savePlan').addEventListener('click',savePlanImage);
   $('copyNumber').addEventListener('click',copyContact);$('copyButton').addEventListener('click',copyContact);
   $('contactQQAccount').addEventListener('change',()=>{qqAccount=$('contactQQAccount').value;renderContact();});
   $('contactQQ').addEventListener('click',()=>{channel='qq';renderContact();});$('contactWechat').addEventListener('click',()=>{channel='wechat';renderContact();});

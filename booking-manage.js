@@ -136,11 +136,15 @@
       const heading=document.createElement('h3');heading.textContent=(visit.session?visit.session+' · ':'')+(visit.date||'后期制作');card.append(heading);
       const roleLabel=document.createElement('label');roleLabel.textContent='角色 *';const role=document.createElement('input');role.id='editRole'+index;role.required=true;role.maxLength=100;role.value=visit.character||'';role.className='edit-role';roleLabel.append(role);card.append(roleLabel);
       if(visit.event_id){
-        const label=document.createElement('label');label.textContent='拍摄时段 *';const select=document.createElement('select');select.id='editTime'+index;select.required=true;select.className='edit-slot';label.append(select);card.append(label);
+        const label=document.createElement('label');label.textContent='拍摄时段 *';const select=document.createElement('select');select.id='editTime'+index;select.required=true;select.className='edit-slot';select.dataset.showUnavailable='true';label.append(select);card.append(label);
         const placeholder=new Option('正在读取本日时段…','');select.append(placeholder);select.disabled=true;
         try{
           const data=await api('/api/public/event-schedules/'+encodeURIComponent(visit.event_id));if(current!==generation)return;
-          select.replaceChildren();data.schedule.slots.filter(slot=>slot.can_book||slot.id===visit.event_slot_id).forEach(slot=>{select.append(new Option(slot.start.slice(11,16)+'–'+slot.end.slice(11,16)+(slot.id===visit.event_slot_id?' · 当前时段':''),slot.id));});
+          select.replaceChildren();data.schedule.slots.forEach(slot=>{
+            const own=slot.id===visit.event_slot_id,status=own?'current':slot.can_book?'available':slot.status==='occupied'?'occupied':'unavailable';
+            const state={current:'当前预约 · 可保留',available:'可预约',occupied:'已占用',unavailable:'暂不可选'}[status];
+            const option=new Option(slot.start.slice(11,16)+'–'+slot.end.slice(11,16)+' · '+state,slot.id);option.disabled=!own&&!slot.can_book;option.dataset.slotStatus=status;option.dataset.statusLabel=state;select.append(option);
+          });
           if(!Array.from(select.options).some(option=>option.value===visit.event_slot_id)){select.append(new Option((visit.time_label||'原时段')+' · 当前时段',visit.event_slot_id));}
           select.value=visit.event_slot_id;select.disabled=visit.can_edit_time===false;
         }catch{
