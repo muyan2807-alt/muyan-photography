@@ -5,14 +5,16 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f1f7fa">
   <meta name="robots" content="noindex,nofollow">
-  <meta name="muyan-site-version" content="2.6.2">
+  <meta name="muyan-site-version" content="2.6.5">
   <title>这一次，拍什么？ · 慕言预约</title>
   <link rel="icon" href="images/rem-brand-avatar.webp" type="image/webp">
-  <link rel="stylesheet" href="booking-app.css?v=2.6.2">
-  <script src="booking-config.js?v=2.6.2" defer></script>
-  <script src="booking-storage.js?v=2.6.2" defer></script>
-  <script src="booking-plan.js?v=2.6.2" defer></script>
-  <script src="booking-app.js?v=2.6.2" defer></script>
+  <link rel="stylesheet" href="booking-app.css?v=2.6.5">
+  <link rel="stylesheet" href="booking-customer.css?v=2.6.5">
+  <script src="booking-config.js?v=2.6.5" defer></script>
+  <script src="booking-storage.js?v=2.6.5" defer></script>
+  <script src="booking-plan.js?v=2.6.5" defer></script>
+  <script src="booking-app.js?v=2.6.5" defer></script>
+  <script src="booking-pickers.js?v=2.6.5" defer></script>
 </head>
 <body>
 <header class="header wrap">
@@ -25,6 +27,7 @@
     <span class="hero-flower" aria-hidden="true">✧</span>
   </section>
   <ol class="steps booking-guide" aria-label="预约只需三步"><li class="current"><b aria-hidden="true">1</b><span><strong class="step-label">选类型</strong><small>选日期／时段</small></span></li><li><b aria-hidden="true">2</b><span><strong class="step-label">填写提交</strong><small>核对计划并提交</small></span></li><li><b aria-hidden="true">3</b><span><strong class="step-label">联系确认</strong><small>存图后发给慕言</small></span></li></ol>
+  <nav class="customer-nav" aria-label="预约服务"><a href="booking.html" aria-current="page">填写预约</a><a href="booking-manage.html">查询／修改预约 ↗</a></nav>
   <section id="savedBooking" class="saved-booking" aria-label="本机草稿与小计划"><div><p id="savedState" role="status" aria-live="polite">填写进度与最近一次小计划，可在本机保留24小时。</p><small>仅此浏览器保存，可随时清除。</small></div><div class="saved-actions"><button id="restoreDraft" type="button" hidden>恢复草稿 ↗</button><button id="viewLastPlan" type="button" hidden>查看上次小计划 ↗</button><button id="clearSaved" type="button" class="saved-clear" hidden>清除记录</button></div></section>
   <div class="booking-layout"><div class="form-column">
     <section class="section service-section">
@@ -42,9 +45,10 @@
         <button id="openExhibition" class="exhibition-button" type="button" aria-expanded="true" aria-controls="exhibitionContent"><span><small>场照排单</small><strong id="eventOptionTitle">正在读取本场活动</strong></span><span class="expand-icon" aria-hidden="true">−</span></button>
         <div id="exhibitionContent"><div class="event-intro"><p>选一个适合你的时段，把喜欢的角色带来。</p></div><div id="sessionChoices" class="session-choices" aria-label="漫展场次"></div><div class="table-heading"><h3 id="tableTitle">选择一场，看看时间安排</h3><button id="refreshTable" type="button" class="text-button">刷新时段 ↻</button></div><div class="legend"><span><i class="available"></i>可提交意向</span><span><i class="occupied"></i>已占用</span><span><i class="unavailable"></i>待开放</span></div><div id="timeTable" class="time-table" tabindex="0" role="region" aria-label="场照时间表" aria-live="polite"></div><p class="table-note">提交后请联系慕言确认，档期以双方沟通结果为准。</p></div>
       </div>
+      <p id="eventSelectionCount" class="event-selection-note" hidden>可选择多天，每天最多一个时段</p><div id="eventSelections" class="event-selections" aria-live="polite" hidden></div>
     </section>
     <form id="bookingForm" novalidate><fieldset id="formFields"><legend class="sr-only">拍摄与制作需求</legend>
-      <section class="section" id="customerSection"><div class="section-heading"><span class="section-no">02</span><div><h2>先认识一下你</h2><p>留下称呼、角色和方便联系的账号。</p></div></div><div class="field-grid"><label>CN / 昵称 <span class="required">*</span><input id="nickname" required maxlength="40" autocomplete="nickname" placeholder="怎么称呼你"></label><label id="commonCharacterField">角色 <span class="required">*</span><input id="character" required maxlength="100" placeholder="这次想拍的角色"></label><label>联系方式 <span class="required">*</span><select id="contactType"><option value="qq">QQ</option><option value="wechat">微信</option></select></label><label><span id="contactLabel">QQ 号码</span> <span class="required">*</span><input id="contact" required maxlength="100" inputmode="numeric" placeholder="方便与你联系的账号" autocomplete="off"></label></div></section>
+      <section class="section" id="customerSection"><div class="section-heading"><span class="section-no">02</span><div><h2>先认识一下你</h2><p>留下称呼、角色和方便联系的账号。</p></div></div><div class="field-grid"><label>CN / 昵称 <span class="required">*</span><input id="nickname" required maxlength="40" autocomplete="nickname" placeholder="怎么称呼你"></label><label id="commonCharacterField"><span id="currentCharacterLabel">角色</span> <span class="required">*</span><input id="character" required maxlength="100" placeholder="这次想拍的角色"></label><label>联系方式 <span class="required">*</span><select id="contactType"><option value="qq">QQ</option><option value="wechat">微信</option></select></label><label><span id="contactLabel">QQ 号码</span> <span class="required">*</span><input id="contact" required maxlength="100" inputmode="numeric" placeholder="方便与你联系的账号" autocomplete="off"></label></div></section>
       <section class="section"><div class="section-heading"><span class="section-no">03</span><div><h2 id="detailHeading">聊聊这次的拍摄</h2><p id="detailIntro">不必一次想好所有细节，我们可以慢慢沟通。</p></div></div>
         <div id="portraitDetails">
           <p class="field-title" id="portraitPartyLabel">拍摄形式 <span class="required">*</span></p><div class="segmented" id="portraitParty" role="group" aria-labelledby="portraitPartyLabel"><button type="button" data-party="single" class="active" aria-pressed="true">单人</button><button type="button" data-party="double" aria-pressed="false">双人</button><button type="button" data-party="multiple" aria-pressed="false">多人</button></div><p id="portraitPartyHelp" class="field-help" hidden>3 人及以上一起约拍，请填写人数，合照和小组搭配可以写在下方。</p>
@@ -81,6 +85,7 @@
   <div class="contact-tabs" aria-label="选择联系渠道"><button id="contactQQ" type="button" class="active" aria-pressed="true">QQ 联系</button><button id="contactWechat" type="button" aria-pressed="false">微信联系</button></div>
   <div class="contact-content"><label id="contactQQAccountField" class="contact-account-label" for="contactQQAccount">选择 QQ 账号<select id="contactQQAccount"><option value="main">QQ 大号 · 2745867337</option><option value="small">QQ 小号 · 2389375218</option></select></label><div class="qr-frame"><img id="contactQR" width="220" height="220" alt="慕言的 QQ 二维码"></div><p id="contactKind" class="contact-kind">QQ 大号</p><button id="copyNumber" class="contact-number" type="button" title="点击复制号码">2745867337<span>点击复制 ↗</span></button><p id="copyStatus" role="status" class="copy-status"></p><button id="copyButton" class="primary copy-button" type="button">复制 QQ 号</button><p id="contactHelp" class="contact-help">复制号码后打开 QQ 搜索，或用 QQ 扫码添加。</p><p id="qqAddHelp" class="contact-callout">QQ 大号若添加不上：点击“查看详情”，向下滑动，等待几秒后再继续添加；也可切换 QQ 小号。</p></div>
   <p class="contact-notification">默认通过 QQ 联系你，消息可能在“过滤通知”里，麻烦留意查看。</p>
+  <section id="editCredential" class="edit-credential" hidden><h3>你的四位验证码</h3><code id="editCodeValue"></code><p>请妥善保存；修改预约时需验证。此码不会写入小计划图片，也不会保存在本机草稿中。</p><button id="saveEditCredential" type="button" class="secondary">保存验证凭证</button><a href="booking-manage.html" class="booking-manage-link">查询／修改我的预约 ↗</a></section>
   <section id="receiptPlan" class="summary-card receipt-plan" aria-label="已提交的这次的小计划"></section>
   <section class="plan-next" aria-labelledby="planNextTitle"><h3 id="planNextTitle">复制 CN 与保存图片</h3><p id="planSendHint">添加慕言 QQ 后，请将 CN 和这张小计划发给他。慕言看到后，也会主动联系你。</p><figure id="planImageFallback" class="plan-image-fallback" hidden><img id="planImagePreview" alt="这次的小计划图片，可长按保存"><figcaption>长按图片保存，再发给慕言确认。</figcaption></figure></section>
   <p id="contactFooter" class="dialog-foot">档期与费用以双方沟通确认为准。</p><a class="result-home-link home-link" data-booking-return href="./#top">进入官网 <span aria-hidden="true">↗</span></a>

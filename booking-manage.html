@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f1f7fa"><meta name="robots" content="noindex,nofollow"><meta name="muyan-site-version" content="2.6.5">
+  <title>查询与修改预约 · 慕言</title>
+  <link rel="icon" href="images/rem-brand-avatar.webp" type="image/webp">
+  <link rel="stylesheet" href="booking-app.css?v=2.6.5"><link rel="stylesheet" href="booking-customer.css?v=2.6.5">
+  <script src="booking-config.js?v=2.6.5" defer></script><script src="booking-manage.js?v=2.6.5" defer></script><script src="booking-pickers.js?v=2.6.5" defer></script>
+</head>
+<body>
+<header class="header wrap"><a class="brand" href="./#top"><span class="brand-mark"><img src="images/rem-brand-avatar.webp" width="512" height="512" alt="慕言头像"></span><span>慕言的 COS 摄影<span class="brand-small">次元映像 / PHOTOGRAPHY</span></span></a><a class="home-link" href="./#contact">↖ 返回官网</a></header>
+<main class="wrap">
+  <section class="hero"><div><span class="eyebrow">YOUR SHOOTING PLAN</span><h1>查看，<span>再安排。</span></h1><p>查看当前与历史计划，调整尚未开始的安排。</p></div><span class="hero-flower" aria-hidden="true">✧</span></section>
+  <nav class="customer-nav" aria-label="预约服务"><a href="booking.html">填写预约</a><a href="booking-manage.html" aria-current="page">查询／修改预约</a></nav>
+  <section class="section" id="lookupSection"><h2 class="manage-title">查询我的预约</h2><p class="manage-intro">输入填写预约时的 CN、联系方式和四位验证码，验证后即可查看完整小计划，并修改日期、时间与角色。</p>
+    <form id="lookupForm" class="manage-form" novalidate>
+      <label>CN / 昵称 <span class="required">*</span><input id="lookupCN" required maxlength="40" autocomplete="nickname" placeholder="填写预约时使用的 CN"></label>
+      <div class="field-grid"><label>联系方式类型<select id="lookupContactType"><option value="qq">QQ</option><option value="wechat">微信</option></select></label><label><span id="lookupContactLabel">QQ 号码</span> <span class="required">*</span><input id="lookupContact" required maxlength="100" inputmode="numeric" autocomplete="off" placeholder="填写预约时使用的联系方式"></label></div>
+      <label>验证码 <span class="required">*</span><input id="lookupVerificationCode" class="manage-code" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" required autocomplete="off" placeholder="四位数字验证码"><small class="field-help">填写提交预约后保存的四位验证码。</small></label>
+      <button type="submit" class="primary" id="lookupSubmit" disabled>验证并查询预约 ↗</button>
+    </form><p id="lookupMessage" class="manage-status" role="status" aria-live="polite"></p>
+    <p id="resultGroupsSummary" class="manage-status" hidden></p>
+    <div id="lookupResults" class="manage-results" aria-live="polite"></div>
+    <p class="manage-notice">请使用填写预约时的 CN、联系方式及对应验证码。找不到验证码时，请联系慕言核对；请勿重复填写新预约来改期。</p><a href="./#contact" class="booking-manage-link">联系慕言协助 ↗</a>
+  </section>
+  <section id="editSection" class="section" hidden><h2 class="manage-title">你的预约安排</h2><p id="planIntro" class="manage-intro">先核对已填写的小计划。改期需要慕言确认后才生效。</p>
+    <p id="editMessage" class="manage-status" role="status" aria-live="polite"></p>
+    <section id="verifiedPlan" class="summary-card manage-plan-card" aria-label="已验证的这次的小计划"></section>
+    <p id="historyNotice" class="history-notice" hidden></p><section id="pendingPlan" class="summary-card manage-plan-card pending-plan" hidden></section><button id="withdrawChange" type="button" class="secondary" hidden>撤回本次改期申请</button>
+    <div id="editBookingSummary" class="manage-summary" hidden></div><h3 id="editTitle" class="manage-edit-title">修改时间与角色</h3>
+    <form id="editForm" class="manage-form" novalidate><div id="editVisits"></div><label class="consent"><input id="editConsent" type="checkbox" required><span>我已核对修改内容，并同意主网站的拍摄注意事项。</span></label><a href="./?service=event&amp;notes=cz#notes" target="_blank" rel="noopener" class="notes-link">查看拍摄注意事项 ↗</a><div class="manage-actions"><button id="saveChanges" class="primary" type="submit">确认修改</button></div></form>
+    <button id="refreshPlan" type="button" class="secondary" hidden>刷新最新计划</button><button id="logoutEdit" class="secondary" type="button">退出查看／修改</button>
+    <p class="manage-notice">验证状态只在当前页面临时有效，离开或过期后需重新验证。系统不会把验证码存入本机草稿。</p>
+  </section>
+</main>
+<footer class="wrap footer"><span>慕言 · 次元映像</span><a href="./#contact" class="home-link">联系慕言 ↗</a></footer>
+</body>
+</html>
