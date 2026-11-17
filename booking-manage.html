@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f1f7fa"><meta name="robots" content="noindex,nofollow"><meta name="muyan-site-version" content="2.6.6">
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f1f7fa"><meta name="robots" content="noindex,nofollow"><meta name="muyan-site-version" content="3.0">
   <title>查询与修改预约 · 慕言</title>
   <link rel="icon" href="images/rem-brand-avatar.webp" type="image/webp">
-  <link rel="stylesheet" href="booking-app.css?v=2.6.6"><link rel="stylesheet" href="booking-customer.css?v=2.6.6">
-  <script src="booking-config.js?v=2.6.6" defer></script><script src="booking-manage.js?v=2.6.6" defer></script><script src="booking-pickers.js?v=2.6.6" defer></script>
+  <link rel="stylesheet" href="booking-app.css?v=3.0"><link rel="stylesheet" href="booking-customer.css?v=3.0"><link rel="stylesheet" href="booking-details.css?v=3.0"><link rel="stylesheet" href="booking-plan.css?v=3.0">
+  <script src="booking-config.js?v=3.0" defer></script><script src="booking-details.js?v=3.0" defer></script><script src="booking-edit.js?v=3.0" defer></script><script src="booking-plan.js?v=3.0" defer></script><script src="booking-daily-plans.js?v=3.0" defer></script><script src="booking-manage.js?v=3.0" defer></script><script src="booking-pickers.js?v=3.0" defer></script>
 </head>
 <body>
 <header class="header wrap"><a class="brand" href="./#top"><span class="brand-mark"><img src="images/rem-brand-avatar.webp" width="512" height="512" alt="慕言头像"></span><span>慕言的 COS 摄影<span class="brand-small">次元映像 / PHOTOGRAPHY</span></span></a><a class="home-link" href="./#contact">↖ 返回官网</a></header>
@@ -27,8 +27,8 @@
     <p id="editMessage" class="manage-status" role="status" aria-live="polite"></p>
     <section id="verifiedPlan" class="summary-card manage-plan-card" aria-label="已验证的这次的小计划"></section>
     <p id="historyNotice" class="history-notice" hidden></p><section id="pendingPlan" class="summary-card manage-plan-card pending-plan" hidden></section><button id="withdrawChange" type="button" class="secondary" hidden>撤回本次改期申请</button>
-    <div id="editBookingSummary" class="manage-summary" hidden></div><h3 id="editTitle" class="manage-edit-title">修改时间与角色</h3>
-    <form id="editForm" class="manage-form" novalidate><div id="editVisits"></div><label class="consent"><input id="editConsent" type="checkbox" required><span>我已核对修改内容，并同意主网站的拍摄注意事项。</span></label><a href="./?service=event&amp;notes=cz#notes" target="_blank" rel="noopener" class="notes-link">查看拍摄注意事项 ↗</a><div class="manage-actions"><button id="saveChanges" class="primary" type="submit">确认修改</button></div></form>
+    <div id="editBookingSummary" class="manage-summary" hidden></div><details id="editFold" class="manage-edit-fold" hidden><summary><h3 id="editTitle" class="manage-edit-title">调整这次的安排</h3><span class="manage-edit-hint"><span class="fold-closed">点击展开</span><span class="fold-open">收起</span></span></summary>
+    <form id="editForm" class="manage-form" novalidate><div id="editVisits"></div><label class="consent"><input id="editConsent" type="checkbox" required><span>我已核对修改内容，并同意主网站的拍摄注意事项。</span></label><a href="./?service=event&amp;notes=cz#notes" target="_blank" rel="noopener" class="notes-link">查看拍摄注意事项 ↗</a><div class="manage-actions"><button id="saveChanges" class="primary" type="submit">确认修改</button></div></form></details>
     <button id="refreshPlan" type="button" class="secondary" hidden>刷新最新计划</button><button id="logoutEdit" class="secondary" type="button">退出查看／修改</button>
     <p class="manage-notice">验证状态只在当前页面临时有效，离开或过期后需重新验证。系统不会把验证码存入本机草稿。</p>
   </section>

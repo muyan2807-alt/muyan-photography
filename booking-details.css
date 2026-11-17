@@ -1,0 +1,37 @@
+.details-time-range,.details-participants,.details-locations{min-width:0}.details-range-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.details-range-grid input{font-variant-numeric:tabular-nums}.details-legacy-time{color:#997342;margin:8px 0 0}.details-participants,.details-locations{margin-top:20px;padding:18px;border:1px solid #cfe3f0;border-radius:15px;background:linear-gradient(125deg,#ffffffc9,#eaf6fcb0)}.details-participants h3,.details-locations h3{font-size:16px;margin:0 0 8px}.details-person-list,.details-location-list{display:grid;gap:12px;margin-top:13px}.details-person{padding:14px;border:1px solid #d7e7f0;border-radius:12px;background:#ffffff9c;min-width:0}.details-person h4{font-size:13px;margin:0 0 10px;color:#68879c}.details-primary-person{margin:0;font-size:14px;color:#436e86;overflow-wrap:anywhere}.details-location-row{padding:13px;border:1px solid #d2e5f0;border-radius:12px;background:#ffffffae}.details-location-row label{display:block;min-width:0}.details-location-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:9px}.details-location-actions button{min-height:38px;padding:7px 11px;border:1px solid #cbdfea;border-radius:10px;background:#f4faff;color:#527d96;font-size:12px}.details-location-actions button:disabled{opacity:.38}.details-participants .field-grid{grid-template-columns:1fr 1fr;gap:12px}.details-locations>.field-help{line-height:1.9}.details-locations>label{display:block;margin-top:12px}.details-range-host{margin-top:14px}.details-summary-wide{grid-column:1/-1}.details-person input,.details-location-row input{min-width:0;max-width:100%}
+@media(max-width:480px){.details-participants,.details-locations{padding:15px 12px}.details-person{padding:12px}.details-participants .field-grid{grid-template-columns:1fr}.details-range-grid{gap:10px}}
+/* Shared, compact choice windows keep the current page visible around them. */
+#sitePicker{width:min(420px,calc(100% - 40px));max-height:min(520px,72dvh);padding:18px;overflow:hidden;border-radius:22px}
+#sitePicker .picker-heading{margin-bottom:12px}#sitePicker .picker-heading h2{font-size:18px;line-height:1.6}#sitePicker .picker-close{width:38px;height:38px;flex:none}
+#sitePicker .picker-options,#sitePicker .picker-calendar{max-height:min(320px,43dvh);overflow-y:auto;overscroll-behavior:contain;padding-right:3px}
+#sitePicker .picker-option{min-height:44px;padding:9px 13px}#sitePicker .picker-footer{margin-top:12px;padding-top:9px}
+.picker-time-value{text-align:center;font-size:30px;line-height:1.3;letter-spacing:.08em;font-variant-numeric:tabular-nums;margin:0;color:#365f7b}.picker-time-hint{text-align:center;font-size:12px;color:#718ea2;margin:6px 0 12px}
+.picker-time-columns{display:grid;grid-template-columns:1fr 1fr;gap:16px}.picker-time-column{min-width:0}.picker-time-column h3{font-size:12px;font-weight:500;color:#6d8b9f;margin:0 0 7px;text-align:center}
+.picker-time-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;max-height:min(210px,28dvh);overflow-y:auto;overscroll-behavior:contain;padding:2px 3px}
+.picker-time-option{min-height:38px;padding:6px 1px;border:1px solid #d3e4ee;border-radius:9px;background:#ffffffc7;color:#527d96;font-size:14px;font-variant-numeric:tabular-nums}.picker-time-option[aria-pressed=true]{background:#d8ecfa;border-color:#8bb8d2;color:#2d6386}.picker-time-option:disabled{opacity:.3;cursor:not-allowed}
+.picker-confirm-time{width:100%;min-height:43px;margin-top:14px;border:1px solid #9fc3da;border-radius:12px;background:linear-gradient(120deg,#e4f3fd,#cfe8f8);color:#3a6b89;font-size:14px}.picker-confirm-time:disabled{opacity:.4;cursor:not-allowed}
+@media(max-height:520px){#sitePicker{max-height:calc(100dvh - 28px);padding:12px 16px}.picker-time-grid{max-height:24dvh}.picker-time-value{font-size:25px}.picker-time-hint{margin-bottom:7px}#sitePicker .picker-options,#sitePicker .picker-calendar{max-height:40dvh}.picker-confirm-time{margin-top:9px}}
+@media(max-height:520px){#sitePicker[data-mode=time] .picker-footer{display:none}}
+.manage-status.is-cancel-request{padding:13px 15px;border:1px solid #dfcfb3;border-radius:12px;background:#fff8ed;color:#8a704b}
+
+/* Compact participant rows reuse the same values, validation and person indexes. */
+.details-participants.is-compact{margin-top:12px;padding:0;border:0;border-radius:0;background:none;box-shadow:none}
+.details-participants.is-compact>.details-person-list{margin-top:0;gap:14px}
+.details-participants.is-compact .details-person{min-width:0;padding:0;border:0;border-radius:0;background:none}
+.details-participants.is-compact .details-person>h4{display:none}
+.details-participants.is-compact .field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.details-participants.is-compact .field-grid>label{min-width:0;font-size:14px}
+.details-participants.is-compact input{box-sizing:border-box;width:100%;min-width:0;max-width:100%}
+
+/* SELECT options use the same picker, anchored to their triggering field. */
+#sitePicker[data-mode="options"]{position:fixed;inset:auto;margin:0;left:var(--picker-anchor-left,12px);top:var(--picker-anchor-top,12px);width:var(--picker-anchor-width,280px);max-width:calc(100vw - 24px);height:auto;max-height:var(--picker-anchor-max-height,280px);padding:6px;box-sizing:border-box;border:1px solid #c8e1f0;border-radius:14px;box-shadow:0 12px 30px #3b6a8b26;text-align:left;overflow:hidden}
+#sitePicker[data-mode="options"]::backdrop{background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
+#sitePicker[data-mode="options"] .picker-heading,#sitePicker[data-mode="options"] .picker-footer{display:none}
+#sitePicker[data-mode="options"] .picker-options{display:grid;gap:4px;padding:0;max-height:var(--picker-list-max-height,266px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+#sitePicker[data-mode="options"] .picker-option{min-height:42px;padding:9px 11px;border-color:transparent;border-radius:9px;font-size:14px;line-height:1.6;box-sizing:border-box;background:transparent}
+#sitePicker[data-mode="options"] .picker-option[aria-pressed="true"]{border-color:#bdd9eb;background:#dceefa}
+#sitePicker[data-mode="options"] .picker-option:focus-visible{outline:2px solid #78adc9;outline-offset:-2px;background:#e6f3fc}
+#sitePicker[data-mode="options"] .picker-group{margin:5px 7px 2px;font-size:12px;line-height:1.6}
+body:has(#sitePicker[data-mode="options"][open]):not(:has(dialog[open]:not(#sitePicker))){overflow-y:auto}
+
+.addon-choice .addon-snapshot-note{display:block;margin:4px 0 0;font-weight:400;line-height:1.6}

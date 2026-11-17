@@ -1,0 +1,20 @@
+/* The same field layout and glass card before submission, in receipts and lookup. */
+.summary-card.plan-card{padding:25px 28px;text-align:left;overflow-wrap:anywhere}
+.plan-card .summary-heading{display:flex;align-items:center;gap:13px;padding-bottom:13px;border-bottom:1px solid #d4e5f0}
+.plan-card .plan-heading-copy{min-width:0;flex:1}.plan-card .summary-spark{font:35px/1 Georgia;color:#83acc5;flex:none}
+:is(.plan-card,#contactDialog .plan-card) .summary-heading .plan-title{font-family:inherit;font-size:21px;font-weight:550;letter-spacing:0;line-height:1.5;margin:0;color:#355b73}
+.plan-card .summary-heading .plan-subtitle{font-size:12px;line-height:1.8;color:var(--muted,#7394aa);margin:3px 0 0}
+.plan-card .summary-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 18px;margin:16px 0 0;padding:0}
+.plan-card .summary-fields>div{min-width:0;margin:0}.plan-card .summary-fields>.summary-wide,.plan-card .summary-fields>.details-summary-wide{grid-column:1/-1}
+.plan-card .summary-fields dt{font-size:12px;font-weight:400;line-height:1.8;color:#7e9caf;margin:0 0 5px}
+.plan-card .summary-fields dd{font-size:14px;line-height:1.8;color:#507e9b;white-space:pre-line;margin:0;overflow-wrap:anywhere}
+.plan-card .summary-foot{font-size:12px;line-height:1.8;color:#6b8aa0;border-top:1px solid #d4e5f0;margin:14px 0 0;padding-top:10px}
+.plan-card .plan-status{flex:none;max-width:35%;padding:4px 9px;border:1px solid #c4e1f1;border-radius:16px;background:#e7f4fd;color:#4c819f;font-size:12px;line-height:1.6;text-align:center}
+.plan-card .plan-status.is-history,.plan-card .plan-status.is-cancelled{background:#eff4f7;border-color:#d4e0e7;color:#758997}.pending-plan.plan-card .plan-status,.plan-card .plan-status.is-pending{background:#fff8e9;border-color:#e4d4b6;color:#94784b}
+.plan-card .plan-preview-note{font-size:12px;color:#899eac;line-height:1.8;margin:10px 0 0}.plan-card>.primary{margin-top:18px;min-height:44px}
+.plan-card [hidden]{display:none!important}
+@media(max-width:700px){.summary-card.plan-card{padding:22px}:is(.plan-card,#contactDialog .plan-card) .summary-heading .plan-title{font-size:20px}.plan-card .summary-fields{gap:17px 18px}}
+@media(max-width:375px){.summary-card.plan-card{padding:20px}.plan-card .summary-heading{gap:9px}.plan-card .summary-fields{column-gap:14px}.plan-card .plan-status{padding-inline:7px}}
+
+.plan-card .plan-verification{display:grid;grid-template-columns:1fr auto;align-items:center;gap:3px 12px;margin-top:15px;padding:11px 14px;border:1px solid #cbdfea;border-radius:13px;background:linear-gradient(125deg,#f1f8fc,#e9f3fa)}
+.plan-verification-label{font-size:12px;color:#567c93}.plan-verification-code{grid-column:2;grid-row:1/3;font:600 27px/1.3 ui-monospace,Consolas,monospace;letter-spacing:.15em;color:#355b73}.plan-verification-hint{font-size:11px;color:#7593a6;line-height:1.6}

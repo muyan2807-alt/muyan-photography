@@ -2,6 +2,11 @@
   const modal=document.getElementById('bookingModal'),closeButton=document.getElementById('bookingClose');
   const status=document.getElementById('bookingStatus'),select=document.getElementById('bookingQQAccount');
   const tabs=[...modal.querySelectorAll('[data-booking-tab]')];
+  // Reuse the booking-page picker. Keep its focus inside the parent modal;
+  // native picker Escape/Tab handling must not close or trap the parent dialog.
+  const accountPicker=document.getElementById('sitePicker');
+  if(accountPicker){modal.append(accountPicker);accountPicker.addEventListener('keydown',event=>event.stopPropagation());}
+
   // Main site <-> booking links share a small, validated service context.
   const serviceKeys=['portrait','event','snow','effects'];
   const contextParams=new URLSearchParams(location.search);
