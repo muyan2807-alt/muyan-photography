@@ -164,3 +164,14 @@ input[type=checkbox].field-invalid{outline:2px solid #bd6c68;outline-offset:2px;
 
 /* Keep the event partner card separate from the primary character input. */
 #eventIdentityRow{margin-bottom:16px}#eventPartner{margin-top:16px;margin-bottom:20px}
+
+#connectionActions:not([hidden]) { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+#contactDialog:not([data-state="receipt"]) .dialog-intro { margin: 0 auto 16px; max-width: 38em; }
+#contactDialog[data-state="unconfirmed"] #contactIntro {
+  color: #2f5770;
+  font-size: clamp(16px, 3.4vw, 18px);
+  font-weight: 700;
+  line-height: 1.6;
+}
+#contactDialog:not([data-state="receipt"]) .result-heading { min-height: 35px; }
+#contactDialog [hidden] { display: none !important; }

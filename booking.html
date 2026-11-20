@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#f1f7fa">
   <meta name="robots" content="noindex,nofollow">
-  <meta name="muyan-site-version" content="3.0">
+  <meta name="muyan-site-version" content="3.0.1">
   <title>这一次，拍什么？ · 慕言预约</title>
   <link rel="icon" href="images/rem-brand-avatar.webp" type="image/webp">
-  <link rel="stylesheet" href="booking-app.css?v=3.0">
+  <link rel="stylesheet" href="booking-app.css?v=3.0.1-2">
   <link rel="stylesheet" href="booking-customer.css?v=3.0">
   <script src="booking-config.js?v=3.0" defer></script>
   <script src="booking-storage.js?v=3.0" defer></script>
@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="booking-details.css?v=3.0">
   <link rel="stylesheet" href="booking-plan.css?v=3.0">
   <script src="booking-details.js?v=3.0" defer></script>
-  <script src="booking-app.js?v=3.0" defer></script>
+  <script src="booking-app.js?v=3.0.1-2" defer></script>
   <script src="booking-pickers.js?v=3.0" defer></script>
 </head>
 <body>
@@ -39,7 +39,10 @@
         <button class="service-card" type="button" id="chooseEvent" aria-pressed="false" aria-controls="eventDetails"><span class="service-top"><span class="service-icon" aria-hidden="true">▦</span><span class="choice-dot"></span></span><strong>场照</strong><span class="service-english">MEET YOU AT THE CON</span><span class="service-description">在热闹的漫展，记录这一次相遇。</span><span class="service-link">查看漫展与排单 <span aria-hidden="true">↗</span></span></button>
       </div>
       <details id="specialServices" class="special-services"><summary><span>雪景 / 后期与特效</span><small>展开查看 ↗</small></summary><input type="hidden" id="subCategory" value=""><div class="special-choices"><button id="chooseSnow" type="button" aria-pressed="false"><strong>雪景拍摄</strong><small>主城出发 · 拍摄与接送一起安排</small><span>留下雪景计划 ↗</span></button><button id="chooseEffects" type="button" aria-pressed="false"><strong>后期 / 特效</strong><small>普通特效 · 半合成 · 全合成</small><span>聊聊后期想法 ↗</span></button></div><div id="specialInfo" class="special-info" hidden aria-live="polite"></div></details>
-      <div id="serviceStatus" class="connection" role="status">正在准备表单…</div>
+      <div id="serviceStatus" class="connection">
+        <span id="connectionMessage" role="status">正在检查预约服务连接…</span>
+        <span id="connectionActions" hidden><button id="retryBookingConnection" type="button" class="text-button">重新连接</button><button id="contactConnectionHelp" type="button" class="text-button">联系慕言</button></span>
+      </div>
       <div id="eventDetails" class="event-panel" hidden>
         <div class="event-flow" aria-label="场照填写方式"><button id="eventNew" type="button" class="active" aria-pressed="true"><strong>初次约拍</strong><span>留下意向，再加好友沟通</span></button><button id="eventFriend" type="button" aria-pressed="false"><strong>我已有好友</strong><span>直接按排单表填写 <i aria-hidden="true">↗</i></span></button></div>
         <p id="eventFlowHint" class="field-help">提交排单后，请截图保存“这次的小计划”；添加慕言后，将计划图发来确认。</p>
@@ -86,17 +89,18 @@
   <button id="closeSavedReminder" class="saved-toast-close" type="button" aria-label="关闭本机记录提醒">×</button>
   <div class="saved-actions"><button id="restoreDraft" type="button" hidden>恢复草稿 ↗</button><button id="viewLastPlan" type="button" hidden>查看上次小计划 ↗</button><button id="clearSaved" type="button" class="saved-clear" hidden>清除记录</button></div>
 </aside>
-<dialog id="contactDialog" aria-labelledby="successTitle">
+<dialog id="contactDialog" aria-labelledby="successTitle" aria-describedby="contactIntro">
   <div id="contactResultBody">
   <button id="closeContact" class="dialog-close" type="button" aria-label="关闭联系方式">×</button>
-  <div class="result-heading"><div class="success-icon" aria-hidden="true"><svg viewBox="0 0 32 32" width="27" height="27" fill="none"><path d="m8 16 5 5 11-12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h2 id="successTitle">拍摄意向已收到</h2></div>
-  <p class="dialog-intro">截图保存计划图，再添加慕言确认安排。</p>
-  <p class="receipt">意向编号 <span id="receiptId"></span><small>加好友请备注拍摄类型。</small></p>
+  <div class="result-heading"><div id="contactSuccessIcon" class="success-icon" aria-hidden="true" hidden><svg viewBox="0 0 32 32" width="27" height="27" fill="none"><path d="m8 16 5 5 11-12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h2 id="successTitle">联系慕言</h2></div>
+  <p id="contactIntro" class="dialog-intro"></p>
+  <p id="contactReceiptNumber" class="receipt" hidden>意向编号 <span id="receiptId"></span><small>加好友请备注拍摄类型。</small></p>
   <div class="contact-tabs" aria-label="选择联系渠道"><button id="contactQQ" type="button" class="active" aria-pressed="true">QQ 联系</button><button id="contactWechat" type="button" aria-pressed="false">微信联系</button></div>
   <div class="contact-content"><label id="contactQQAccountField" class="contact-account-label" for="contactQQAccount">选择 QQ 账号<select id="contactQQAccount"><option value="main">QQ 大号 · 2745867337</option><option value="small">QQ 小号（备用） · 2389375218</option></select></label><div class="qr-frame"><img id="contactQR" width="220" height="220" alt="慕言的 QQ 二维码"></div><p id="contactKind" class="contact-kind">QQ 大号</p><button id="copyNumber" class="contact-number" type="button" title="点击复制号码">2745867337<span>点击复制 ↗</span></button><p id="copyStatus" role="status" class="copy-status"></p><button id="copyButton" class="primary copy-button" type="button">复制 QQ 号</button><p id="contactHelp" class="contact-help">复制号码后打开 QQ 搜索，或用 QQ 扫码添加。</p><p id="qqAddHelp" class="contact-callout">QQ 大号若添加不上：点击“查看详情”，向下滑动，等待几秒后再继续添加；也可切换 QQ 小号。</p></div>
-  <p class="contact-notification">默认通过 QQ 联系你，消息可能在“过滤通知”里，麻烦留意查看。</p>
+  <p id="contactNotification" class="contact-notification" hidden>默认通过 QQ 联系你，消息可能在“过滤通知”里，麻烦留意查看。</p>
   <section id="editCredential" class="edit-credential" hidden><h3>你的四位验证码</h3><code id="editCodeValue"></code><p>请妥善保存；修改预约时需验证。此码可随小计划截图保存，不会自动保存在本机草稿或记录中。</p><button id="saveEditCredential" type="button" class="secondary">保存验证凭证</button><a href="booking-manage.html" class="booking-manage-link">查询／修改我的预约 ↗</a></section>
-  <section class="plan-next" aria-labelledby="planNextTitle"><h3 id="planNextTitle">截图保存计划图</h3><p id="planSendHint">添加慕言 QQ 后，请将计划图截图发给他。慕言看到后，也会主动联系你。</p><p id="planSaveStatus" class="plan-save-status" role="status" aria-live="polite"></p><section id="receiptPlan" class="summary-card receipt-plan" aria-label="已提交的这次的小计划"></section></section>
+  <section id="contactPlanNext" class="plan-next" aria-labelledby="planNextTitle" hidden><h3 id="planNextTitle">截图保存计划图</h3><p id="planSendHint">添加慕言 QQ 后，请将计划图截图发给他。慕言看到后，也会主动联系你。</p><p id="planSaveStatus" class="plan-save-status" role="status" aria-live="polite"></p><section id="receiptPlan" class="summary-card receipt-plan" aria-label="已提交的这次的小计划"></section></section>
+  <button id="retryContactConnection" type="button" class="secondary" hidden>重新连接预约服务</button>
   <p id="contactFooter" class="dialog-foot">档期与费用以双方沟通确认为准。</p><a class="result-home-link home-link" data-booking-return href="./#top">进入官网 <span aria-hidden="true">↗</span></a>
   </div>
 </dialog>

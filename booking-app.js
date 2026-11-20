@@ -16,7 +16,7 @@
   const locationEditor=detailUI.locations($('portraitLocationPlan'),{idPrefix:'portraitLocation',onChange:detailChanged});
 
   let eventOptions=[],selectedOption=null,eventFlow='new',templateDay=0;
-  let celebrationTimer=0;
+  let celebrationTimer=0, contactReceipt=null;
   let booted=false,restoringDraft=false,draftDirty=false,pendingSubmission=false,draftSaveTimer=0,savedExpiryTimer=0,pendingAddonIds=null,pendingEventRestore=null,requestedScheduleId='';
   let savedToastTimer=0,savedWelcomeChecked=false,savedToastPointer=false,savedStorageWarningShown=false;
   // Only a display template. No synthetic IDs can be submitted to the live API.
@@ -109,10 +109,24 @@
   }
   function step(index){document.querySelectorAll('.steps li').forEach((item,i)=>item.classList.toggle('current',i===index));}
   async function api(path,options={}){
-    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
-    try{const response=await fetch(apiBase+path,{...options,cache:'no-store',credentials:'omit',signal:controller.signal,headers:{...(freeNgrok?{'ngrok-skip-browser-warning':'1'}:{}),...(options.body?{'Content-Type':'application/json'}:{}),...options.headers}});const value=await response.json().catch(()=>null);if(!response.ok||!value?.ok){const error=Error(value?.error||'暂时无法连接预约服务，请稍后重试。');error.status=response.status;throw error;}return value;}
-    catch(error){if(error.name==='AbortError'||error instanceof TypeError)throw Error('连接暂时中断。请保留表单，恢复连接后重试同一份意向。');throw error;}
-    finally{clearTimeout(timer);}
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),5000);
+    try{
+      const response=await fetch(apiBase+path,{...options,cache:'no-store',credentials:'omit',signal:controller.signal,headers:{...(freeNgrok?{'ngrok-skip-browser-warning':'1'}:{}),...(options.body?{'Content-Type':'application/json'}:{}),...options.headers}});
+      const value=await response.json().catch(()=>null);
+      if(!response.ok||value?.ok!==true){
+        const error=Error(typeof value?.error==='string'&&value.error.trim()?value.error:'暂时未收到预约服务的有效响应。');
+        error.rejected=response.status>=400&&response.status<500&&value?.ok===false;
+        throw error;
+      }
+      return value;
+    }catch(error){
+      if(error.name==='AbortError'||error instanceof TypeError)throw Error('预约服务连接暂时中断。');
+      throw error;
+    }finally{clearTimeout(timer);}
+  }
+  function bookingAcknowledged(result){
+    return result.status==='intent_received'&&typeof result.id==='string'&&Boolean(result.id.trim());
   }
   function submitState(){$('submit').disabled=sending;$('submitText').textContent=completed?'意向已收到 · 查看联系方式':service()==='event'&&eventFlow==='friend'?'提交场照排单':'提交'+titles[service()]+'意向';renderEventCopy();queueReadiness();}
   function edited(){stashVisit();stashServiceDay();renderVisitCards();renderServiceDays();renderEventCopy();queueReadiness();if(selectedSlot?.can_book)clearTimeError();if(completed){completed=false;say('');}submitState();queueDraftSave();}
@@ -311,19 +325,59 @@
     eventOptions.forEach(option=>{const button=document.createElement('button');button.type='button';button.dataset.id=option.id;button.textContent=option.title;button.addEventListener('click',async()=>{if(!sending){await chooseEventOption(option);edited();}});choices.append(button)});
     await chooseEventOption(eventOptions.find(option=>option.id===(selectedOption?.id||params.get('event')))||eventOptions[0]||null,true);
   }
-  async function start(){
-    if(initializing||sending)return;initializing=true;submitState();
-    try{
-      const [options,values]=await Promise.all([api('/api/public/options'),api('/api/public/service-catalog')]);
-      customerFeatures=options.customer_features||{};catalog=detailUI.normalizeCatalog(values);$('portraitDate').min=options.today;$('snowDate').min=options.today;renderAddons();renderForm();ready=true;
-      $('serviceStatus').textContent='';$('serviceStatus').hidden=true;$('serviceStatus').classList.remove('error');
-      try{await loadEventOptions();if(visits.size)await recheckVisits();if(pendingEventRestore){const warning=await reconcileRestoredEvent();if(warning)say(warning,true);}}catch(error){
-        tableGeneration++;schedule=null;selectedSlot=null;tableLoading=false;$('timeTable').textContent='活动时间表暂时无法读取，请稍后重试。';
-        $('selectedTimeHint').textContent='时间表暂不可用，请稍后重试。';if(service()==='event')say(error.message,true);
-      }
-    }catch(error){ready=false;$('serviceStatus').hidden=false;$('serviceStatus').textContent=error.message;$('serviceStatus').classList.add('error');const retry=document.createElement('button');retry.type='button';retry.className='text-button';retry.textContent='重新连接';retry.addEventListener('click',start);$('serviceStatus').append(retry)}
-    finally{initializing=false;submitState();refreshSavedState()}
+  function showConnectionProblem(autoOpen=true){
+    ready=false;
+    $('serviceStatus').hidden=false;
+    $('serviceStatus').classList.add('error');
+    $('connectionMessage').textContent='在线预约暂时无法连接。';
+    $('connectionActions').hidden=false;
+    submitState();
+    if(autoOpen&&!completed&&!$('contactDialog').open)openContactFallback('connection');
   }
+  async function start(){
+    if(initializing||sending)return;
+    initializing=true;submitState();
+    $('serviceStatus').hidden=false;
+    $('serviceStatus').classList.remove('error');
+    $('connectionMessage').textContent='正在检查预约服务连接…';
+    $('connectionActions').hidden=true;
+    try{
+      // Check the endpoints the form actually needs, using the same CORS and cache settings.
+      const [options,values]=await Promise.all([
+        api('/api/public/options'),
+        api('/api/public/service-catalog')
+      ]);
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(options.today)||!Array.isArray(values.portrait_addons)||!Array.isArray(values.event_packages)||!values.snow||!Array.isArray(values.effects?.options)){
+        throw Error('预约服务暂时无法提供表单资料。');
+      }
+      customerFeatures=options.customer_features||{};catalog=detailUI.normalizeCatalog(values);$('portraitDate').min=options.today;$('snowDate').min=options.today;renderAddons();renderForm();ready=true;
+      $('serviceStatus').hidden=true;
+      try{
+        await loadEventOptions();if(visits.size)await recheckVisits();
+        if(pendingEventRestore){const warning=await reconcileRestoredEvent();if(warning)say(warning,true);}
+        const dialog=$('contactDialog');
+        if(dialog.open&&['connection','schedule'].includes(dialog.dataset.state))dialog.close();
+      }catch(error){
+        tableGeneration++;schedule=null;selectedSlot=null;tableLoading=false;$('timeTable').textContent='活动时间表暂时无法读取，请稍后重试。';
+        $('selectedTimeHint').textContent='时间表暂不可用，请稍后重试。';
+        if(service()==='event'){
+          say(error.message,true);
+          if(!completed)openContactFallback('schedule');
+        }
+      }
+    }catch{showConnectionProblem();}
+    finally{
+      initializing=false;
+      submitState();refreshSavedState();
+    }
+  }
+  $('retryBookingConnection').addEventListener('click',start);
+  $('contactConnectionHelp').addEventListener('click',()=>openContactFallback('connection'));
+  $('retryContactConnection').addEventListener('click',()=>{
+    if(initializing||sending)return;
+    $('retryContactConnection').disabled=true;
+    start().finally(()=>{$('retryContactConnection').disabled=false;});
+  });
   function payload(){
     stashServiceDay();
     const kind=service();const body={category:mode,nickname:$('nickname').value.trim(),character:(kind==='effects'?$('effectsCharacter'):$('character')).value.trim(),contact_type:$('contactType').value,contact:$('contact').value.trim(),consent:$('consent').checked};
@@ -355,14 +409,45 @@
   }
   function busy(value){sending=value;$('formFields').disabled=value;document.querySelectorAll('.service-choices button,.special-choices button,#sessionChoices button,#openExhibition').forEach(button=>button.disabled=value);submitState();refreshSavedState();}
   $('bookingForm').addEventListener('submit',async event=>{
-    event.preventDefault();if(sending)return;if(completed&&receipt){openContacts();return;}if(!validateSubmission())return;if(!ready){say('表单服务暂时无法连接，请重新连接后提交。',true);$('serviceStatus').hidden=false;revealInvalid($('serviceStatus'));return;}if(service()==='event'&&(initializing||tableLoading)){say('正在核对时段，请稍候再提交。',true);revealInvalid($('timeTable'));return;}
-    let body;try{body=payload();}catch(error){say(error.message,true);if(service()==='event')$('openExhibition').focus();return;}
-    const next=JSON.stringify(body);if(next!==signature){requestId=crypto.randomUUID();signature=next;}body.request_id=requestId;
+    event.preventDefault();
+    if(sending)return;
+    if(completed&&receipt){openContacts(receipt);return;}
+    if(initializing){say('正在检查预约服务，请稍候。');return;}
+    if(!ready){
+      const draft=meaningfulDraft(captureDraft());
+      if(draft)saveDraftNow(true);
+      openContactFallback('connection','',draft?capturePlan():null);
+      return;
+    }
+    if(!validateSubmission())return;
+    let body;
+    try{body=payload();}catch(error){say(error.message,true);return;}
+    const next=JSON.stringify(body),retryingUnconfirmed=pendingSubmission&&next===signature;
+    if(next!==signature){requestId=crypto.randomUUID();signature=next;}
+    body.request_id=requestId;
     if(new TextEncoder().encode(JSON.stringify(body)).length>16000){say('本次填写内容较多，请精简备注后重试；如需保留全部细节，请联系慕言确认。',true);return;}
-    const submitted=service(),submittedPlan=capturePlan();pendingSubmission=true;saveDraftNow(true);busy(true);say('正在收好你的'+(submitted==='effects'?'制作需求':'拍摄意向')+'…');
-    try{const endpoint=service()==='event'&&customerFeatures.event_batch_v1?'/api/public/event/booking-batches':serviceDays[service()]?.size>1?'/api/public/portrait/booking-batches':'/api/public/'+mode+'/bookings';const result=await api(endpoint,{method:'POST',body:JSON.stringify(body)});receipt={...result,service:result.service||submitted,registrationFlow:eventFlow,nickname:body.nickname,character:body.character||'',intent_number:typeof result.intent_number==='string'?result.intent_number:'',plan:{...submittedPlan,id:result.id,intent_number:typeof result.intent_number==='string'?result.intent_number:'',preview:Boolean(result.preview)}};completed=true;saveReceipt();say('意向已收到，请保存小计划，发给慕言继续确认。');openContacts(true);}
-    catch(error){say(error.message,true);if(error.status>=400&&error.status<500)pendingSubmission=false;if(error.status===409){requestId='';signature='';if(submitted==='event')await loadEventOptions();}saveDraftNow(true);}
-    finally{busy(false);renderForm();}
+    const submitted=service(),submittedPlan=capturePlan();
+    const endpoint=submitted==='event'&&customerFeatures.event_batch_v1?'/api/public/event/booking-batches':serviceDays[submitted]?.size>1?'/api/public/portrait/booking-batches':'/api/public/'+mode+'/bookings';
+    pendingSubmission=true;
+    saveDraftNow(true);
+    busy(true);
+    say('正在提交，等待预约服务确认…');
+    let result;
+    try{
+      result=await api(endpoint,{method:'POST',body:JSON.stringify(body)});
+      if(!bookingAcknowledged(result))throw Error('暂未收到完整的预约回执。');
+    }catch(error){
+      const rejected=error.rejected&&!retryingUnconfirmed;
+      pendingSubmission=!rejected;
+      say(rejected?error.message:'提交结果暂未确认，请联系慕言核对。',true);
+      saveDraftNow(true);
+      openContactFallback(rejected?'rejected':'unconfirmed',error.message,submittedPlan);
+      return;
+    }finally{busy(false);renderForm();}
+    const intentNumber=typeof result.intent_number==='string'?result.intent_number:'';
+    receipt={...result,service:result.service||submitted,registrationFlow:eventFlow,nickname:body.nickname,character:body.character||'',intent_number:intentNumber,plan:{...submittedPlan,id:result.id,intent_number:intentNumber,preview:Boolean(result.preview)}};
+    completed=true;saveReceipt();submitState();say(result.preview?'本地预览填写完成。':'意向已收到，请保存小计划，发给慕言继续确认。');
+    openContacts(receipt,!result.preview);
   });
   const visitList=()=>Array.from(visits.values()).sort((a,b)=>a.date.localeCompare(b.date));
   function stashVisit(){
@@ -417,15 +502,16 @@
     updateSummary();
     return {nickname:$('nickname').value.trim(),...window.MuyanPlanImage.snapshot(document.querySelector('.submission .summary-card'))};
   }
-  function renderReceiptPlan(){
+  function renderReceiptPlan(receipt){
     window.MuyanPlanImage.card($('receiptPlan'),{...receipt.plan,intent_number:displayIntentNumber(receipt),verification_code:window.MuyanPlanImage.codeOf(receipt)},{badge:'意向已收到'});
     $('planSaveStatus').textContent=window.MuyanPlanImage.codeOf(receipt)?'请截图保存小计划及验证码；内容较长时，请使用长截图。':'这是本机保存的小计划，不含验证码；查询或修改时，请使用提交后保存的验证码重新验证。';
   }
-  function renderCredential(){
+  function renderCredential(receipt){
     const code=window.MuyanPlanImage.codeOf(receipt);
     $('editCredential').hidden=!code;$('editCodeValue').textContent=code;
   }
   $('saveEditCredential').addEventListener('click',()=>{
+    const receipt=contactReceipt;if(!receipt)return;
     const code=window.MuyanPlanImage.codeOf(receipt);if(!code)return;
     const text='慕言预约验证凭证\nCN：'+receipt.nickname+'\n预约编号：'+displayIntentNumber(receipt)+'\n验证码：'+code+'\n请妥善保存，勿转发给他人。验证码可随小计划主动截图保存，不会自动保存在浏览器草稿或本机记录中。';
     const url=URL.createObjectURL(new Blob([text],{type:'text/plain;charset=utf-8'})),link=document.createElement('a');link.href=url;link.download='慕言预约验证凭证.txt';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
@@ -443,19 +529,59 @@
   }
   $('skipCompletion').addEventListener('click',()=>finishCompletion());
   $('successCelebration').addEventListener('cancel',event=>{event.preventDefault();finishCompletion();});
-  function openContacts(celebrate=false){
+  function showContactDialog(state,item=null,fallbackPlan=null){
+    const dialog=$('contactDialog'),confirmed=Boolean(item),wasOpen=dialog.open;
     hideSavedReminder();
-    channel='qq';qqAccount='main';$('contactQQAccount').value='main';const effects=receipt.service==='effects';
-    $('successTitle').textContent=effects?'后期需求已收到':receipt.service==='event'&&receipt.registrationFlow==='friend'?'场照排单已收到':'拍摄意向已收到';
-    document.querySelector('.dialog-intro').textContent=receipt.registrationFlow==='friend'&&receipt.service==='event'?'已有好友：截图保存计划图，发到现有聊天中确认。':'截图保存计划图，再添加慕言确认安排。';
-    $('contactFooter').textContent=effects?'制作效果、费用和交付安排，以双方沟通确认为准。':receipt.service==='event'?'提交意向不代表档期已确认。确认预约后，由慕言拉你进拍摄群；具体安排以群聊通知为准。':'提交意向不代表档期已确认，具体安排以沟通结果为准。';
-    if(receipt.preview){$('successTitle').textContent='预览填写完成';document.querySelector('.dialog-intro').textContent='仅作本地预览，未发送或占用档期，可截图核对计划。';}
-    $('contactFooter').textContent+=' 如需更正本次信息，请联系慕言调整原预约，无需重复提交。';document.querySelector('.result-home-link').href=siteURL(receipt.service,from);
-    $('receiptId').textContent=displayIntentNumber(receipt);renderReceiptPlan();renderContact();renderCredential();step(2);
-    if(!$('contactDialog').open)$('contactDialog').showModal();$('contactDialog').scrollTop=0;if(celebrate)celebrateCompletion();
+    contactReceipt=item;
+    dialog.dataset.state=state;
+    if(!wasOpen){channel='qq';qqAccount='main';$('contactQQAccount').value='main';}
+    $('contactSuccessIcon').hidden=!confirmed||Boolean(item?.preview);
+    $('contactReceiptNumber').hidden=!confirmed;
+    $('contactNotification').hidden=!confirmed;
+    $('contactPlanNext').hidden=!confirmed&&!fallbackPlan;
+    $('receiptPlan').setAttribute('aria-label',confirmed?'已提交的这次的小计划':'本次填写的小计划');
+    $('retryContactConnection').hidden=state!=='connection'&&state!=='schedule';
+    if(!confirmed){
+      $('receiptId').textContent='';
+      $('receiptPlan').replaceChildren();
+      $('editCredential').hidden=true;
+      $('editCodeValue').textContent='';
+      if(fallbackPlan){
+        $('planNextTitle').textContent='本次填写的小计划';
+        $('planSendHint').textContent='可以截图保存这次填写的内容，方便与慕言核对。';
+        $('planSaveStatus').textContent='';
+        window.MuyanPlanImage.card($('receiptPlan'),fallbackPlan,{
+          badge:state==='unconfirmed'?'提交待核对':'未提交',
+          foot:'这是本次填写的内容，拍摄安排以慕言确认为准。'
+        });
+      }
+    }
+    document.querySelector('.result-home-link').href=siteURL(item?.service||service(),from);
+    renderContact();window.MuyanPickers?.refresh();
+    if(!wasOpen)dialog.showModal();
+    dialog.scrollTop=0;
+  }
+  function openContacts(item,celebrate=false){
+    const effects=item.service==='effects',friend=item.registrationFlow==='friend'&&item.service==='event';
+    $('successTitle').textContent=item.preview?'预览填写完成':effects?'后期需求已收到':friend?'场照排单已收到':'拍摄意向已收到';
+    $('contactIntro').textContent=item.preview?'仅作本地预览，未发送或占用档期，可截图核对计划。':friend?'已有好友：截图保存计划图，发到现有聊天中确认。':'截图保存计划图，再添加慕言确认安排。';
+    const note=effects?'制作效果、费用和交付安排，以双方沟通确认为准。':item.service==='event'?'提交意向不代表档期已确认。确认预约后，由慕言拉你进拍摄群；具体安排以群聊通知为准。':'提交意向不代表档期已确认，具体安排以沟通结果为准。';
+    $('contactFooter').textContent=note+' 如需更正本次信息，请联系慕言调整原预约，无需重复提交。';
+    $('receiptId').textContent=displayIntentNumber(item);
+    $('planNextTitle').textContent='截图保存计划图';
+    renderReceiptPlan(item);renderCredential(item);
+    showContactDialog('receipt',item);
+    if(item===receipt)step(2);
+    if(celebrate)celebrateCompletion();
+  }
+  function openContactFallback(state,message='',plan=null){
+    $('successTitle').textContent='联系慕言';
+    $('contactIntro').textContent=state==='connection'?'在线预约暂时无法连接，可以通过 QQ 或微信联系慕言。':state==='schedule'?'场照时间表暂时无法读取，可以联系慕言核对档期。':state==='rejected'?message:'本次结果提交可能失败，请先联系慕言核对是否收到，避免重复登记。';
+    $('contactFooter').textContent=state==='connection'||state==='schedule'?'可以重新连接，或关闭此窗口返回表单。':state==='rejected'?'填写内容仍在表单里，可返回检查，或通过上方联系方式沟通。':'填写内容仍在表单里，可关闭此窗口返回查看。';
+    showContactDialog(state,null,plan);
   }
   function currentContact(){
-    const channels=receipt.contacts?.channels||[];
+    const channels=contactReceipt?.contacts?.channels||[];
     if(channel==='qq'&&qqAccount==='small')return {number:'2389375218',copy_value:'2389375218',qr_url:'images/qq-small.png',copy_label:'复制 QQ 小号'};
     return channels.find(item=>item.id===channel)||(channel==='qq'?{number:'2745867337',copy_value:'2745867337',qr_url:'images/qq.png',copy_label:'复制 QQ 号'}:{number:'mi20180709',copy_value:'mi20180709',qr_url:'images/wechat.png',copy_label:'复制微信号'});
   }
@@ -465,7 +591,7 @@
     $('contactQR').src=item.qr_url||new URL('images/'+(qq?'qq.png':'wechat.png'),location.href).href;$('contactQR').alt=qq?'慕言 QQ '+(small?'小号':'大号')+'二维码':'慕言微信二维码';$('contactKind').textContent=qq?'QQ '+(small?'小号':'大号'):'微信号';
     $('copyNumber').replaceChildren(document.createTextNode(item.number));const hint=document.createElement('span');hint.textContent='点击复制 ↗';$('copyNumber').append(hint);$('copyButton').textContent=item.copy_label||('复制'+(qq?' QQ 号':'微信号'));
     $('contactHelp').textContent=qq?'复制所选 QQ 号后，在 QQ 搜索添加，或使用 QQ 扫码。':'复制微信号后，在微信搜索添加，或使用微信扫码。';$('copyStatus').textContent='';
-    $('planSendHint').textContent='添加慕言'+(qq?' QQ':'微信')+'后，请将计划图截图发给他。慕言看到后，也会主动联系你。'+(receipt.registrationFlow==='friend'&&receipt.service==='event'?'已有好友，直接发到现有聊天即可。':'');
+    if(contactReceipt)$('planSendHint').textContent='添加慕言'+(qq?' QQ':'微信')+'后，请将计划图截图发给他。慕言看到后，也会主动联系你。'+(contactReceipt.registrationFlow==='friend'&&contactReceipt.service==='event'?'已有好友，直接发到现有聊天即可。':'');
   }
   async function copyContact(){const item=currentContact(),qq=channel==='qq';try{await navigator.clipboard.writeText(item.copy_value||item.number);$('copyStatus').textContent=(qq?'QQ 号':'微信号')+'已复制。';}catch{$('copyStatus').textContent='暂时无法自动复制，请手动复制上方号码。';}}
   $('copyNumber').addEventListener('click',copyContact);$('copyButton').addEventListener('click',copyContact);
@@ -538,7 +664,7 @@
       if(issue.eventVisit&&schedule?.id!==issue.eventVisit.event_id){
         const option=eventOptions.find(value=>value.id===issue.eventVisit.option_id);if(option){stashVisit();await chooseEventOption(option,true);if(schedule?.id!==issue.eventVisit.event_id)await loadSchedule(issue.eventVisit.event_id,true);}
       }
-      const control=$(issue.id)||$('formMessage');if(control.id==='serviceStatus'){control.hidden=false;control.textContent=issue.message;}markFieldError(control,issue.message);revealInvalid(control);
+      const control=$(issue.id)||$('formMessage');if(control.id==='serviceStatus')control.hidden=false;markFieldError(control,issue.message);revealInvalid(control);
     }catch(error){say(error.message||'暂时无法定位这一天，请在已选日期中重新选择。',true);}finally{issueNavigationBusy=false;queueReadiness();}
   }
   $('submissionReadiness').addEventListener('click',()=>{stashServiceDay();stashVisit();const issue=firstSubmissionIssue();if(issue)revealSubmissionIssue(issue);else queueReadiness();});
@@ -689,7 +815,7 @@
     if(sending)return;const record=localRecords.read('receipt');
     if(!record){refreshSavedState('上次小计划已过期或不存在。');return;}
     if(!validSavedReceipt(record.value)){localRecords.remove('receipt');refreshSavedState('保存的小计划暂时无法读取，请联系慕言核实。');return;}
-    receipt=record.value;openContacts(false);
+    openContacts(record.value);
   });
   $('clearSaved').addEventListener('click',()=>{
     if(sending||restoringDraft)return;clearTimeout(draftSaveTimer);draftDirty=false;localRecords.remove('draft');localRecords.remove('receipt');
@@ -723,7 +849,8 @@
     return Number(total.toFixed(2))+' 元'+(starting?'起':'')+(discuss?'＋待议费用':'');
   }
 
-  window.addEventListener('offline',()=>{if(['127.0.0.1','localhost'].includes(location.hostname))return;ready=false;submitState();$('serviceStatus').hidden=false;$('serviceStatus').textContent='当前设备已离线，请保留表单，联网后再重试。';$('serviceStatus').classList.add('error');});window.addEventListener('online',()=>start());
+  window.addEventListener('offline',()=>showConnectionProblem(!sending));
+  window.addEventListener('online',start);
   window.addEventListener('beforeunload',event=>{
     if(completed)return;
     if(['nickname','contact','character','notes','portraitDate','snowDate','effectsBrief','effectsIP','effectsCharacter','partnerNickname','partnerCharacter'].some(id=>$(id).value.trim())){event.preventDefault();event.returnValue='';}
